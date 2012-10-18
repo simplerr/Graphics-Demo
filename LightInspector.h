@@ -1,5 +1,7 @@
 #pragma once
 #include "BaseInspector.h"
+#include "Gwen\Controls\Properties.h"
+#include "Gwen\Controls\HorizontalSlider.h"
 #include "Light.h"
 #include <xnamath.h>
 
@@ -22,15 +24,19 @@ public:
 	void OnSelection();
 	void OnColorChange(Gwen::Controls::Base* pControl);
 	void OnOrientationChange(Gwen::Controls::Base* pControl);
-	void SliderMoved(Base* pControl);
+	void OnColorStrengthSliderMoved(Base* pControl);
+	void OnDirectionSliderMoved(Base* pControl);
 	void SetLightMaterial();
 private:
 	void CreateColorProperties(Gwen::Controls::Base* pParent);
 	void CreateOrientationProperties(Gwen::Controls::Base* pParent);
+	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:
 	Light* mLight;
 	float mAmbientStrength;
 	float mDiffuseStrength;
 	float mSpecularStrength;
 	Material mCurrentMaterial;
+
+	Gwen::Controls::PropertyRow* mXProperty, *mYProperty, *mZProperty;
 };

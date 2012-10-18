@@ -49,7 +49,7 @@ void LightInspector::OnSelection()
 	OutputDebugString(selectedText.c_str());
 }
 
-void LightInspector::SliderMoved(Base* pControl)
+void LightInspector::OnColorStrengthSliderMoved(Base* pControl)
 {
 	Gwen::Controls::Slider* slider = (Gwen::Controls::Slider*)pControl;
 
@@ -61,6 +61,22 @@ void LightInspector::SliderMoved(Base* pControl)
 		mSpecularStrength = slider->GetValue();
 
 	SetLightMaterial();
+}
+
+void LightInspector::OnDirectionSliderMoved(Base* pControl)
+{
+	Gwen::Controls::Slider* slider = (Gwen::Controls::Slider*)pControl;
+
+	XMFLOAT3 direction = mLight->GetDirection();
+	float value = slider->GetValue();
+	if(slider->GetName() == "DirectionSliderX") 
+		direction.x = value;
+	else if(slider->GetName() == "DirectionSliderY")		
+		direction.y = value;
+	else if(slider->GetName() == "DirectionSliderZ")		
+		direction.z = value;
+	
+	mLight->SetDirection(direction);
 }
 
 void LightInspector::OnColorChange(Gwen::Controls::Base* pControl)
@@ -94,6 +110,15 @@ void LightInspector::SetObject(void* pObject)
 	mLight = (Light*)pObject;
 	mCurrentMaterial = mLight->GetMaterial();
 	SetLightMaterial();
+
+	XMFLOAT3 pos = mLight->GetPosition();
+	char buffer[256];
+	sprintf(buffer, "%.2f", pos.x);
+	mXProperty->GetProperty()->SetPropertyValue(buffer);
+	sprintf(buffer, "%.2f", pos.y);
+	mYProperty->GetProperty()->SetPropertyValue(buffer);
+	sprintf(buffer, "%.2f", pos.z);
+	mZProperty->GetProperty()->SetPropertyValue(buffer);
 }
 
 void LightInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
@@ -118,13 +143,48 @@ void LightInspector::CreateOrientationProperties(Gwen::Controls::Base* pParent)
 	Gwen::Controls::PropertyTree* ptree = new Gwen::Controls::PropertyTree(pParent);
 	ptree->SetBounds(0, 20, 200, 300);
 
+	//
+	//Position properties.
+	//
 	Gwen::Controls::Properties* positionProps = ptree->Add(L"Position");
+	mXProperty = positionProps->Add("X");
+	mXProperty->onChange.Add(this, &LightInspector::OnOrientationChange);
+	mYProperty = positionProps->Add("Y");
+	mYProperty->onChange.Add(this, &LightInspector::OnOrientationChange);
+	mZProperty = positionProps->Add("Z");
+	mZProperty->onChange.Add(this, &LightInspector::OnOrientationChange);
 
-	positionProps->Add("X")->onChange.Add(this, &LightInspector::OnOrientationChange);
-	positionProps->Add("Y")->onChange.Add(this, &LightInspector::OnOrientationChange);
-	positionProps->Add("Z")->onChange.Add(this, &LightInspector::OnOrientationChange);
+	//
+	// Direction properties.
+	//
+	Gwen::Controls::Properties* directionProps = ptree->Add(L"Direction");
 
-	Gwen::Controls::Properties* rotationProps = ptree->Add(L"Rotation");
+	// X.
+	Gwen::Controls::Label* directionLabel = new Gwen::Controls::Label(directionProps);
+	directionLabel->SetText("X rotation");
+	directionLabel->SetPos(3, 10);
+
+	Gwen::Controls::HorizontalSlider* directionSlider = new Gwen::Controls::HorizontalSlider(directionProps);
+	InitSlider(directionSlider, "DirectionSliderX", 23, 0.0f, -1.0f, 1.0f, false);
+	directionSlider->onValueChanged.Add(this, &LightInspector::OnDirectionSliderMoved);
+
+	// Y.
+	directionLabel = new Gwen::Controls::Label(directionProps);
+	directionLabel->SetText("Y rotation");
+	directionLabel->SetPos(3, 55);
+
+	directionSlider = new Gwen::Controls::HorizontalSlider(directionProps);
+	InitSlider(directionSlider, "DirectionSliderY", 68, 0.0f, -1.0f, 1.0f, false);
+	directionSlider->onValueChanged.Add(this, &LightInspector::OnDirectionSliderMoved);
+
+	// Z.
+	directionLabel = new Gwen::Controls::Label(directionProps);
+	directionLabel->SetText("Z rotation");
+	directionLabel->SetPos(3, 100);
+
+	directionSlider = new Gwen::Controls::HorizontalSlider(directionProps);
+	InitSlider(directionSlider, "DirectionSliderZ", 113, 0.0f, -1.0f, 1.0f, false);
+	directionSlider->onValueChanged.Add(this, &LightInspector::OnDirectionSliderMoved);
 }
 
 void LightInspector::CreateColorProperties(Gwen::Controls::Base* pParent)
@@ -151,7 +211,7 @@ void LightInspector::CreateColorProperties(Gwen::Controls::Base* pParent)
 	ambientSlider->SetNotchCount(20);
 	ambientSlider->SetRange(0.0f, 1.0f);
 	ambientSlider->SetClampToNotches(true);
-	ambientSlider->onValueChanged.Add( this, &LightInspector::SliderMoved );
+	ambientSlider->onValueChanged.Add( this, &LightInspector::OnColorStrengthSliderMoved );
 	
 	Gwen::Controls::Label* ambientLabel = new Gwen::Controls::Label(ambientProps);
 	ambientLabel->SetText("Strength");
@@ -173,7 +233,7 @@ void LightInspector::CreateColorProperties(Gwen::Controls::Base* pParent)
 	diffuseSlider->SetNotchCount(20);
 	diffuseSlider->SetRange(0.0f, 1.0f);
 	diffuseSlider->SetClampToNotches(true);
-	diffuseSlider->onValueChanged.Add( this, &LightInspector::SliderMoved );
+	diffuseSlider->onValueChanged.Add( this, &LightInspector::OnColorStrengthSliderMoved );
 	
 	Gwen::Controls::Label* diffuseLabel = new Gwen::Controls::Label(diffuseProps);
 	diffuseLabel->SetText("Strength");
@@ -195,9 +255,21 @@ void LightInspector::CreateColorProperties(Gwen::Controls::Base* pParent)
 	specularSlider->SetNotchCount(20);
 	specularSlider->SetRange(0.0f, 1.0f);
 	specularSlider->SetClampToNotches(true);
-	specularSlider->onValueChanged.Add( this, &LightInspector::SliderMoved );
+	specularSlider->onValueChanged.Add( this, &LightInspector::OnColorStrengthSliderMoved );
 	
 	Gwen::Controls::Label* specularLabel = new Gwen::Controls::Label(specularProps);
 	specularLabel->SetText("Strength");
 	specularLabel->SetPos(3, 20);
+}
+
+void LightInspector::InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp)
+{
+	slider->SetName(name);
+	slider->SetWidth(170);
+	slider->SetPos(0, y);
+	slider->SetHeight(30);
+	slider->SetRange(start, end);
+	slider->SetValue(value);
+	slider->SetNotchCount(20);
+	slider->SetClampToNotches(clamp);
 }
