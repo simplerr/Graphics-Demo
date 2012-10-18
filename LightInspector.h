@@ -1,7 +1,8 @@
 #pragma once
 #include "BaseInspector.h"
 #include "Gwen\Controls\Properties.h"
-#include "Gwen\Controls\HorizontalSlider.h"
+#include "Gwen/Controls/NumericUpDown.h"
+#include "Gwen/Controls/HorizontalSlider.h"
 #include "Light.h"
 #include <xnamath.h>
 
@@ -26,10 +27,16 @@ public:
 	void OnOrientationChange(Gwen::Controls::Base* pControl);
 	void OnColorStrengthSliderMoved(Base* pControl);
 	void OnDirectionSliderMoved(Base* pControl);
+	void OnLightTypeChange(Base* pControl);
+	void OnRangeChange(Base* pControl);
+	void OnSpotChange(Base* pControl);
+	void OnRangeSlider(Base* pControl);
+	void OnSpotSlider(Base* pControl);
 	void SetLightMaterial();
 private:
 	void CreateColorProperties(Gwen::Controls::Base* pParent);
 	void CreateOrientationProperties(Gwen::Controls::Base* pParent);
+	void CreateDataProperties(Gwen::Controls::Base* pParent);
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:
 	Light* mLight;
@@ -39,4 +46,8 @@ private:
 	Material mCurrentMaterial;
 
 	Gwen::Controls::PropertyRow* mXProperty, *mYProperty, *mZProperty;
+	Gwen::Controls::NumericUpDown* mRangeNumeric;
+	Gwen::Controls::NumericUpDown* mSpotNumeric;
+	Gwen::Controls::HorizontalSlider* mRangeSlider;
+	Gwen::Controls::HorizontalSlider* mSpotSlider;
 };

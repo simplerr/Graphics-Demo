@@ -115,8 +115,11 @@ void Game::Init()
 	// Add some lights.
 	mLight = new Light();
 	mLight->SetMaterials(Colors::White, Colors::White, Colors::White);
-	mLight->SetDirection(0.5f, -0.5f, 0.5f);
-	mLight->SetType(DIRECTIONAL_LIGHT);
+	mLight->SetDirection(0.0f, -1.0f, 0.0f);
+	mLight->SetType(SPOT_LIGHT);
+	mLight->SetAtt(1, 0, 0);
+	mLight->SetRange(2000.0f);
+	mLight->SetSpot(64.0f);
 	mLight->SetPosition(0, 50, 5);
 	mWorld->AddLight(mLight);
 

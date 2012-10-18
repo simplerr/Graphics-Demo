@@ -1,10 +1,9 @@
 #include "LightInspector.h"
 #include "Light.h"
 #include "Gwen/Controls/Button.h"
-#include "Gwen/Controls/HorizontalSlider.h"
 #include "Gwen/Controls/Property/ColorSelector.h"
 #include "Gwen/Controls/PropertyTree.h"
-#include "Gwen/Controls/NumericUpDown.h"
+#include "Gwen/Controls/ComboBox.h"
 #include "Util.h"
 
 LightInspector::LightInspector(Gwen::Controls::Base* pParent)
@@ -13,6 +12,7 @@ LightInspector::LightInspector(Gwen::Controls::Base* pParent)
 	mLight = nullptr;
 	mAmbientStrength = 1.0f;
 	mDiffuseStrength = mSpecularStrength =  0.0f;
+	mRangeSlider = mSpotSlider = nullptr;
 }
 	
 LightInspector::~LightInspector()
@@ -23,9 +23,13 @@ LightInspector::~LightInspector()
 void LightInspector::Init()
 {
 	// Create all the controls.
-	SetBounds(0, 0, 200, 700);
+	SetBounds(0, 0, 220, 700);
+
+	Gwen::Controls::CollapsibleCategory* dataCategory = Add("Data");
+	onSelection.Add(this, &LightInspector::OnSelection);
 
 	Gwen::Controls::CollapsibleCategory* colorCategory = Add("Colors");
+	colorCategory->SetSize(200, 200);
 	onSelection.Add(this, &LightInspector::OnSelection);
 
 	Gwen::Controls::CollapsibleCategory* orientationCategory = Add("Orientation");
@@ -36,6 +40,10 @@ void LightInspector::Init()
 
 	// Add the orientation properties.
 	CreateOrientationProperties(orientationCategory);
+
+	// Add the data properties.
+	CreateDataProperties(dataCategory);
+	colorCategory->SetSize(200, 200);
 }
 	
 void LightInspector::Cleanup()
@@ -136,6 +144,118 @@ void LightInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
 		pos.z = xyz;
 
 	mLight->SetPosition(pos);
+}
+
+void LightInspector::OnLightTypeChange(Base* pControl)
+{
+	if(!mLight)
+		return;
+
+	Gwen::Controls::ComboBox* combo = (Gwen::Controls::ComboBox*)pControl;
+	string name = combo->GetSelectedItem()->GetName();
+
+	if(name == "Directional")
+		mLight->SetType(DIRECTIONAL_LIGHT);
+	else if(name == "Spot")
+		mLight->SetType(SPOT_LIGHT);
+	else if(name == "Point")
+		mLight->SetType(POINT_LIGHT);
+}
+
+void LightInspector::OnRangeChange(Base* pControl)
+{
+	Gwen::Controls::NumericUpDown* numeric = (Gwen::Controls::NumericUpDown*)pControl;
+	string s = ToString(numeric->GetText());
+	float range = atof(s.c_str());
+	
+	if(mLight)
+		mLight->SetRange(range);
+
+	if(mRangeSlider)
+		mRangeSlider->SetValue(range);
+}
+	
+void LightInspector::OnSpotChange(Base* pControl)
+{
+	Gwen::Controls::NumericUpDown* numeric = (Gwen::Controls::NumericUpDown*)pControl;
+
+	string s = ToString(numeric->GetText());
+	float spot = atof(s.c_str());
+	
+	if(mLight)
+		mLight->SetSpot(spot);
+
+	if(mSpotSlider)
+		mSpotSlider->SetValue(spot);
+}
+
+void LightInspector::OnRangeSlider(Base* pControl)
+{
+	Gwen::Controls::Slider* slider = (Gwen::Controls::Slider*)pControl;
+
+	if(mLight)
+		mLight->SetRange(slider->GetValue());
+
+	mRangeNumeric->SetValue(slider->GetValue());
+}
+	
+void LightInspector::OnSpotSlider(Base* pControl)
+{
+	Gwen::Controls::Slider* slider = (Gwen::Controls::Slider*)pControl;
+
+	if(mLight)
+		mLight->SetSpot(slider->GetValue());
+
+	mSpotNumeric->SetValue(slider->GetValue());
+}
+
+void LightInspector::CreateDataProperties(Gwen::Controls::Base* pParent)
+{
+	Gwen::Controls::Label* label = new Gwen::Controls::Label(pParent);
+	label->SetText("Light type:");
+	label->SetPos(5, 25);
+
+	Gwen::Controls::ComboBox* combo = new Gwen::Controls::ComboBox(pParent);
+	combo->onSelection.Add(this, &LightInspector::OnLightTypeChange);
+	combo->SetPos(5, 45);
+	combo->SetWidth(170);
+	combo->AddItem(L"Directional light", "Directional");
+	combo->AddItem(L"Spot light", "Spot");
+	combo->AddItem(L"Point light", "Point");
+
+	// Range.
+	mRangeNumeric = new Gwen::Controls::NumericUpDown(pParent);
+	mRangeNumeric->onChanged.Add(this, &LightInspector::OnRangeChange);
+	mRangeNumeric->SetBounds(60, 85, 50, 20);
+	mRangeNumeric->SetValue(50);
+	mRangeNumeric->SetMax(1000);
+	mRangeNumeric->SetMin(0);
+
+	label = new Gwen::Controls::Label(pParent);
+	label->SetText("Range:");
+	label->SetPos(10, 90);
+
+	mRangeSlider = new Gwen::Controls::HorizontalSlider(pParent);
+	InitSlider(mRangeSlider, "RangeSlider", 105, 0.0f, 0, 1000, false);
+	mRangeSlider->SetPos(10, 105);
+	mRangeSlider->onValueChanged.Add(this, &LightInspector::OnRangeSlider);
+
+	// Spot factor.
+	mSpotNumeric = new Gwen::Controls::NumericUpDown(pParent);
+	mSpotNumeric->onChanged.Add(this, &LightInspector::OnSpotChange);
+	mSpotNumeric->SetBounds(60, 145, 50, 20);
+	mSpotNumeric->SetValue(64);
+	mSpotNumeric->SetMax(256);
+	mSpotNumeric->SetMin(0);
+
+	label = new Gwen::Controls::Label(pParent);
+	label->SetText("Spot :");
+	label->SetPos(10, 145);
+
+	mSpotSlider = new Gwen::Controls::HorizontalSlider(pParent);
+	InitSlider(mSpotSlider, "SpotSlider", 110, 0.0f, 0, 256, false);
+	mSpotSlider->SetPos(10, 165);
+	mSpotSlider->onValueChanged.Add(this, &LightInspector::OnSpotSlider);
 }
 
 void LightInspector::CreateOrientationProperties(Gwen::Controls::Base* pParent)
