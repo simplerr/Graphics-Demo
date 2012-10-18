@@ -16,6 +16,8 @@ class Gwen::Renderer::DirectX11;
 class Graphics;
 class BaseInspector;
 class Light;
+class World;
+class WorldTree;
 
 class Editor
 {
@@ -27,12 +29,16 @@ public:
 	void Update(float dt);
 	void Draw(Graphics* pGraphics);
 	void MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	void ItemSelected(void* pItem, int type);
 
 	void SetLight(Light* light);
+	void SetWorld(World* world);
 private:
 	Gwen::Controls::Canvas*		mGwenCanvas;
 	Gwen::Skin::TexturedBase*	mGwenSkin;
 	Gwen::Input::Windows		mGwenInput;
 	Gwen::Renderer::DirectX11*	mGwenRenderer;
 	BaseInspector*				mActiveInspector;
+	World*						mWorld;
+	WorldTree*					mWorldTree;
 };

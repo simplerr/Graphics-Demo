@@ -23,7 +23,7 @@ LightInspector::~LightInspector()
 void LightInspector::Init()
 {
 	// Create all the controls.
-	SetBounds(0, 0, 220, 700);
+	SetBounds(0, 0, 220, 800);
 
 	Gwen::Controls::CollapsibleCategory* dataCategory = Add("Data");
 	onSelection.Add(this, &LightInspector::OnSelection);
@@ -119,6 +119,7 @@ void LightInspector::SetObject(void* pObject)
 	mCurrentMaterial = mLight->GetMaterial();
 	SetLightMaterial();
 
+	// Set the position.
 	XMFLOAT3 pos = mLight->GetPosition();
 	char buffer[256];
 	sprintf(buffer, "%.2f", pos.x);
@@ -127,6 +128,12 @@ void LightInspector::SetObject(void* pObject)
 	mYProperty->GetProperty()->SetPropertyValue(buffer);
 	sprintf(buffer, "%.2f", pos.z);
 	mZProperty->GetProperty()->SetPropertyValue(buffer);
+
+	// Set the range and spot controls.
+	mRangeSlider->SetValue(mLight->GetRange());
+	mRangeNumeric->SetValue(mLight->GetRange());
+	mSpotSlider->SetValue(mLight->GetSpot());
+	mSpotNumeric->SetValue(mLight->GetSpot());
 }
 
 void LightInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
@@ -182,7 +189,7 @@ void LightInspector::OnSpotChange(Base* pControl)
 	string s = ToString(numeric->GetText());
 	float spot = atof(s.c_str());
 	
-	if(mLight)
+	if(mLight) 
 		mLight->SetSpot(spot);
 
 	if(mSpotSlider)
@@ -305,6 +312,8 @@ void LightInspector::CreateOrientationProperties(Gwen::Controls::Base* pParent)
 	directionSlider = new Gwen::Controls::HorizontalSlider(directionProps);
 	InitSlider(directionSlider, "DirectionSliderZ", 113, 0.0f, -1.0f, 1.0f, false);
 	directionSlider->onValueChanged.Add(this, &LightInspector::OnDirectionSliderMoved);
+
+	ptree->ExpandAll();
 }
 
 void LightInspector::CreateColorProperties(Gwen::Controls::Base* pParent)
@@ -380,6 +389,8 @@ void LightInspector::CreateColorProperties(Gwen::Controls::Base* pParent)
 	Gwen::Controls::Label* specularLabel = new Gwen::Controls::Label(specularProps);
 	specularLabel->SetText("Strength");
 	specularLabel->SetPos(3, 20);
+
+	ptree->ExpandAll();
 }
 
 void LightInspector::InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp)

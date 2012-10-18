@@ -10,6 +10,7 @@ StaticObject::StaticObject(ModelImporter* importer, string filename)
 {
 	// Load the model.
 	mModel = importer->LoadStaticModel(filename);
+	SetType(STATIC_OBJECT);
 }
 
 //! Cleanup.

@@ -24,7 +24,7 @@
 #include "AnimatedObject.h"
 #include "vld.h"
 #include "Primitive.h"
-#include  "Editor.h"
+#include "Editor.h"
 
 // Set globals to nullptrs
 Runnable*			gGame				= nullptr;
@@ -117,7 +117,7 @@ void Game::Init()
 	mLight->SetMaterials(Colors::White, Colors::White, Colors::White);
 	mLight->SetDirection(0.0f, -1.0f, 0.0f);
 	mLight->SetType(SPOT_LIGHT);
-	mLight->SetAtt(1, 0, 0);
+	mLight->SetAtt(0, 0.1, 0);
 	mLight->SetRange(2000.0f);
 	mLight->SetSpot(64.0f);
 	mLight->SetPosition(0, 50, 5);
@@ -138,6 +138,7 @@ void Game::Init()
 	mWorld->AddObject(mAnimatedObject);*/
 
 	mEditor->SetLight(mLight);
+	mEditor->SetWorld(mWorld);
 }
 	
 void Game::GwenInit()
@@ -192,15 +193,11 @@ void Game::Draw(Graphics* pGraphics)
 	pGraphics->ClearScene();
 
 	// Unbind the SRVs from the pipeline so they can be used as DSVs instead.
-	ID3D11ShaderResourceView *const nullSRV[3] = {NULL, NULL, NULL};
-	pGraphics->GetContext()->PSSetShaderResources(0, 3, nullSRV);
+	ID3D11ShaderResourceView *const nullSRV[4] = {NULL, NULL, NULL, NULL};
+	pGraphics->GetContext()->PSSetShaderResources(0, 4, nullSRV);
 
 	// Draw depth values to the shadow map.
 	pGraphics->FillShadowMap(mWorld->GetObjects());
-
-	/*Texture2D tex;
-	tex.shaderResourceView = pGraphics->GetShadowMap()->GetSRV();
-	pGraphics->DrawScreenQuad(&tex, 400, 300, 400, 200);*/
 
 	// Draw all objects.
 	mWorld->Draw(pGraphics);	

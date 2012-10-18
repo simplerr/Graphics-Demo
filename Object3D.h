@@ -15,6 +15,14 @@ class StaticModel;
 class ModelImporter;
 struct Texture2D;
 
+enum ObjectType
+{
+	ANIMATED_OBJECT,
+	STATIC_OBJECT,
+	LIGHT,
+	TERRAIN
+};
+
 /**
 	Abstract base class for all objects.
 	Has a position, rotation and scale.
@@ -34,6 +42,7 @@ public:
 	XMFLOAT3	GetRotation();
 	XMFLOAT3	GetScale();
 	Material	GetMaterial();
+	ObjectType	GetType();
 	virtual AxisAlignedBox GetBoundingBox() = 0;
 	
 	// Setters.
@@ -43,8 +52,10 @@ public:
 	void SetRotation(XMFLOAT3 rotation);
 	void SetScale(XMFLOAT3 scale);
 	void SetDefaultOrientation();
+	void SetType(ObjectType type);
 private:
 	XMFLOAT3	mPosition;
 	XMFLOAT3	mRotation;
 	XMFLOAT3	mScale;
+	ObjectType	mType;
 };

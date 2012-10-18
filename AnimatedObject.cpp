@@ -12,6 +12,7 @@ AnimatedObject::AnimatedObject(ModelImporter* importer, string filename)
 	mSkinnedModel = importer->LoadSkinnedModel(filename);
 	mElapsedTime = 0.0f;
 	mCurrentAnimIndex = 0;
+	SetType(ANIMATED_OBJECT);
 }
 
 //! Cleanup.

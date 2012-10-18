@@ -132,7 +132,7 @@ namespace Gwen
 		void DirectX11::Begin()// get the states that this will change to set at the end call
 		{
 			ActiveTechnique=0;// set this to zero for this pass
-			m_pDeviceContext->OMGetBlendState(&m_pUILastBlendState, m_LastBlendFactor, &m_LastBlendMask);
+			/*m_pDeviceContext->OMGetBlendState(&m_pUILastBlendState, m_LastBlendFactor, &m_LastBlendMask);
 			m_pDeviceContext->RSGetState(&m_pUILastRasterizerState);
 			m_pDeviceContext->OMGetDepthStencilState(&m_LastDepthState, &m_LastStencilRef);
 			m_pDeviceContext->IAGetInputLayout(&m_LastInputLayout);
@@ -141,7 +141,7 @@ namespace Gwen
 
 			m_pDeviceContext->PSGetShader(&m_LastPSShader, 0, 0);
 			m_pDeviceContext->GSGetShader(&m_LastGSShader, 0, 0);
-			m_pDeviceContext->VSGetShader(&m_LastVSShader, 0, 0);
+			m_pDeviceContext->VSGetShader(&m_LastVSShader, 0, 0);*/
 
 			float factor[4] = {0, 0, 0, 0};
 			m_pDeviceContext->OMSetBlendState(m_pUIBlendState, factor, ~0);
@@ -152,7 +152,7 @@ namespace Gwen
 		void DirectX11::End()// reset the device to its original state
 		{
 			Flush();
-			m_pDeviceContext->OMSetBlendState(m_pUILastBlendState, m_LastBlendFactor, m_LastBlendMask);
+			/*m_pDeviceContext->OMSetBlendState(m_pUILastBlendState, m_LastBlendFactor, m_LastBlendMask);
 			m_pDeviceContext->RSSetState(m_pUILastRasterizerState);
 			m_pDeviceContext->OMSetDepthStencilState(m_LastDepthState, m_LastStencilRef);
 			m_pDeviceContext->IASetInputLayout(m_LastInputLayout);
@@ -160,7 +160,7 @@ namespace Gwen
 			m_pDeviceContext->IASetVertexBuffers(0, 8, m_LastBuffers, m_LastStrides, m_LastOffsets);
 			m_pDeviceContext->PSSetShader(m_LastPSShader, 0, 0);
 			m_pDeviceContext->GSSetShader(m_LastGSShader, 0, 0);
-			m_pDeviceContext->VSSetShader(m_LastVSShader, 0, 0);
+			m_pDeviceContext->VSSetShader(m_LastVSShader, 0, 0);*/
 		}
 
 		void DirectX11::DrawLine( int x, int y, int a, int b )
@@ -348,7 +348,6 @@ namespace Gwen
 
 		void DirectX11::DrawTexturedRect( Gwen::Texture* pTexture, Gwen::Rect rect, float u1, float v1, float u2, float v2 )
 		{
-
 			ID3D11ShaderResourceView* pImage = (ID3D11ShaderResourceView*) pTexture->data;
 
 			// Missing image, not loaded properly?
@@ -527,25 +526,6 @@ namespace Gwen
 			HR(D3DX11GetImageInfoFromFile(pTexture->name.Get().c_str(), 0, &finfo, 0));
 		
 			ID3D11ShaderResourceView *resource(0);
-
-			// Fill out the D3D11_TEXTURE2D_DESC.
-			DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
-			D3D11_TEXTURE2D_DESC desc;
-			desc.Width     = finfo.Width;
-			desc.Height    = finfo.Height;
-			desc.MipLevels = 1;
-			desc.ArraySize = 1;
-			desc.Format    = format;
-			desc.SampleDesc.Count   = 1;
-			desc.SampleDesc.Quality = 0;
-			desc.Usage     = D3D11_USAGE_DYNAMIC;
-			desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-			desc.CPUAccessFlags = 0;//D3D11_CPU_ACCESS_READ;
-			desc.MiscFlags      = 0;
-			// Create the ID3D11Texture2D*.
-			ID3D11Texture2D* blurredTex = 0;
-			HR(m_pDevice->CreateTexture2D(&desc, 0, &blurredTex));
-
 			HR(D3DX11CreateShaderResourceViewFromFile( m_pDevice, pTexture->name.Get().c_str(), 0, 0, &resource, 0));
 			pTexture->data = resource;// store this instead of the ID3D10Texture2D because a ID3D10Texture2D object can be retrived from ID3D10ShaderResourceView by calling GetResource
 			pTexture->width = finfo.Width;

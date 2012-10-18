@@ -2,13 +2,20 @@
 #include "DirectX11Renderer.h"
 #include "d3dUtil.h"
 #include "LightInspector.h"
+#include "WorldTree.h"
+#include "Object3D.h"
+#include "StaticObject.h"
+#include "AnimatedObject.h"
+#include "Light.h"
 
 Editor::Editor(int width, int height)
 {
 	GwenInit(width, height);
 
-	mActiveInspector = new LightInspector(mGwenCanvas);
-	mActiveInspector->Init();
+	mActiveInspector = nullptr;
+
+	mWorldTree = new WorldTree(mGwenCanvas);
+	mWorldTree->SetEditor(this);
 }
 	
 Editor::~Editor()
@@ -33,10 +40,6 @@ void Editor::GwenInit(int width, int height)
 	mGwenCanvas->SetSize(width, height);
 	mGwenCanvas->Initialize();
 	mGwenCanvas->SetDrawBackground(false);
-	//mGwenCanvas->SetBackgroundColor(Gwen::Color(0, 255, 170, 255));
-
-	Gwen::Controls::Button* button = new Gwen::Controls::Button(mGwenCanvas);
-	button->SetText("hehe");
 	
 	// Init Gwen input.
 	mGwenInput.Initialize( mGwenCanvas );
@@ -53,6 +56,24 @@ void Editor::Draw(Graphics* pGraphics)
 	mGwenCanvas->RenderCanvas();
 }
 	
+void Editor::ItemSelected(void* pItem, int type)
+{
+	if(type == STATIC_OBJECT)
+	{
+
+	}
+	else if(type == ANIMATED_OBJECT)
+	{
+
+	}
+	else if(type == LIGHT)
+	{
+		mActiveInspector = new LightInspector(mGwenCanvas);
+		mActiveInspector->Init();
+		mActiveInspector->SetObject(pItem);
+	}
+}
+
 void Editor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	MSG message;
@@ -66,5 +87,11 @@ void Editor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void Editor::SetLight(Light* light)
 {
-	mActiveInspector->SetObject(light);
+	//mActiveInspector->SetObject(light);
+}
+
+void Editor::SetWorld(World* world)
+{
+	mWorld = world;
+	mWorldTree->CreateTree(mWorld);
 }

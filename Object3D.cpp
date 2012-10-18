@@ -77,3 +77,15 @@ XMFLOAT3 Object3D::GetScale()
 	return mScale;
 
 }
+
+//! Sets the object type.
+void Object3D::SetType(ObjectType type)
+{
+	mType = type;
+}
+
+//! Returns the object type.
+ObjectType Object3D::GetType()
+{
+	return mType;
+}
