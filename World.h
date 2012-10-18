@@ -11,6 +11,7 @@ class Light;
 class Sky;
 class BillboardManager;
 class Terrain;
+struct BillboardVertex;
 
 class World
 {
@@ -32,6 +33,6 @@ private:
 	LightList	mLightList;//LightList mLightList;	
 	Sky*		mSkyBox;
 	Terrain*	mTerrain;
-	Object3D*	mDebugObject;
 	int			mNumVisibleObjects;
+	BillboardVertex*	mLightBillboard;
 };

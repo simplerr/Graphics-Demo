@@ -114,10 +114,10 @@ void Game::Init()
 
 	// Add some lights.
 	mLight = new Light();
-	mLight->SetMaterials(Colors::White*0.5f, Colors::White*1.0f, Colors::White*0.0f);
+	mLight->SetMaterials(Colors::White, Colors::White, Colors::White);
 	mLight->SetDirection(0.5f, -0.5f, 0.5f);
 	mLight->SetType(DIRECTIONAL_LIGHT);
-	mLight->SetPosition(0, 5, 5);
+	mLight->SetPosition(0, 50, 5);
 	mWorld->AddLight(mLight);
 
 	GetGraphics()->SetFogColor(XMFLOAT4(1.0f, 0.2f, 0.8, 1.0f));
@@ -128,11 +128,11 @@ void Game::Init()
 	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 	GetGraphics()->GetContext()->OMSetBlendState(RenderStates::TransparentBS, blendFactor, 0xffffffff);
 
-	mAnimatedObject = new AnimatedObject(mModelImporter, "models/smith/smith.x");
+	/*mAnimatedObject = new AnimatedObject(mModelImporter, "models/smith/smith.x");
 	mAnimatedObject->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
 	mAnimatedObject->SetPosition(XMFLOAT3(0, 30, 0));
 	mAnimatedObject->SetRotation(XMFLOAT3(0.7, 0.6, 0.6));
-	mWorld->AddObject(mAnimatedObject);
+	mWorld->AddObject(mAnimatedObject);*/
 
 	mEditor->SetLight(mLight);
 }

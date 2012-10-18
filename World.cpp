@@ -10,6 +10,7 @@
 #include "Sky.h"
 #include "Terrain.h"
 #include "StaticModel.h"
+#include "BillboardManager.h"
 
 World::World()
 {
@@ -18,8 +19,8 @@ World::World()
 
 void World::Init()
 {
-	//mDebugObject = new Object3D(gPrimitiveFactory->CreateBox());
-	//mDebugObject->SetTexture("textures/crate.dds");
+	// Add test billboards.
+	mLightBillboard = GetGraphics()->AddBillboard(XMFLOAT3(0, 10, 0), XMFLOAT2(5, 5), "textures\\light_icon.png");
 
 	// Create the sky box.
 	mSkyBox = new Sky("textures/sky.dds", 5000.0f);
@@ -96,9 +97,8 @@ void World::Draw(Graphics* pGraphics)
 
 	for(int i = 0; i < mLightList.size(); i++)
 	{
-		//mDebugObject->SetPosition(mLightList[i]->GetPosition());
-		//mDebugObject->SetRotation(mLightList[i]->GetDirection());
-		//mDebugObject->Draw(pGraphics);
+		mLightBillboard->SetPos(mLightList[i]->GetPosition());
+		pGraphics->DrawBillboards();
 	}
 
 	//mSkyBox->Draw();
