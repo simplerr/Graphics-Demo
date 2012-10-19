@@ -137,6 +137,10 @@ void Game::Init()
 	mAnimatedObject->SetRotation(XMFLOAT3(0.7, 0.6, 0.6));
 	mWorld->AddObject(mAnimatedObject);*/
 
+	/*mObject = new StaticObject(mModelImporter, "models/sword/uld-sword.obj");
+	mObject->SetPosition(XMFLOAT3(0, 30, 0));
+	mWorld->AddObject(mObject);*/
+
 	mEditor->SetLight(mLight);
 	mEditor->SetWorld(mWorld);
 }
@@ -151,6 +155,7 @@ void Game::Update(float dt)
 	gInput->Update(dt);
 	GetGraphics()->Update(dt);
 	mWorld->Update(dt);
+	mEditor->Update(dt);
 
 	return;
 

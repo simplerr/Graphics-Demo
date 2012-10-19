@@ -5,6 +5,7 @@
 #include "Gwen/Controls/PropertyTree.h"
 #include "Gwen/Controls/ComboBox.h"
 #include "Util.h"
+#include "Object3D.h"
 
 LightInspector::LightInspector(Gwen::Controls::Base* pParent)
 	: BaseInspector(pParent)
@@ -13,6 +14,7 @@ LightInspector::LightInspector(Gwen::Controls::Base* pParent)
 	mAmbientStrength = 1.0f;
 	mDiffuseStrength = mSpecularStrength =  0.0f;
 	mRangeSlider = mSpotSlider = nullptr;
+	SetType(LIGHT);
 }
 	
 LightInspector::~LightInspector()

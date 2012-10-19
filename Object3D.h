@@ -17,6 +17,7 @@ struct Texture2D;
 
 enum ObjectType
 {
+	OBJECT,
 	ANIMATED_OBJECT,
 	STATIC_OBJECT,
 	LIGHT,

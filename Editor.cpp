@@ -2,11 +2,13 @@
 #include "DirectX11Renderer.h"
 #include "d3dUtil.h"
 #include "LightInspector.h"
+#include "StaticInspector.h"
 #include "WorldTree.h"
 #include "Object3D.h"
 #include "StaticObject.h"
 #include "AnimatedObject.h"
 #include "Light.h"
+#include "Input.h"
 
 Editor::Editor(int width, int height)
 {
@@ -47,7 +49,7 @@ void Editor::GwenInit(int width, int height)
 	
 void Editor::Update(float dt)
 {
-
+	
 }
 	
 void Editor::Draw(Graphics* pGraphics)
@@ -58,20 +60,22 @@ void Editor::Draw(Graphics* pGraphics)
 	
 void Editor::ItemSelected(void* pItem, int type)
 {
-	if(type == STATIC_OBJECT)
-	{
-
+	// Delete the current inspector if not the same type as pItem.
+	if(mActiveInspector != nullptr && mActiveInspector->GetType() != type) {
+		delete mActiveInspector;
+		mActiveInspector = nullptr;
 	}
-	else if(type == ANIMATED_OBJECT)
-	{
 
-	}
-	else if(type == LIGHT)
-	{
-		mActiveInspector = new LightInspector(mGwenCanvas);
+	if(mActiveInspector == nullptr) {
+		if(type == STATIC_OBJECT)
+			mActiveInspector = new StaticInspector(mGwenCanvas);
+		else if(type == LIGHT)
+			mActiveInspector = new LightInspector(mGwenCanvas);
+
 		mActiveInspector->Init();
-		mActiveInspector->SetObject(pItem);
 	}
+	
+	mActiveInspector->SetObject(pItem);
 }
 
 void Editor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
