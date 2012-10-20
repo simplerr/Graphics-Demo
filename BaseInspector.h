@@ -13,8 +13,5 @@ public:
 	virtual void Init() = 0;
 	virtual void Cleanup() = 0;
 	virtual void SetObject(void* pObject) = 0;
-	void SetType(int type) {mInspectorType = type;}
-	int GetType() {return mInspectorType;}
-private:
-	int mInspectorType;
+	virtual bool IsResponsible(int type) = 0;
 };

@@ -33,6 +33,7 @@ public:
 	void OnRangeSlider(Base* pControl);
 	void OnSpotSlider(Base* pControl);
 	void SetLightMaterial();
+	bool IsResponsible(int type);
 private:
 	void CreateColorProperties(Gwen::Controls::Base* pParent);
 	void CreateOrientationProperties(Gwen::Controls::Base* pParent);

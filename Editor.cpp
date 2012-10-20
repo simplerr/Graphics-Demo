@@ -2,7 +2,7 @@
 #include "DirectX11Renderer.h"
 #include "d3dUtil.h"
 #include "LightInspector.h"
-#include "StaticInspector.h"
+#include "ObjectInspector.h"
 #include "WorldTree.h"
 #include "Object3D.h"
 #include "StaticObject.h"
@@ -61,14 +61,14 @@ void Editor::Draw(Graphics* pGraphics)
 void Editor::ItemSelected(void* pItem, int type)
 {
 	// Delete the current inspector if not the same type as pItem.
-	if(mActiveInspector != nullptr && mActiveInspector->GetType() != type) {
+	if(mActiveInspector != nullptr && !mActiveInspector->IsResponsible(type)) {
 		delete mActiveInspector;
 		mActiveInspector = nullptr;
 	}
 
 	if(mActiveInspector == nullptr) {
-		if(type == STATIC_OBJECT)
-			mActiveInspector = new StaticInspector(mGwenCanvas);
+		if(type == STATIC_OBJECT || type == ANIMATED_OBJECT)
+			mActiveInspector = new ObjectInspector(mGwenCanvas);
 		else if(type == LIGHT)
 			mActiveInspector = new LightInspector(mGwenCanvas);
 

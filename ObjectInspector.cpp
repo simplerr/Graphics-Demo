@@ -2,23 +2,23 @@
 #include "Gwen/Controls/Property/ColorSelector.h"
 #include "Gwen/Controls/PropertyTree.h"
 #include "Gwen/Controls/ComboBox.h"
-#include "StaticInspector.h"
+#include "ObjectInspector.h"
 #include "Object3D.h"
 #include "Util.h"
 #include "StaticObject.h"
 
-StaticInspector::StaticInspector(Gwen::Controls::Base* pParent)
+ObjectInspector::ObjectInspector(Gwen::Controls::Base* pParent)
 	: BaseInspector(pParent)
 {
-	SetType(STATIC_OBJECT);
+
 }
 	
-StaticInspector::~StaticInspector()
+ObjectInspector::~ObjectInspector()
 {
 
 }
 
-void StaticInspector::Init()
+void ObjectInspector::Init()
 {
 	// Create all the controls.
 	SetBounds(0, 0, 220, 800);
@@ -33,11 +33,11 @@ void StaticInspector::Init()
 	//
 	Gwen::Controls::Properties* positionProps = ptree->Add(L"Position");
 	mXProperty = positionProps->Add("X");
-	mXProperty->onChange.Add(this, &StaticInspector::OnOrientationChange);
+	mXProperty->onChange.Add(this, &ObjectInspector::OnOrientationChange);
 	mYProperty = positionProps->Add("Y");
-	mYProperty->onChange.Add(this, &StaticInspector::OnOrientationChange);
+	mYProperty->onChange.Add(this, &ObjectInspector::OnOrientationChange);
 	mZProperty = positionProps->Add("Z");
-	mZProperty->onChange.Add(this, &StaticInspector::OnOrientationChange);
+	mZProperty->onChange.Add(this, &ObjectInspector::OnOrientationChange);
 
 	//
 	// Rotation properties.
@@ -45,11 +45,11 @@ void StaticInspector::Init()
 	Gwen::Controls::Properties* rotationProps = ptree->Add(L"Rotation");
 
 	mXRotationProperty = rotationProps->Add("X rotation");
-	mXRotationProperty->onChange.Add(this, &StaticInspector::OnRotationChange);
+	mXRotationProperty->onChange.Add(this, &ObjectInspector::OnRotationChange);
 	mYRotationProperty = rotationProps->Add("Y rotation");
-	mYRotationProperty->onChange.Add(this, &StaticInspector::OnRotationChange);
+	mYRotationProperty->onChange.Add(this, &ObjectInspector::OnRotationChange);
 	mZRotationProperty = rotationProps->Add("Z rotation");
-	mZRotationProperty->onChange.Add(this, &StaticInspector::OnRotationChange);
+	mZRotationProperty->onChange.Add(this, &ObjectInspector::OnRotationChange);
 
 	// X rotation. 
 	Gwen::Controls::Label* rotationLabel = new Gwen::Controls::Label(rotationProps);
@@ -58,7 +58,7 @@ void StaticInspector::Init()
 
 	mXRotationSlider = new Gwen::Controls::HorizontalSlider(rotationProps);
 	InitSlider(mXRotationSlider, "RotationSliderX", 23+50, 0.0f, -3.14f, 3.14f, false);
-	mXRotationSlider->onValueChanged.Add(this, &StaticInspector::OnRotationSliderMoved);
+	mXRotationSlider->onValueChanged.Add(this, &ObjectInspector::OnRotationSliderMoved);
 
 	// Y rotation.
 	rotationLabel = new Gwen::Controls::Label(rotationProps);
@@ -67,7 +67,7 @@ void StaticInspector::Init()
 
 	mYRotationSlider = new Gwen::Controls::HorizontalSlider(rotationProps);
 	InitSlider(mYRotationSlider, "RotationSliderY", 68+50, 0.0f, -3.14f, 3.14f, false);
-	mYRotationSlider->onValueChanged.Add(this, &StaticInspector::OnRotationSliderMoved);
+	mYRotationSlider->onValueChanged.Add(this, &ObjectInspector::OnRotationSliderMoved);
 
 	// Z rotation.
 	rotationLabel = new Gwen::Controls::Label(rotationProps);
@@ -76,7 +76,7 @@ void StaticInspector::Init()
 	
 	mZRotationSlider = new Gwen::Controls::HorizontalSlider(rotationProps);
 	InitSlider(mZRotationSlider, "RotationSliderZ", 113+50, 0.0f, -3.14f, 3.14f, false);
-	mZRotationSlider->onValueChanged.Add(this, &StaticInspector::OnRotationSliderMoved);
+	mZRotationSlider->onValueChanged.Add(this, &ObjectInspector::OnRotationSliderMoved);
 
 	//
 	// Scale properties
@@ -84,11 +84,11 @@ void StaticInspector::Init()
 	Gwen::Controls::Properties* scaleProps = ptree->Add(L"Scale");
 
 	mXScaleProperty = scaleProps->Add("X scale");
-	mXScaleProperty->onChange.Add(this, &StaticInspector::OnScaleChange);
+	mXScaleProperty->onChange.Add(this, &ObjectInspector::OnScaleChange);
 	mYScaleProperty = scaleProps->Add("Y scale");
-	mYScaleProperty->onChange.Add(this, &StaticInspector::OnScaleChange);
+	mYScaleProperty->onChange.Add(this, &ObjectInspector::OnScaleChange);
 	mZScaleProperty = scaleProps->Add("Z scale");
-	mZScaleProperty->onChange.Add(this, &StaticInspector::OnScaleChange);
+	mZScaleProperty->onChange.Add(this, &ObjectInspector::OnScaleChange);
 
 	// X scale.
 	Gwen::Controls::Label* scaleLabel = new Gwen::Controls::Label(scaleProps);
@@ -96,8 +96,8 @@ void StaticInspector::Init()
 	scaleLabel->SetPos(3, 10+50);
 
 	mXScaleSlider = new Gwen::Controls::HorizontalSlider(scaleProps);
-	InitSlider(mXScaleSlider, "ScaleSliderX", 23+50, 0.0f, 0.1, 5.0f, false);
-	mXScaleSlider->onValueChanged.Add(this, &StaticInspector::OnScaleSliderMoved);
+	InitSlider(mXScaleSlider, "ScaleSliderX", 23+50, 0.0f, 0.1, 15.0f, false);
+	mXScaleSlider->onValueChanged.Add(this, &ObjectInspector::OnScaleSliderMoved);
 
 	// Y scale.
 	scaleLabel = new Gwen::Controls::Label(scaleProps);
@@ -105,8 +105,8 @@ void StaticInspector::Init()
 	scaleLabel->SetPos(3, 55+50);
 
 	mYScaleSlider = new Gwen::Controls::HorizontalSlider(scaleProps);
-	InitSlider(mYScaleSlider, "ScaleSliderY", 68+50, 0.0f, 0.1, 5.0f, false);
-	mYScaleSlider->onValueChanged.Add(this, &StaticInspector::OnScaleSliderMoved);
+	InitSlider(mYScaleSlider, "ScaleSliderY", 68+50, 0.0f, 0.1, 15.0f, false);
+	mYScaleSlider->onValueChanged.Add(this, &ObjectInspector::OnScaleSliderMoved);
 
 	// Z scale.
 	scaleLabel = new Gwen::Controls::Label(scaleProps);
@@ -114,18 +114,18 @@ void StaticInspector::Init()
 	scaleLabel->SetPos(3, 100+50);
 
 	mZScaleSlider = new Gwen::Controls::HorizontalSlider(scaleProps);
-	InitSlider(mZScaleSlider, "ScaleSliderZ", 113+50, 0.0f, 0.1, 5.0f, false);
-	mZScaleSlider->onValueChanged.Add(this, &StaticInspector::OnScaleSliderMoved);
+	InitSlider(mZScaleSlider, "ScaleSliderZ", 113+50, 0.0f, 0.1, 15.0f, false);
+	mZScaleSlider->onValueChanged.Add(this, &ObjectInspector::OnScaleSliderMoved);
 
 	ptree->ExpandAll();
 }
 	
-void StaticInspector::Cleanup()
+void ObjectInspector::Cleanup()
 {
 
 }
 
-void StaticInspector::OnRotationSliderMoved(Base* pControl)
+void ObjectInspector::OnRotationSliderMoved(Base* pControl)
 {
 	Gwen::Controls::Slider* slider = (Gwen::Controls::Slider*)pControl;
 
@@ -149,7 +149,7 @@ void StaticInspector::OnRotationSliderMoved(Base* pControl)
 	mObject->SetRotation(rotation);
 }
 	
-void StaticInspector::OnRotationChange(Base* pControl)
+void ObjectInspector::OnRotationChange(Base* pControl)
 {
 	Gwen::Controls::PropertyRow* row = (Gwen::Controls::PropertyRow*)pControl;
 	string label = ToString(row->GetLabel()->GetText().c_str());
@@ -172,7 +172,7 @@ void StaticInspector::OnRotationChange(Base* pControl)
 	mObject->SetRotation(rotation);
 }
 
-void StaticInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
+void ObjectInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
 {
 	Gwen::Controls::PropertyRow* row = (Gwen::Controls::PropertyRow*)pControl;
 	string label = ToString(row->GetLabel()->GetText().c_str());
@@ -189,7 +189,7 @@ void StaticInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
 	mObject->SetPosition(pos);
 }
 
-void StaticInspector::OnScaleSliderMoved(Base* pControl)
+void ObjectInspector::OnScaleSliderMoved(Base* pControl)
 {
 	Gwen::Controls::Slider* slider = (Gwen::Controls::Slider*)pControl;
 
@@ -213,7 +213,7 @@ void StaticInspector::OnScaleSliderMoved(Base* pControl)
 	mObject->SetScale(scale);
 }
 
-void StaticInspector::OnScaleChange(Base* pControl)
+void ObjectInspector::OnScaleChange(Base* pControl)
 {
 	Gwen::Controls::PropertyRow* row = (Gwen::Controls::PropertyRow*)pControl;
 	string label = ToString(row->GetLabel()->GetText().c_str());
@@ -236,7 +236,7 @@ void StaticInspector::OnScaleChange(Base* pControl)
 	mObject->SetScale(scale);
 }
 
-void StaticInspector::SetObject(void* pObject)
+void ObjectInspector::SetObject(void* pObject)
 {
 	mObject = (StaticObject*)pObject;
 
@@ -277,7 +277,7 @@ void StaticInspector::SetObject(void* pObject)
 	mZScaleProperty->GetProperty()->SetPropertyValue(buffer);
 }
 
-void StaticInspector::InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp)
+void ObjectInspector::InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp)
 {
 	slider->SetName(name);
 	slider->SetWidth(170);
@@ -287,4 +287,12 @@ void StaticInspector::InitSlider(Gwen::Controls::HorizontalSlider* slider, strin
 	slider->SetValue(value);
 	slider->SetNotchCount(20);
 	slider->SetClampToNotches(clamp);
+}
+
+bool ObjectInspector::IsResponsible(int type)
+{
+	if(type == STATIC_OBJECT || type == ANIMATED_OBJECT)
+		return true;
+	else 
+		return false;
 }

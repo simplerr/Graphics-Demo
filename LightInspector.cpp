@@ -14,7 +14,6 @@ LightInspector::LightInspector(Gwen::Controls::Base* pParent)
 	mAmbientStrength = 1.0f;
 	mDiffuseStrength = mSpecularStrength =  0.0f;
 	mRangeSlider = mSpotSlider = nullptr;
-	SetType(LIGHT);
 }
 	
 LightInspector::~LightInspector()
@@ -405,4 +404,12 @@ void LightInspector::InitSlider(Gwen::Controls::HorizontalSlider* slider, string
 	slider->SetValue(value);
 	slider->SetNotchCount(20);
 	slider->SetClampToNotches(clamp);
+}
+
+bool LightInspector::IsResponsible(int type)
+{
+	if(type == LIGHT)
+		return true;
+	else 
+		return false;
 }

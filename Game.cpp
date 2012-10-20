@@ -114,9 +114,9 @@ void Game::Init()
 
 	// Add some lights.
 	mLight = new Light();
-	mLight->SetMaterials(Colors::White, Colors::White, Colors::White);
+	mLight->SetMaterials(Colors::White, Colors::White*0, Colors::White*0);
 	mLight->SetDirection(0.0f, -1.0f, 0.0f);
-	mLight->SetType(SPOT_LIGHT);
+	mLight->SetType(DIRECTIONAL_LIGHT);
 	mLight->SetAtt(0, 0.1, 0);
 	mLight->SetRange(2000.0f);
 	mLight->SetSpot(64.0f);
@@ -131,15 +131,15 @@ void Game::Init()
 	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 	GetGraphics()->GetContext()->OMSetBlendState(RenderStates::TransparentBS, blendFactor, 0xffffffff);
 
-	/*mAnimatedObject = new AnimatedObject(mModelImporter, "models/smith/smith.x");
+	mAnimatedObject = new AnimatedObject(mModelImporter, "models/smith/smith.x");
 	mAnimatedObject->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
 	mAnimatedObject->SetPosition(XMFLOAT3(0, 30, 0));
 	mAnimatedObject->SetRotation(XMFLOAT3(0.7, 0.6, 0.6));
-	mWorld->AddObject(mAnimatedObject);*/
+	mWorld->AddObject(mAnimatedObject);
 
-	/*mObject = new StaticObject(mModelImporter, "models/sword/uld-sword.obj");
+	mObject = new StaticObject(mModelImporter, "models/sword/uld-sword.obj");
 	mObject->SetPosition(XMFLOAT3(0, 30, 0));
-	mWorld->AddObject(mObject);*/
+	mWorld->AddObject(mObject);
 
 	mEditor->SetLight(mLight);
 	mEditor->SetWorld(mWorld);
