@@ -44,6 +44,7 @@ public:
 	XMFLOAT3	GetScale();
 	Material	GetMaterial();
 	ObjectType	GetType();
+	bool		IsBoundingBoxVisible();
 	virtual AxisAlignedBox GetBoundingBox() = 0;
 	
 	// Setters.
@@ -54,9 +55,11 @@ public:
 	void SetScale(XMFLOAT3 scale);
 	void SetDefaultOrientation();
 	void SetType(ObjectType type);
+	void SetBoundingBoxVisible(bool visible);
 private:
 	XMFLOAT3	mPosition;
 	XMFLOAT3	mRotation;
 	XMFLOAT3	mScale;
 	ObjectType	mType;
+	bool		mDrawBoundingBox;
 };

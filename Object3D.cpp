@@ -14,6 +14,7 @@ Object3D::Object3D(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scale)
 	mPosition = position;
 	mRotation = rotation;
 	mScale = scale;
+	SetBoundingBoxVisible(false);
 }
 
 //! Cleanup.
@@ -88,4 +89,14 @@ void Object3D::SetType(ObjectType type)
 ObjectType Object3D::GetType()
 {
 	return mType;
+}
+
+void Object3D::SetBoundingBoxVisible(bool visible)
+{
+	mDrawBoundingBox = visible;
+}
+
+bool Object3D::IsBoundingBoxVisible()
+{
+	return mDrawBoundingBox;
 }

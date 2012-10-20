@@ -35,7 +35,9 @@ void AnimatedObject::Draw(Graphics* pGraphics)
 	mSkinnedModel->SetAnimation(mCurrentAnimIndex);
 	mSkinnedModel->SetElapsedTime(mElapsedTime);
 	mSkinnedModel->Draw(pGraphics, GetWorldMatrix());
-	//pGraphics->DrawBoundingBox(&GetBoundingBox(), GetWorldMatrix(), Material(Colors::Green));
+
+	if(IsBoundingBoxVisible())
+		pGraphics->DrawBoundingBox(&GetBoundingBox(), GetWorldMatrix(), Material(Colors::Blue));
 }
 
 //! Sets which animation to use by index.

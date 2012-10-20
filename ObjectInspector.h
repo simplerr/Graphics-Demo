@@ -20,6 +20,7 @@ public:
 	void OnScaleSliderMoved(Base* pControl);
 	void OnScaleChange(Base* pControl);
 	void OnOrientationChange(Gwen::Controls::Base* pControl);
+	void OnAABBCheckBoxChange(Base* pControl);
 	bool IsResponsible(int type);
 private:
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);

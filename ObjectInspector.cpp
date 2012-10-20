@@ -2,6 +2,7 @@
 #include "Gwen/Controls/Property/ColorSelector.h"
 #include "Gwen/Controls/PropertyTree.h"
 #include "Gwen/Controls/ComboBox.h"
+#include "Gwen/Controls/CheckBox.h"
 #include "ObjectInspector.h"
 #include "Object3D.h"
 #include "Util.h"
@@ -118,11 +119,26 @@ void ObjectInspector::Init()
 	mZScaleSlider->onValueChanged.Add(this, &ObjectInspector::OnScaleSliderMoved);
 
 	ptree->ExpandAll();
+
+	//
+	// Properties.
+	//
+	Gwen::Controls::CollapsibleCategory* propertiesCategory = Add("Properties");
+	Gwen::Controls::CheckBoxWithLabel* checkBox = new Gwen::Controls::CheckBoxWithLabel(propertiesCategory);
+	checkBox->SetPos(10, 25);
+	checkBox->Label()->SetText("Draw bounding box");
+	checkBox->Checkbox()->onCheckChanged.Add(this, &ObjectInspector::OnAABBCheckBoxChange);
 }
 	
 void ObjectInspector::Cleanup()
 {
 
+}
+
+void ObjectInspector::OnAABBCheckBoxChange(Base* pControl)
+{
+	Gwen::Controls::CheckBox* check = (Gwen::Controls::CheckBox*)pControl;
+	mObject->SetBoundingBoxVisible(check->IsChecked());
 }
 
 void ObjectInspector::OnRotationSliderMoved(Base* pControl)

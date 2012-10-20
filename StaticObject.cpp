@@ -30,7 +30,8 @@ void StaticObject::Draw(Graphics* pGraphics)
 {
 	mModel->Draw(pGraphics, GetWorldMatrix());
 
-	pGraphics->DrawBoundingBox(&GetBoundingBox(), GetWorldMatrix(), Material(Colors::Blue));
+	if(IsBoundingBoxVisible())
+		pGraphics->DrawBoundingBox(&GetBoundingBox(), GetWorldMatrix(), Material(Colors::Blue));
 }
 
 //! Returns the bounding box in world space.
