@@ -200,9 +200,8 @@ void Game::Draw(Graphics* pGraphics)
 	// Unbind the SRVs from the pipeline so they can be used as DSVs instead.
 	ID3D11ShaderResourceView *const nullSRV[4] = {NULL, NULL, NULL, NULL};
 	pGraphics->GetContext()->PSSetShaderResources(0, 4, nullSRV);
-
-	// Draw depth values to the shadow map.
-	pGraphics->FillShadowMap(mWorld->GetObjects());
+	Effects::BasicFX->Apply();
+	Effects::BuildShadowMapFX->Apply();
 
 	// Draw all objects.
 	mWorld->Draw(pGraphics);	
