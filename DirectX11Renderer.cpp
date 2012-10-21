@@ -132,7 +132,7 @@ namespace Gwen
 		void DirectX11::Begin()// get the states that this will change to set at the end call
 		{
 			ActiveTechnique=0;// set this to zero for this pass
-			/*m_pDeviceContext->OMGetBlendState(&m_pUILastBlendState, m_LastBlendFactor, &m_LastBlendMask);
+			m_pDeviceContext->OMGetBlendState(&m_pUILastBlendState, m_LastBlendFactor, &m_LastBlendMask);
 			m_pDeviceContext->RSGetState(&m_pUILastRasterizerState);
 			m_pDeviceContext->OMGetDepthStencilState(&m_LastDepthState, &m_LastStencilRef);
 			m_pDeviceContext->IAGetInputLayout(&m_LastInputLayout);
@@ -141,7 +141,7 @@ namespace Gwen
 
 			m_pDeviceContext->PSGetShader(&m_LastPSShader, 0, 0);
 			m_pDeviceContext->GSGetShader(&m_LastGSShader, 0, 0);
-			m_pDeviceContext->VSGetShader(&m_LastVSShader, 0, 0);*/
+			m_pDeviceContext->VSGetShader(&m_LastVSShader, 0, 0);
 
 			float factor[4] = {0, 0, 0, 0};
 			m_pDeviceContext->OMSetBlendState(m_pUIBlendState, factor, ~0);
@@ -152,7 +152,7 @@ namespace Gwen
 		void DirectX11::End()// reset the device to its original state
 		{
 			Flush();
-			/*m_pDeviceContext->OMSetBlendState(m_pUILastBlendState, m_LastBlendFactor, m_LastBlendMask);
+			m_pDeviceContext->OMSetBlendState(m_pUILastBlendState, m_LastBlendFactor, m_LastBlendMask);
 			m_pDeviceContext->RSSetState(m_pUILastRasterizerState);
 			m_pDeviceContext->OMSetDepthStencilState(m_LastDepthState, m_LastStencilRef);
 			m_pDeviceContext->IASetInputLayout(m_LastInputLayout);
@@ -160,7 +160,7 @@ namespace Gwen
 			m_pDeviceContext->IASetVertexBuffers(0, 8, m_LastBuffers, m_LastStrides, m_LastOffsets);
 			m_pDeviceContext->PSSetShader(m_LastPSShader, 0, 0);
 			m_pDeviceContext->GSSetShader(m_LastGSShader, 0, 0);
-			m_pDeviceContext->VSSetShader(m_LastVSShader, 0, 0);*/
+			m_pDeviceContext->VSSetShader(m_LastVSShader, 0, 0);
 		}
 
 		void DirectX11::DrawLine( int x, int y, int a, int b )
