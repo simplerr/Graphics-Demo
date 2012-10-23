@@ -20,6 +20,7 @@ class World;
 class WorldTree;
 class ObjectMover;
 class ModelImporter;
+class Object3D;
 
 class Editor
 {
@@ -36,6 +37,9 @@ public:
 
 	void SetLight(Light* light);
 	void SetWorld(World* world);
+
+	void OnObjectSelected(Object3D* pObject);
+	void OnLightSelected(Light* pLight);
 private:
 	Gwen::Controls::Canvas*		mGwenCanvas;
 	Gwen::Skin::TexturedBase*	mGwenSkin;

@@ -11,6 +11,8 @@
 #include "Terrain.h"
 #include "StaticModel.h"
 #include "BillboardManager.h"
+#include "Input.h"
+#include <limits>
 
 World::World()
 {
@@ -61,15 +63,65 @@ World::~World()
 //! Updates all objects.
 void World::Update(float dt)
 {
-	// [TODO]!!
-	//XMFLOAT3 pos = gGame->GetGraphics()->GetCamera()->GetPosition();
-	//gGame->GetGraphics()->GetCamera()->SetPosition(XMFLOAT3(pos.x, mTerrain->GetHeight(pos.x, pos.z)+3, pos.z));
-	//gGame->GetGraphics()->GetCamera()->SetTarget(gGame->GetGraphics()->GetCamera()->GetPosition() + gGame->GetGraphics()->GetCamera()->GetDirection());
-
+	// Loop through all objects.
+	float closestDist = numeric_limits<float>::infinity();
+	Object3D* closestObject = nullptr;
 	for(int i = 0; i < mObjectList.size(); i++)
 	{
+		// Left mouse button pressed?
+		if(gInput->KeyPressed(VK_LBUTTON))
+		{
+			XMFLOAT3 pos = gGame->GetGraphics()->GetCamera()->GetPosition();
+			XMFLOAT3 dir = gInput->GetWorldPickingRay().direction;
+			float dist;
+			if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &mObjectList[i]->GetBoundingBox(), &dist)) 
+			{
+				if(dist < closestDist) {
+					closestObject = mObjectList[i];
+					closestDist = dist;
+				}
+			}
+		}
+
 		mObjectList[i]->Update(dt);
 	}
+	
+	// An object was selected.
+	if(closestObject != nullptr) 
+		OnObjectSelected(closestObject);
+
+	//
+	// [NOTE] An object can be pressed and then a light could be in the ray as well, the closest of the Light and Object3D should be selected.
+	//
+
+	// Was a light selected?
+	Light* closestLight = nullptr;
+	if(gInput->KeyPressed(VK_LBUTTON)) 
+	{
+		// Loop through all lights.
+		closestDist = numeric_limits<float>::infinity();
+		closestLight = nullptr;
+		for(int i = 0; i < mLightList.size(); i++)
+		{
+			XMFLOAT3 pos = gGame->GetGraphics()->GetCamera()->GetPosition();
+			XMFLOAT3 dir = gInput->GetWorldPickingRay().direction;
+			float dist;
+			AxisAlignedBox box;
+			box.Center = mLightList[i]->GetPosition();
+			box.Extents = XMFLOAT3(3, 3, 3);
+			if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &box, &dist)) 
+			{
+				if(dist < closestDist) {
+					closestLight = mLightList[i];
+					closestDist = dist;
+				}
+			}
+		}
+	}
+
+	// A light was selected.
+	if(closestLight != nullptr)
+		OnLightSelected(closestLight);
 }
 	
 //! Draws all objects.

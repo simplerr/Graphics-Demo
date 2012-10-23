@@ -10,6 +10,9 @@
 #include "Light.h"
 #include "Input.h"
 #include "ObjectMover.h"
+#include "Graphics.h"
+#include "Camera.h"
+#include "World.h"
 
 Editor::Editor(int width, int height)
 {
@@ -61,6 +64,16 @@ void Editor::Update(float dt)
 	
 void Editor::Draw(Graphics* pGraphics)
 {
+	//
+	// Rotate and move the camera.
+	//
+	Camera* camera = pGraphics->GetCamera();
+	if(gInput->KeyDown(VK_MBUTTON))
+		camera->Rotate();
+
+	camera->Move();
+	camera->UpdateViewMatrix();
+
 	// Render the canvas and all controls in it.
 	mObjectMover->Draw(pGraphics);
 	mGwenCanvas->RenderCanvas();
@@ -119,4 +132,16 @@ void Editor::SetWorld(World* world)
 {
 	mWorld = world;
 	mWorldTree->CreateTree(mWorld);
+	mWorld->AddObjectSelectedListender(&Editor::OnObjectSelected, this);
+	mWorld->AddLightSelectedListender(&Editor::OnLightSelected, this);
+}
+
+void Editor::OnObjectSelected(Object3D* pObject)
+{
+	ItemSelected(pObject, pObject->GetType());
+}
+	
+void Editor::OnLightSelected(Light* pLight)
+{
+	ItemSelected(pLight, LIGHT);
 }
