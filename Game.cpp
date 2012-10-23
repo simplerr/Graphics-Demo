@@ -142,6 +142,7 @@ void Game::Init()
 	mObject = new StaticObject(mModelImporter, "models/sword/uld-sword.obj");
 	mObject->SetPosition(XMFLOAT3(0, 30, 0));
 	mObject->SetMaterial(Material(Colors::Red));
+	mObject->SetScale(XMFLOAT3(10, 10, 10));
 	mWorld->AddObject(mObject);
 
 	mEditor->SetLight(mLight);

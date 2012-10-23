@@ -33,7 +33,6 @@ public:
 
 	// These are only supposed to be called by an BaseInspector type.
 	void SetPosition(XMFLOAT3 position);
-	void SetScale(XMFLOAT3 scale);
 
 	// Callback hookups.
 	template <class T>

@@ -11,6 +11,7 @@
 #include "Vertex.h"
 #include "Primitive.h"
 #include "Effects.h"
+#include "RenderStates.h"
 
 ObjectMover::ObjectMover(ModelImporter* pImporter)
 {
@@ -195,9 +196,18 @@ XMFLOAT3 ObjectMover::MoveAxisZ(XMFLOAT3 pos, XMFLOAT3 dir)
 
 void ObjectMover::Draw(Graphics* pGraphics)
 {
+	// Disable the depth test.
+	ID3D11DepthStencilState* oldState = nullptr;
+	pGraphics->GetContext()->OMGetDepthStencilState(&oldState, 0);
+	pGraphics->GetContext()->OMSetDepthStencilState(RenderStates::EnableAllDSS, 0);
+
+	// The axes will be rendered through the object.
 	mAxisX->Draw(pGraphics);
 	mAxisY->Draw(pGraphics);
 	mAxisZ->Draw(pGraphics);
+
+	// Restore to standard depth stencil state (enable depth testing).
+	pGraphics->GetContext()->OMSetDepthStencilState(oldState, 0);
 
 	XMMATRIX view = XMLoadFloat4x4(&pGraphics->GetCamera()->GetViewMatrix());
 	XMMATRIX proj = XMLoadFloat4x4(&pGraphics->GetCamera()->GetProjectionMatrix());
@@ -209,48 +219,19 @@ void ObjectMover::SetObject(Object3D* pObject)
 	mMovingObject = pObject;
 	mAxisX->SetPosition(pObject->GetPosition());
 
-	AxisAlignedBox lightBox = mAxisX->GetBoundingBox();
-	float scale = mMovingObject->GetBoundingBox().Extents.x / lightBox.Extents.x;
-	mAxisX->SetScale(XMFLOAT3(1, max(scale, 1.0f), 1));
-	mAxisX->SetPosition(pObject->GetPosition() + XMFLOAT3(mAxisX->GetBoundingBox().Extents.x*0.6, 0, 0));
-
-	lightBox = mAxisY->GetBoundingBox();
-	scale = mMovingObject->GetBoundingBox().Extents.y / lightBox.Extents.y;
-	mAxisY->SetScale(XMFLOAT3(1, max(scale, 1.0f), 1));
-	mAxisY->SetPosition(pObject->GetPosition() + XMFLOAT3(0, mAxisY->GetBoundingBox().Extents.y*0.6, 0));
-
-	lightBox = mAxisZ->GetBoundingBox();
-	scale = mMovingObject->GetBoundingBox().Extents.z / lightBox.Extents.z;
-	mAxisZ->SetScale(XMFLOAT3(1, max(scale, 1.0f), 1));
-	mAxisZ->SetPosition(pObject->GetPosition() + XMFLOAT3(0, 0, mAxisZ->GetBoundingBox().Extents.z*0.6));
+	SetPosition(pObject->GetPosition());
 }
 
 void ObjectMover::SetObject(Light* pLight)
 {
 	mMovingObject = nullptr;
 	mMovingLight = pLight;
-	mAxisX->SetPosition(pLight->GetPosition() + XMFLOAT3(mAxisX->GetBoundingBox().Extents.x*0.6, 0, 0));
-	mAxisY->SetPosition(pLight->GetPosition() + XMFLOAT3(0, mAxisY->GetBoundingBox().Extents.y*0.6, 0));
-	mAxisZ->SetPosition(pLight->GetPosition() + XMFLOAT3(0, 0, mAxisZ->GetBoundingBox().Extents.z*0.6));
-	mAxisX->SetScale(XMFLOAT3(1, 1, 1));
-	mAxisY->SetScale(XMFLOAT3(1, 1, 1));
-	mAxisZ->SetScale(XMFLOAT3(1, 1, 1));
+	SetPosition(pLight->GetPosition());
 }
 
 void ObjectMover::SetPosition(XMFLOAT3 position)
 {
-	// Acctually the position don't need to be set, the Inspector does that.
-	/*if(mMovingObject != nullptr) 
-		mMovingObject->SetPosition(position);
-	else if(mMovingLight != nullptr) 
-		mMovingLight->SetPosition(position);*/
-
 	mAxisX->SetPosition(position + XMFLOAT3(mAxisX->GetBoundingBox().Extents.x*0.6, 0, 0));
 	mAxisY->SetPosition(position + XMFLOAT3(0, mAxisY->GetBoundingBox().Extents.y*0.6, 0));
 	mAxisZ->SetPosition(position + XMFLOAT3(0, 0, mAxisZ->GetBoundingBox().Extents.z*0.6));
-}
-
-void ObjectMover::SetScale(XMFLOAT3 scale)
-{
-
 }
