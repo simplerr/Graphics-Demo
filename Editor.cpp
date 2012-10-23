@@ -82,6 +82,7 @@ void Editor::ItemSelected(void* pItem, int type)
 
 		mActiveInspector->Init();
 		mActiveInspector->SetObjectMover(mObjectMover);
+		mObjectMover->SetVisible(true);
 	}
 	
 	if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) {

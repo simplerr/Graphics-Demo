@@ -30,6 +30,7 @@ public:
 	void SetObject(Object3D* pObject);
 	void SetObject(Light* pLight);
 	void SetInspector(BaseInspector* pInspector);
+	void SetVisible(bool visible);
 
 	// These are only supposed to be called by an BaseInspector type.
 	void SetPosition(XMFLOAT3 position);
@@ -62,4 +63,5 @@ private:
 	MovingAxis	  mMovingAxis;
 	XMFLOAT3	  mLastPlanePos;
 	BaseInspector* mInspector;
+	bool		  mVisible;
 };

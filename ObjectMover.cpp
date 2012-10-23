@@ -33,6 +33,7 @@ ObjectMover::ObjectMover(ModelImporter* pImporter)
 	mAxisZ->SetRotation(XMFLOAT3(0, 3.14f/2.0f, 3.14f/2.0f));
 
 	mMovingAxis = NONE;
+	mVisible = false;
 }
 	
 ObjectMover::~ObjectMover()
@@ -76,6 +77,28 @@ void ObjectMover::Update(float dt)
 		else if(mMovingAxis == Z_AXIS)
 			UpdatePosition(MoveAxisZ(pos, dir));
 	}
+}
+
+void ObjectMover::Draw(Graphics* pGraphics)
+{
+	if(!mVisible)
+		return;
+
+	// Disable the depth test.
+	ID3D11DepthStencilState* oldState = nullptr;
+	pGraphics->GetContext()->OMGetDepthStencilState(&oldState, 0);
+	pGraphics->GetContext()->OMSetDepthStencilState(RenderStates::EnableAllDSS, 0);
+
+	// The axes will be rendered through the object.
+	mAxisX->Draw(pGraphics);
+	mAxisY->Draw(pGraphics);
+	mAxisZ->Draw(pGraphics);
+
+	// Restore to standard depth stencil state (enable depth testing).
+	pGraphics->GetContext()->OMSetDepthStencilState(oldState, 0);
+
+	XMMATRIX view = XMLoadFloat4x4(&pGraphics->GetCamera()->GetViewMatrix());
+	XMMATRIX proj = XMLoadFloat4x4(&pGraphics->GetCamera()->GetProjectionMatrix());
 }
 
 void ObjectMover::UpdatePosition(XMFLOAT3 delta)
@@ -193,26 +216,6 @@ XMFLOAT3 ObjectMover::MoveAxisZ(XMFLOAT3 pos, XMFLOAT3 dir)
 	return XMFLOAT3(0, 0, dz);
 }
 
-
-void ObjectMover::Draw(Graphics* pGraphics)
-{
-	// Disable the depth test.
-	ID3D11DepthStencilState* oldState = nullptr;
-	pGraphics->GetContext()->OMGetDepthStencilState(&oldState, 0);
-	pGraphics->GetContext()->OMSetDepthStencilState(RenderStates::EnableAllDSS, 0);
-
-	// The axes will be rendered through the object.
-	mAxisX->Draw(pGraphics);
-	mAxisY->Draw(pGraphics);
-	mAxisZ->Draw(pGraphics);
-
-	// Restore to standard depth stencil state (enable depth testing).
-	pGraphics->GetContext()->OMSetDepthStencilState(oldState, 0);
-
-	XMMATRIX view = XMLoadFloat4x4(&pGraphics->GetCamera()->GetViewMatrix());
-	XMMATRIX proj = XMLoadFloat4x4(&pGraphics->GetCamera()->GetProjectionMatrix());
-}
-
 void ObjectMover::SetObject(Object3D* pObject)
 {
 	mMovingLight = nullptr;
@@ -230,8 +233,14 @@ void ObjectMover::SetObject(Light* pLight)
 }
 
 void ObjectMover::SetPosition(XMFLOAT3 position)
+
 {
 	mAxisX->SetPosition(position + XMFLOAT3(mAxisX->GetBoundingBox().Extents.x*0.6, 0, 0));
 	mAxisY->SetPosition(position + XMFLOAT3(0, mAxisY->GetBoundingBox().Extents.y*0.6, 0));
 	mAxisZ->SetPosition(position + XMFLOAT3(0, 0, mAxisZ->GetBoundingBox().Extents.z*0.6));
+}
+
+void ObjectMover::SetVisible(bool visible)
+{
+	mVisible = visible;
 }

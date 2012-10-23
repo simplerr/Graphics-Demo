@@ -161,6 +161,10 @@ void Game::Update(float dt)
 	mWorld->Update(dt);
 	mEditor->Update(dt);
 
+	// Only
+	if(gInput->KeyDown(VK_CONTROL))
+		GetGraphics()->UpdateCamera(dt);
+
 	if(gInput->KeyPressed(VK_SPACE)) {
 		XMFLOAT3 pos = GetGraphics()->GetCamera()->GetPosition();
 		char buffer[256];
