@@ -79,10 +79,20 @@ XMFLOAT3 Object3D::GetScale()
 
 }
 
+Material Object3D::GetMaterial()
+{
+	return mMaterial;
+}
+
 //! Sets the object type.
 void Object3D::SetType(ObjectType type)
 {
 	mType = type;
+}
+
+void Object3D::SetMaterial(Material material)
+{
+	mMaterial = material;
 }
 
 //! Returns the object type.

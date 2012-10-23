@@ -76,10 +76,10 @@ void World::Update(float dt)
 void World::Draw(Graphics* pGraphics)
 {
 	// Draw all objects to the shadow map.
-	/*pGraphics->ActiveShadowMap();
-	for(int i = 0; i < mObjectList.size(); i++)
-		mObjectList[i]->Draw(pGraphics);
-	pGraphics->DeactiveShadowMap();*/
+	pGraphics->ActiveShadowMap();
+	//for(int i = 0; i < mObjectList.size(); i++)
+	//	mObjectList[i]->Draw(pGraphics);
+	pGraphics->DeactiveShadowMap();
 
 	// Draw the terrain.
 	mTerrain->Draw(pGraphics);
@@ -101,7 +101,7 @@ void World::Draw(Graphics* pGraphics)
 		pGraphics->DrawBillboards();
 	}
 
-	//mSkyBox->Draw();
+	mSkyBox->Draw();
 }
 
 //! Adds a object to the object list.

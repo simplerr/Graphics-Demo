@@ -9,6 +9,7 @@
 #include "AnimatedObject.h"
 #include "Light.h"
 #include "Input.h"
+#include "ObjectMover.h"
 
 Editor::Editor(int width, int height)
 {
@@ -25,6 +26,12 @@ Editor::~Editor()
 	mGwenCanvas->Release();
 	delete mGwenSkin;
 	delete mGwenRenderer;
+	delete mObjectMover;
+}
+
+void Editor::Init(ModelImporter* pImporter)
+{
+	mObjectMover = new ObjectMover(pImporter);
 }
 
 void Editor::GwenInit(int width, int height)
@@ -49,12 +56,13 @@ void Editor::GwenInit(int width, int height)
 	
 void Editor::Update(float dt)
 {
-	
+	mObjectMover->Update(dt);
 }
 	
 void Editor::Draw(Graphics* pGraphics)
 {
 	// Render the canvas and all controls in it.
+	mObjectMover->Draw(pGraphics);
 	mGwenCanvas->RenderCanvas();
 }
 	
@@ -67,10 +75,14 @@ void Editor::ItemSelected(void* pItem, int type)
 	}
 
 	if(mActiveInspector == nullptr) {
-		if(type == STATIC_OBJECT || type == ANIMATED_OBJECT)
+		if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) {
 			mActiveInspector = new ObjectInspector(mGwenCanvas);
-		else if(type == LIGHT)
+			mObjectMover->SetObject((Object3D*)pItem);
+		}
+		else if(type == LIGHT) {
 			mActiveInspector = new LightInspector(mGwenCanvas);
+			mObjectMover->SetObject((Light*)pItem);
+		}
 
 		mActiveInspector->Init();
 	}

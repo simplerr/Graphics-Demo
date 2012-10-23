@@ -18,13 +18,16 @@ class BaseInspector;
 class Light;
 class World;
 class WorldTree;
+class ObjectMover;
+class ModelImporter;
 
 class Editor
 {
 public:
 	Editor(int width, int height);
 	~Editor();
-
+	
+	void Init(ModelImporter* pImporter);
 	void GwenInit(int width, int height);
 	void Update(float dt);
 	void Draw(Graphics* pGraphics);
@@ -41,4 +44,5 @@ private:
 	BaseInspector*				mActiveInspector;
 	World*						mWorld;
 	WorldTree*					mWorldTree;
+	ObjectMover*				mObjectMover;
 };

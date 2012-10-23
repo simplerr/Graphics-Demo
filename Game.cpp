@@ -101,26 +101,28 @@ void Game::Init()
 	Runnable::Init();
 
 	mEditor = new Editor(GetScreenWidth(), GetScreenHeight());
-
+	
 	// Create the world.
 	mWorld = new World();
 	mWorld->Init();
 
 	// Create the model importer.
 	mModelImporter = new ModelImporter(gPrimitiveFactory);
+	mEditor->Init(mModelImporter);
 
 	// Connect the graphics light list to the one in World.
 	GetGraphics()->SetLightList(mWorld->GetLights());
 
 	// Add some lights.
 	mLight = new Light();
-	mLight->SetMaterials(Colors::White, Colors::White*0, Colors::White*0);
+	mLight->SetMaterials(Colors::White, Colors::White, Colors::White);
 	mLight->SetDirection(0.0f, -1.0f, 0.0f);
 	mLight->SetType(DIRECTIONAL_LIGHT);
 	mLight->SetAtt(0, 0.1, 0);
 	mLight->SetRange(2000.0f);
 	mLight->SetSpot(64.0f);
 	mLight->SetPosition(0, 50, 5);
+	mLight->SetIntensity(1.0f, 0.8f, 0.2f);
 	mWorld->AddLight(mLight);
 
 	GetGraphics()->SetFogColor(XMFLOAT4(1.0f, 0.2f, 0.8, 1.0f));
@@ -137,9 +139,10 @@ void Game::Init()
 	mAnimatedObject->SetRotation(XMFLOAT3(0.7, 0.6, 0.6));
 	mWorld->AddObject(mAnimatedObject);
 
-	mObject = new StaticObject(mModelImporter, "models/sword/uld-sword.obj");
+	/*mObject = new StaticObject(mModelImporter, "models/arrow/arrow.obj");
 	mObject->SetPosition(XMFLOAT3(0, 30, 0));
-	mWorld->AddObject(mObject);
+	mObject->SetMaterial(Material(Colors::Red));
+	mWorld->AddObject(mObject);*/
 
 	mEditor->SetLight(mLight);
 	mEditor->SetWorld(mWorld);
@@ -156,6 +159,13 @@ void Game::Update(float dt)
 	GetGraphics()->Update(dt);
 	mWorld->Update(dt);
 	mEditor->Update(dt);
+
+	if(gInput->KeyPressed(VK_SPACE)) {
+		XMFLOAT3 pos = GetGraphics()->GetCamera()->GetPosition();
+		char buffer[256];
+		sprintf(buffer, "x: %f, y: %f, z: %f\n", pos.x, pos.y, pos.z);
+		OutputDebugString(buffer);
+	}
 
 	return;
 
@@ -197,21 +207,22 @@ void Game::Draw(Graphics* pGraphics)
 	// Clear the render target and depth/stencil.
 	pGraphics->ClearScene();
 
-	// Unbind the SRVs from the pipeline so they can be used as DSVs instead.
-	ID3D11ShaderResourceView *const nullSRV[4] = {NULL, NULL, NULL, NULL};
-	pGraphics->GetContext()->PSSetShaderResources(0, 4, nullSRV);
-	Effects::BasicFX->Apply();
-	Effects::BuildShadowMapFX->Apply();
-
 	// Draw all objects.
 	mWorld->Draw(pGraphics);	
 	pGraphics->DrawBillboards();
 
 	mEditor->Draw(pGraphics);
-	//drawText(GetD3DDevice(), GetD3DContext());
+
+	pGraphics->DrawScreenQuad(0, 600, 400, 4, 4);
 
 	// Present the backbuffer.
 	pGraphics->Present();
+
+	// Unbind the SRVs from the pipeline so they can be used as DSVs instead.
+	ID3D11ShaderResourceView *const nullSRV[4] = {NULL, NULL, NULL, NULL};
+	pGraphics->GetContext()->PSSetShaderResources(0, 4, nullSRV);
+	Effects::BasicFX->Apply();
+	Effects::BuildShadowMapFX->Apply();
 }
 
 LRESULT Game::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

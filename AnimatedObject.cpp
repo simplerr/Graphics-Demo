@@ -46,6 +46,11 @@ void AnimatedObject::SetAnimation(int index)
 	mCurrentAnimIndex = index;
 }
 
+void AnimatedObject::SetMaterial(Material material)
+{
+
+}
+
 //! Returns the bounding box in world space. [NOTE] Does not work [TODO].
 AxisAlignedBox AnimatedObject::GetBoundingBox()
 {

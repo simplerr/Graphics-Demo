@@ -3,6 +3,7 @@
 #include "Gwen\Controls\Properties.h"
 #include "Gwen/Controls/NumericUpDown.h"
 #include "Gwen/Controls/HorizontalSlider.h"
+#include "Gwen/Controls/Property/ColorSelector.h"
 #include "Light.h"
 #include <xnamath.h>
 
@@ -22,10 +23,9 @@ public:
 	void Init();
 	void Cleanup();
 	void SetObject(void* pObject);
-	void OnSelection();
 	void OnColorChange(Gwen::Controls::Base* pControl);
 	void OnOrientationChange(Gwen::Controls::Base* pControl);
-	void OnColorStrengthSliderMoved(Base* pControl);
+	void OnColorIntensitySliderMoved(Base* pControl);
 	void OnDirectionSliderMoved(Base* pControl);
 	void OnLightTypeChange(Base* pControl);
 	void OnRangeChange(Base* pControl);
@@ -41,14 +41,13 @@ private:
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:
 	Light* mLight;
-	float mAmbientStrength;
-	float mDiffuseStrength;
-	float mSpecularStrength;
 	Material mCurrentMaterial;
 
 	Gwen::Controls::PropertyRow* mXProperty, *mYProperty, *mZProperty;
+	Gwen::Controls::HorizontalSlider* mAmbientIntensitySlider, *mDiffuseIntensitySlider, *mSpecularIntensitySlider;
 	Gwen::Controls::NumericUpDown* mRangeNumeric;
 	Gwen::Controls::NumericUpDown* mSpotNumeric;
 	Gwen::Controls::HorizontalSlider* mRangeSlider;
 	Gwen::Controls::HorizontalSlider* mSpotSlider;
+	Gwen::Controls::Property::ColorSelector* mAmbientSelector, *mDiffuseSelector, *mSpecularSelector;
 };

@@ -16,7 +16,7 @@ public:
 	virtual void Draw(Graphics* pGraphics);
 
 	void SetAnimation(int index);
-
+	void SetMaterial(Material material);
 	AxisAlignedBox GetBoundingBox();
 	SkinnedModel* GetModel();
 private:

@@ -48,6 +48,7 @@ public:
 	virtual AxisAlignedBox GetBoundingBox() = 0;
 	
 	// Setters.
+	void SetMaterial(Material material);
 	void SetNormalMap(string filename);
 	void SetNormalMap(Texture2D* normalMap);
 	void SetPosition(XMFLOAT3 position);
@@ -61,5 +62,6 @@ private:
 	XMFLOAT3	mRotation;
 	XMFLOAT3	mScale;
 	ObjectType	mType;
+	Material	mMaterial;
 	bool		mDrawBoundingBox;
 };

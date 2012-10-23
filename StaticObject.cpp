@@ -4,6 +4,7 @@
 #include "StaticMesh.h"
 #include "Primitive.h"
 #include "Graphics.h"
+#include "Effects.h"
 
 StaticObject::StaticObject(ModelImporter* importer, string filename)
 	: Object3D()
@@ -28,10 +29,19 @@ void StaticObject::Update(float dt)
 //! Draws the objects model.
 void StaticObject::Draw(Graphics* pGraphics)
 {
+	Effects::BasicFX->SetMaterial(GetMaterial());
 	mModel->Draw(pGraphics, GetWorldMatrix());
 
 	if(IsBoundingBoxVisible())
 		pGraphics->DrawBoundingBox(&GetBoundingBox(), GetWorldMatrix(), Material(Colors::Blue));
+}
+
+bool StaticObject::RayIntersect(XMVECTOR origin, XMVECTOR direction, float& pDist)
+{
+	XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(GetWorldMatrix()), GetWorldMatrix());
+	origin = XMVector3TransformCoord(origin, invWorld);
+	direction = XMVector3TransformNormal(direction, invWorld);
+	return mModel->RayIntersect(origin, direction, pDist);
 }
 
 //! Returns the bounding box in world space.

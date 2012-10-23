@@ -15,6 +15,7 @@ public:
 	virtual void Update(float dt);
 	virtual void Draw(Graphics* pGraphics);
 
+	bool RayIntersect(XMVECTOR origin, XMVECTOR direction, float& pDist);
 	AxisAlignedBox GetBoundingBox();
 	StaticModel* GetModel();
 private:

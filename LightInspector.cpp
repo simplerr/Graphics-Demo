@@ -1,7 +1,6 @@
 #include "LightInspector.h"
 #include "Light.h"
 #include "Gwen/Controls/Button.h"
-#include "Gwen/Controls/Property/ColorSelector.h"
 #include "Gwen/Controls/PropertyTree.h"
 #include "Gwen/Controls/ComboBox.h"
 #include "Util.h"
@@ -11,8 +10,6 @@ LightInspector::LightInspector(Gwen::Controls::Base* pParent)
 	: BaseInspector(pParent)
 {
 	mLight = nullptr;
-	mAmbientStrength = 1.0f;
-	mDiffuseStrength = mSpecularStrength =  0.0f;
 	mRangeSlider = mSpotSlider = nullptr;
 }
 	
@@ -27,14 +24,9 @@ void LightInspector::Init()
 	SetBounds(0, 0, 220, 800);
 
 	Gwen::Controls::CollapsibleCategory* dataCategory = Add("Data");
-	onSelection.Add(this, &LightInspector::OnSelection);
-
 	Gwen::Controls::CollapsibleCategory* colorCategory = Add("Colors");
-	colorCategory->SetSize(200, 200);
-	onSelection.Add(this, &LightInspector::OnSelection);
-
 	Gwen::Controls::CollapsibleCategory* orientationCategory = Add("Orientation");
-	onSelection.Add(this, &LightInspector::OnSelection);
+	colorCategory->SetSize(200, 200);
 
 	// Add the color properties.
 	CreateColorProperties(colorCategory);
@@ -52,24 +44,103 @@ void LightInspector::Cleanup()
 	// Cleanup all the controls.
 }
 
-void LightInspector::OnSelection()
+void LightInspector::SetObject(void* pObject)
 {
-	string selectedText = ToString(GetSelected()->GetText().c_str());
-	OutputDebugString(selectedText.c_str());
+	mLight = (Light*)pObject;
+	mCurrentMaterial = mLight->GetMaterial();
+	Material oldMat = mLight->GetMaterial();
+
+	//
+	// Set the position.
+	//
+	XMFLOAT3 pos = mLight->GetPosition();
+	char buffer[256];
+	sprintf(buffer, "%.2f", pos.x);
+	mXProperty->GetProperty()->SetPropertyValue(buffer);
+	sprintf(buffer, "%.2f", pos.y);
+	mYProperty->GetProperty()->SetPropertyValue(buffer);
+	sprintf(buffer, "%.2f", pos.z);
+	mZProperty->GetProperty()->SetPropertyValue(buffer);
+
+	//
+	// Set the range and spot controls.
+	//
+	mRangeSlider->SetValue(mLight->GetRange());
+	mRangeNumeric->SetValue(mLight->GetRange());
+	mSpotSlider->SetValue(mLight->GetSpot());
+	mSpotNumeric->SetValue(mLight->GetSpot());
+	
+	// Set the color intensity slider.
+	XMFLOAT3 intensity = mLight->GetIntensity();
+	mAmbientIntensitySlider->SetValue(intensity.x);
+	mDiffuseIntensitySlider->SetValue(intensity.y);
+	mSpecularIntensitySlider->SetValue(intensity.z);
+
+	//
+	// Set the color selectors.
+	//
+	mLight->SetMaterials(oldMat.ambient, oldMat.diffuse, oldMat.specular);
+	Material material = mLight->GetMaterial();
+	int r, g, b;
+
+	// Ambient.
+	r = material.ambient.x * 255.0f;
+	g = material.ambient.y * 255.0f;
+	b = material.ambient.z * 255.0f;
+
+	sprintf(buffer, "%i %i %i", b, g, r);
+	mAmbientSelector->SetPropertyValue(buffer, true);
+
+	// Diffuse.
+	r = material.diffuse.x * 255.0f;
+	g = material.diffuse.y * 255.0f;
+	b = material.diffuse.z * 255.0f;
+
+	sprintf(buffer, "%i %i %i", b, g, r);
+	mDiffuseSelector->SetPropertyValue(buffer, true);
+
+	// Specular.
+	r = material.specular.x * 255.0f;
+	g = material.specular.y * 255.0f;
+	b = material.specular.z * 255.0f;
+
+	sprintf(buffer, "%i %i %i", b, g, r);
+	mSpecularSelector->SetPropertyValue(buffer, true);
+
+	// Restores the light color.
+	// [NOTE] All the SetXXX on controls changes the light color to the value they had before, which is wrong. Gets restored here.
+	mCurrentMaterial = oldMat;
+	SetLightMaterial();
 }
 
-void LightInspector::OnColorStrengthSliderMoved(Base* pControl)
+void LightInspector::SetLightMaterial()
 {
-	Gwen::Controls::Slider* slider = (Gwen::Controls::Slider*)pControl;
+	// Get the current material.
+	Material material = mCurrentMaterial;
+	XMFLOAT4 ambient = XMFLOAT4(material.ambient.x, material.ambient.y, material.ambient.z, material.ambient.w);
+	XMFLOAT4 diffuse = XMFLOAT4(material.diffuse.x, material.diffuse.y, material.diffuse.z, material.diffuse.w);
+	XMFLOAT4 specular = XMFLOAT4(material.specular.x, material.specular.y, material.specular.z, material.specular.w);
 
-	if(slider->GetName() == "AmbientSlider") 
-		mAmbientStrength = slider->GetValue();
-	else if(slider->GetName() == "DiffuseSlider")		
-		mDiffuseStrength = slider->GetValue();
-	else if(slider->GetName() == "SpecularSlider")		
-		mSpecularStrength = slider->GetValue();
+	// Set the light material and intensity.
+	mLight->SetMaterials(ambient, diffuse, specular);
+	mLight->SetIntensity(mAmbientIntensitySlider->GetValue(), mDiffuseIntensitySlider->GetValue(), mSpecularIntensitySlider->GetValue());
+}
 
-	SetLightMaterial();
+void LightInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
+{
+	Gwen::Controls::PropertyRow* row = (Gwen::Controls::PropertyRow*)pControl;
+	string label = ToString(row->GetLabel()->GetText().c_str());
+
+	XMFLOAT3 pos = mLight->GetPosition();
+	float xyz = atof(ToString(row->GetProperty()->GetPropertyValue().c_str()).c_str());
+	if(label == "X")
+		pos.x = xyz;
+	else if(label == "Y")
+		pos.y = xyz;
+	else if(label == "Z")
+		pos.z = xyz;
+
+	mLight->SetPosition(pos);
 }
 
 void LightInspector::OnDirectionSliderMoved(Base* pControl)
@@ -104,54 +175,9 @@ void LightInspector::OnColorChange(Gwen::Controls::Base* pControl)
 		SetLightMaterial();
 }
 
-void LightInspector::SetLightMaterial()
+void LightInspector::OnColorIntensitySliderMoved(Base* pControl)
 {
-	Material material = mCurrentMaterial;
-	XMFLOAT4 ambient = XMFLOAT4(material.ambient.x * mAmbientStrength, material.ambient.y * mAmbientStrength, material.ambient.z * mAmbientStrength, material.ambient.w);
-	XMFLOAT4 diffuse = XMFLOAT4(material.diffuse.x * mDiffuseStrength, material.diffuse.y * mDiffuseStrength, material.diffuse.z * mDiffuseStrength, material.diffuse.w);
-	XMFLOAT4 specular = XMFLOAT4(material.specular.x * mSpecularStrength, material.specular.y * mSpecularStrength, material.specular.z * mSpecularStrength, material.specular.w);
-
-	mLight->SetMaterials(ambient, diffuse, specular);
-}
-
-void LightInspector::SetObject(void* pObject)
-{
-	mLight = (Light*)pObject;
-	mCurrentMaterial = mLight->GetMaterial();
 	SetLightMaterial();
-
-	// Set the position.
-	XMFLOAT3 pos = mLight->GetPosition();
-	char buffer[256];
-	sprintf(buffer, "%.2f", pos.x);
-	mXProperty->GetProperty()->SetPropertyValue(buffer);
-	sprintf(buffer, "%.2f", pos.y);
-	mYProperty->GetProperty()->SetPropertyValue(buffer);
-	sprintf(buffer, "%.2f", pos.z);
-	mZProperty->GetProperty()->SetPropertyValue(buffer);
-
-	// Set the range and spot controls.
-	mRangeSlider->SetValue(mLight->GetRange());
-	mRangeNumeric->SetValue(mLight->GetRange());
-	mSpotSlider->SetValue(mLight->GetSpot());
-	mSpotNumeric->SetValue(mLight->GetSpot());
-}
-
-void LightInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
-{
-	Gwen::Controls::PropertyRow* row = (Gwen::Controls::PropertyRow*)pControl;
-	string label = ToString(row->GetLabel()->GetText().c_str());
-
-	XMFLOAT3 pos = mLight->GetPosition();
-	float xyz = atof(ToString(row->GetProperty()->GetPropertyValue().c_str()).c_str());
-	if(label == "X")
-		pos.x = xyz;
-	else if(label == "Y")
-		pos.y = xyz;
-	else if(label == "Z")
-		pos.z = xyz;
-
-	mLight->SetPosition(pos);
 }
 
 void LightInspector::OnLightTypeChange(Base* pControl)
@@ -327,68 +353,68 @@ void LightInspector::CreateColorProperties(Gwen::Controls::Base* pParent)
 
 	// Ambient.
 	Gwen::Controls::Properties* ambientProps = ptree->Add(L"Ambient");
-	Gwen::Controls::Property::ColorSelector* colorSelector = new Gwen::Controls::Property::ColorSelector(ambientProps);
-	colorSelector->onChange.Add(this, &LightInspector::OnColorChange);
-	colorSelector->SetName("AmbientColor");
-	ambientProps->Add(L"Color", colorSelector, L"255 255 255");
+	mAmbientSelector = new Gwen::Controls::Property::ColorSelector(ambientProps);
+	mAmbientSelector->onChange.Add(this, &LightInspector::OnColorChange);
+	mAmbientSelector->SetName("AmbientColor");
+	ambientProps->Add(L"Color", mAmbientSelector, L"255 255 255");
 
-	Gwen::Controls::HorizontalSlider* ambientSlider = new Gwen::Controls::HorizontalSlider(ambientProps);
-	ambientSlider->SetName("AmbientSlider");
-	ambientSlider->SetWidth(170);
-	ambientSlider->SetPos(0, 33);
-	ambientSlider->SetHeight(30);
-	ambientSlider->SetValue(1.0f);
-	ambientSlider->SetNotchCount(20);
-	ambientSlider->SetRange(0.0f, 1.0f);
-	ambientSlider->SetClampToNotches(true);
-	ambientSlider->onValueChanged.Add( this, &LightInspector::OnColorStrengthSliderMoved );
+	mAmbientIntensitySlider = new Gwen::Controls::HorizontalSlider(ambientProps);
+	mAmbientIntensitySlider->SetName("AmbientSlider");
+	mAmbientIntensitySlider->SetWidth(170);
+	mAmbientIntensitySlider->SetPos(0, 33);
+	mAmbientIntensitySlider->SetHeight(30);
+	mAmbientIntensitySlider->SetValue(1.0f);
+	mAmbientIntensitySlider->SetNotchCount(20);
+	mAmbientIntensitySlider->SetRange(0.0f, 1.0f);
+	mAmbientIntensitySlider->SetClampToNotches(true);
+	mAmbientIntensitySlider->onValueChanged.Add( this, &LightInspector::OnColorIntensitySliderMoved );
 	
 	Gwen::Controls::Label* ambientLabel = new Gwen::Controls::Label(ambientProps);
-	ambientLabel->SetText("Strength");
+	ambientLabel->SetText("Intensity");
 	ambientLabel->SetPos(3, 20);
 
 	// Diffuse.
 	Gwen::Controls::Properties* diffuseProps = ptree->Add(L"Diffuse");
-	colorSelector = new Gwen::Controls::Property::ColorSelector(diffuseProps);
-	colorSelector->onChange.Add(this, &LightInspector::OnColorChange);
-	colorSelector->SetName("DiffuseColor");
-	diffuseProps->Add(L"Color", colorSelector, L"255 255 255");
+	mDiffuseSelector = new Gwen::Controls::Property::ColorSelector(diffuseProps);
+	mDiffuseSelector->onChange.Add(this, &LightInspector::OnColorChange);
+	mDiffuseSelector->SetName("DiffuseColor");
+	diffuseProps->Add(L"Color", mDiffuseSelector, L"255 255 255");
 
-	Gwen::Controls::HorizontalSlider* diffuseSlider = new Gwen::Controls::HorizontalSlider(diffuseProps);
-	diffuseSlider->SetName("DiffuseSlider");
-	diffuseSlider->SetWidth(170);
-	diffuseSlider->SetPos(0, 33);
-	diffuseSlider->SetHeight(20);
-	diffuseSlider->SetValue(0.0f);
-	diffuseSlider->SetNotchCount(20);
-	diffuseSlider->SetRange(0.0f, 1.0f);
-	diffuseSlider->SetClampToNotches(true);
-	diffuseSlider->onValueChanged.Add( this, &LightInspector::OnColorStrengthSliderMoved );
+	mDiffuseIntensitySlider = new Gwen::Controls::HorizontalSlider(diffuseProps);
+	mDiffuseIntensitySlider->SetName("DiffuseSlider");
+	mDiffuseIntensitySlider->SetWidth(170);
+	mDiffuseIntensitySlider->SetPos(0, 33);
+	mDiffuseIntensitySlider->SetHeight(20);
+	mDiffuseIntensitySlider->SetValue(0.0f);
+	mDiffuseIntensitySlider->SetNotchCount(20);
+	mDiffuseIntensitySlider->SetRange(0.0f, 1.0f);
+	mDiffuseIntensitySlider->SetClampToNotches(true);
+	mDiffuseIntensitySlider->onValueChanged.Add( this, &LightInspector::OnColorIntensitySliderMoved );
 	
 	Gwen::Controls::Label* diffuseLabel = new Gwen::Controls::Label(diffuseProps);
-	diffuseLabel->SetText("Strength");
+	diffuseLabel->SetText("Intensity");
 	diffuseLabel->SetPos(3, 20);
 
 	// Specular.
 	Gwen::Controls::Properties* specularProps = ptree->Add(L"Specular");
-	colorSelector = new Gwen::Controls::Property::ColorSelector(specularProps);
-	colorSelector->onChange.Add(this, &LightInspector::OnColorChange);
-	colorSelector->SetName("SpecularColor");
-	specularProps->Add(L"Color", colorSelector, L"255 255 255");
+	mSpecularSelector = new Gwen::Controls::Property::ColorSelector(specularProps);
+	mSpecularSelector->onChange.Add(this, &LightInspector::OnColorChange);
+	mSpecularSelector->SetName("SpecularColor");
+	specularProps->Add(L"Color", mSpecularSelector, L"255 255 255");
 
-	Gwen::Controls::HorizontalSlider* specularSlider = new Gwen::Controls::HorizontalSlider(specularProps);
-	specularSlider->SetName("SpecularSlider");
-	specularSlider->SetWidth(170);
-	specularSlider->SetPos(0, 33);
-	specularSlider->SetHeight(20);
-	specularSlider->SetValue(0.0f);
-	specularSlider->SetNotchCount(20);
-	specularSlider->SetRange(0.0f, 1.0f);
-	specularSlider->SetClampToNotches(true);
-	specularSlider->onValueChanged.Add( this, &LightInspector::OnColorStrengthSliderMoved );
+	mSpecularIntensitySlider = new Gwen::Controls::HorizontalSlider(specularProps);
+	mSpecularIntensitySlider->SetName("SpecularSlider");
+	mSpecularIntensitySlider->SetWidth(170);
+	mSpecularIntensitySlider->SetPos(0, 33);
+	mSpecularIntensitySlider->SetHeight(20);
+	mSpecularIntensitySlider->SetValue(0.0f);
+	mSpecularIntensitySlider->SetNotchCount(20);
+	mSpecularIntensitySlider->SetRange(0.0f, 1.0f);
+	mSpecularIntensitySlider->SetClampToNotches(true);
+	mSpecularIntensitySlider->onValueChanged.Add( this, &LightInspector::OnColorIntensitySliderMoved );
 	
 	Gwen::Controls::Label* specularLabel = new Gwen::Controls::Label(specularProps);
-	specularLabel->SetText("Strength");
+	specularLabel->SetText("Intensity");
 	specularLabel->SetPos(3, 20);
 
 	ptree->ExpandAll();
