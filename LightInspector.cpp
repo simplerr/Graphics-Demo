@@ -439,3 +439,16 @@ bool LightInspector::IsResponsible(int type)
 	else 
 		return false;
 }
+
+void LightInspector::OnPositionChangeEvent(XMFLOAT3 position)
+{
+	char buffer[246];
+	sprintf(buffer, "%.3f", position.x);
+	mXProperty->GetProperty()->SetPropertyValue(buffer);
+
+	sprintf(buffer, "%.3f", position.y);
+	mYProperty->GetProperty()->SetPropertyValue(buffer);
+
+	sprintf(buffer, "%.3f", position.z);
+	mZProperty->GetProperty()->SetPropertyValue(buffer);
+}

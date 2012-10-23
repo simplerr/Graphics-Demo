@@ -20,7 +20,6 @@ ObjectMover::ObjectMover(ModelImporter* pImporter)
 	mAxisX->SetPosition(XMFLOAT3(0, 30, 30));
 	mAxisX->SetMaterial(Material(Colors::Green));
 	mAxisX->SetRotation(XMFLOAT3(3.14f/2.0f, 3.14f/2.0f, 0));
-	mAxisX->SetBoundingBoxVisible(true);
 
 	mAxisY = new StaticObject(pImporter, "models/arrow/arrow.obj");
 	mAxisY->SetPosition(XMFLOAT3(0, 30, 30));
@@ -80,10 +79,14 @@ void ObjectMover::Update(float dt)
 
 void ObjectMover::UpdatePosition(XMFLOAT3 delta)
 {
-	if(mMovingObject != nullptr)
+	if(mMovingObject != nullptr) {
 		mMovingObject->SetPosition(mMovingObject->GetPosition() + delta);
-	else if(mMovingLight != nullptr)
+		//onPositionChange(mMovingObject->GetPosition());
+	}
+	else if(mMovingLight != nullptr) {
 		mMovingLight->SetPosition(mMovingLight->GetPosition() + delta);
+		//onPositionChange(mMovingLight->GetPosition());
+	}
 
 	mAxisX->SetPosition(mAxisX->GetPosition() + delta);
 	mAxisY->SetPosition(mAxisY->GetPosition() + delta);
@@ -232,4 +235,9 @@ void ObjectMover::SetObject(Light* pLight)
 	mAxisX->SetScale(XMFLOAT3(1, 1, 1));
 	mAxisY->SetScale(XMFLOAT3(1, 1, 1));
 	mAxisZ->SetScale(XMFLOAT3(1, 1, 1));
+}
+
+void ObjectMover::SetInspector(BaseInspector* pInspector)
+{
+
 }

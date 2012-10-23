@@ -1,6 +1,7 @@
 #include "BaseInspector.h"
 #include "Gwen/Controls/NumericUpDown.h"
 #include "Gwen/Controls/HorizontalSlider.h"
+#include "d3dUtil.h"
 #include <string>
 using namespace std;
 
@@ -22,6 +23,10 @@ public:
 	void OnOrientationChange(Gwen::Controls::Base* pControl);
 	void OnAABBCheckBoxChange(Base* pControl);
 	bool IsResponsible(int type);
+
+	// Callback.
+	void OnPositionChangeEvent(XMFLOAT3 position);
+	void OnScaleChangeEvent(XMFLOAT3 scale);
 private:
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:

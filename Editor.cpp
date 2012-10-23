@@ -83,10 +83,15 @@ void Editor::ItemSelected(void* pItem, int type)
 		mActiveInspector->Init();
 	}
 	
-	if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) 
+	if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) {
 		mObjectMover->SetObject((Object3D*)pItem);
-	else if(type == LIGHT) 
+		mObjectMover->AddOnPositionChange(&ObjectInspector::OnPositionChangeEvent, (ObjectInspector*)mActiveInspector);
+		mObjectMover->AddOnScaleChange(&ObjectInspector::OnScaleChangeEvent, (ObjectInspector*)mActiveInspector);
+	}
+	else if(type == LIGHT) {
 		mObjectMover->SetObject((Light*)pItem);
+		mObjectMover->AddOnPositionChange(&LightInspector::OnPositionChangeEvent, (LightInspector*)mActiveInspector);
+	}
 
 	mActiveInspector->SetObject(pItem);
 }
