@@ -115,7 +115,7 @@ void Game::Init()
 
 	// Add some lights.
 	mLight = new Light();
-	mLight->SetMaterials(Colors::White, Colors::White, Colors::White);
+	mLight->SetMaterials(Colors::White, Colors::Red, Colors::White);
 	mLight->SetDirection(0.0f, -1.0f, 0.0f);
 	mLight->SetType(DIRECTIONAL_LIGHT);
 	mLight->SetAtt(0, 0.1, 0);
@@ -139,10 +139,10 @@ void Game::Init()
 	mAnimatedObject->SetRotation(XMFLOAT3(0.7, 0.6, 0.6));
 	mWorld->AddObject(mAnimatedObject);
 
-	/*mObject = new StaticObject(mModelImporter, "models/arrow/arrow.obj");
+	mObject = new StaticObject(mModelImporter, "models/sword/uld-sword.obj");
 	mObject->SetPosition(XMFLOAT3(0, 30, 0));
 	mObject->SetMaterial(Material(Colors::Red));
-	mWorld->AddObject(mObject);*/
+	mWorld->AddObject(mObject);
 
 	mEditor->SetLight(mLight);
 	mEditor->SetWorld(mWorld);

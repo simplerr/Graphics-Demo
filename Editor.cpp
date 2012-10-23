@@ -75,18 +75,19 @@ void Editor::ItemSelected(void* pItem, int type)
 	}
 
 	if(mActiveInspector == nullptr) {
-		if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) {
+		if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) 
 			mActiveInspector = new ObjectInspector(mGwenCanvas);
-			mObjectMover->SetObject((Object3D*)pItem);
-		}
-		else if(type == LIGHT) {
+		else if(type == LIGHT) 
 			mActiveInspector = new LightInspector(mGwenCanvas);
-			mObjectMover->SetObject((Light*)pItem);
-		}
 
 		mActiveInspector->Init();
 	}
 	
+	if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) 
+		mObjectMover->SetObject((Object3D*)pItem);
+	else if(type == LIGHT) 
+		mObjectMover->SetObject((Light*)pItem);
+
 	mActiveInspector->SetObject(pItem);
 }
 

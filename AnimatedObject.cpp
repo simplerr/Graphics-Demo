@@ -4,6 +4,7 @@
 #include "Primitive.h"
 #include "Graphics.h"
 #include "SkinnedMesh.h"
+#include "Effects.h"
 
 AnimatedObject::AnimatedObject(ModelImporter* importer, string filename)
 	: Object3D()
@@ -36,6 +37,8 @@ void AnimatedObject::Draw(Graphics* pGraphics)
 	mSkinnedModel->SetElapsedTime(mElapsedTime);
 	mSkinnedModel->Draw(pGraphics, GetWorldMatrix());
 
+	Effects::BasicFX->SetUseAnimation(false);
+	Effects::BasicFX->Apply();
 	if(IsBoundingBoxVisible())
 		pGraphics->DrawBoundingBox(&GetBoundingBox(), GetWorldMatrix(), Material(Colors::Blue));
 }
