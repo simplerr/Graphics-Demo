@@ -8,6 +8,7 @@
 #include <xnamath.h>
 
 class Light;
+class ObjectMover;
 
 /*
 	TODO
@@ -37,6 +38,8 @@ public:
 
 	// Callback.
 	void OnPositionChangeEvent(XMFLOAT3 position);
+
+	void SetObjectMover(ObjectMover* pObjectMover);
 private:
 	void CreateColorProperties(Gwen::Controls::Base* pParent);
 	void CreateOrientationProperties(Gwen::Controls::Base* pParent);
@@ -53,4 +56,5 @@ private:
 	Gwen::Controls::HorizontalSlider* mRangeSlider;
 	Gwen::Controls::HorizontalSlider* mSpotSlider;
 	Gwen::Controls::Property::ColorSelector* mAmbientSelector, *mDiffuseSelector, *mSpecularSelector;
+	ObjectMover* mObjectMover;
 };

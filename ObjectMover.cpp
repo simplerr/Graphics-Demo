@@ -81,11 +81,11 @@ void ObjectMover::UpdatePosition(XMFLOAT3 delta)
 {
 	if(mMovingObject != nullptr) {
 		mMovingObject->SetPosition(mMovingObject->GetPosition() + delta);
-		//onPositionChange(mMovingObject->GetPosition());
+		onPositionChange(mMovingObject->GetPosition());
 	}
 	else if(mMovingLight != nullptr) {
 		mMovingLight->SetPosition(mMovingLight->GetPosition() + delta);
-		//onPositionChange(mMovingLight->GetPosition());
+		onPositionChange(mMovingLight->GetPosition());
 	}
 
 	mAxisX->SetPosition(mAxisX->GetPosition() + delta);
@@ -237,7 +237,20 @@ void ObjectMover::SetObject(Light* pLight)
 	mAxisZ->SetScale(XMFLOAT3(1, 1, 1));
 }
 
-void ObjectMover::SetInspector(BaseInspector* pInspector)
+void ObjectMover::SetPosition(XMFLOAT3 position)
+{
+	// Acctually the position don't need to be set, the Inspector does that.
+	/*if(mMovingObject != nullptr) 
+		mMovingObject->SetPosition(position);
+	else if(mMovingLight != nullptr) 
+		mMovingLight->SetPosition(position);*/
+
+	mAxisX->SetPosition(position + XMFLOAT3(mAxisX->GetBoundingBox().Extents.x*0.6, 0, 0));
+	mAxisY->SetPosition(position + XMFLOAT3(0, mAxisY->GetBoundingBox().Extents.y*0.6, 0));
+	mAxisZ->SetPosition(position + XMFLOAT3(0, 0, mAxisZ->GetBoundingBox().Extents.z*0.6));
+}
+
+void ObjectMover::SetScale(XMFLOAT3 scale)
 {
 
 }

@@ -81,6 +81,7 @@ void Editor::ItemSelected(void* pItem, int type)
 			mActiveInspector = new LightInspector(mGwenCanvas);
 
 		mActiveInspector->Init();
+		mActiveInspector->SetObjectMover(mObjectMover);
 	}
 	
 	if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) {
@@ -92,6 +93,7 @@ void Editor::ItemSelected(void* pItem, int type)
 		mObjectMover->SetObject((Light*)pItem);
 		mObjectMover->AddOnPositionChange(&LightInspector::OnPositionChangeEvent, (LightInspector*)mActiveInspector);
 	}
+
 
 	mActiveInspector->SetObject(pItem);
 }

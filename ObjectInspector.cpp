@@ -7,6 +7,7 @@
 #include "Object3D.h"
 #include "Util.h"
 #include "StaticObject.h"
+#include "ObjectMover.h"
 
 ObjectInspector::ObjectInspector(Gwen::Controls::Base* pParent)
 	: BaseInspector(pParent)
@@ -202,7 +203,11 @@ void ObjectInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
 	else if(label == "Z")
 		pos.z = xyz;
 
+	// Set the object position.
 	mObject->SetPosition(pos);
+
+	// Move the ObjectMover.
+	mObjectMover->SetPosition(pos);
 }
 
 void ObjectInspector::OnScaleSliderMoved(Base* pControl)
@@ -329,4 +334,9 @@ void ObjectInspector::OnPositionChangeEvent(XMFLOAT3 position)
 void ObjectInspector::OnScaleChangeEvent(XMFLOAT3 scale)
 {
 
+}
+
+void ObjectInspector::SetObjectMover(ObjectMover* pObjectMover)
+{
+	mObjectMover = pObjectMover;
 }

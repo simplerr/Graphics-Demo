@@ -6,6 +6,7 @@
 using namespace std;
 
 class StaticObject;
+class ObjectMover;
 
 class ObjectInspector : public BaseInspector
 {
@@ -27,6 +28,8 @@ public:
 	// Callback.
 	void OnPositionChangeEvent(XMFLOAT3 position);
 	void OnScaleChangeEvent(XMFLOAT3 scale);
+
+	void SetObjectMover(ObjectMover* pObjectMover);
 private:
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:
@@ -36,4 +39,5 @@ private:
 	Gwen::Controls::PropertyRow* mXScaleProperty, *mYScaleProperty, *mZScaleProperty;
 	Gwen::Controls::HorizontalSlider* mXRotationSlider, *mYRotationSlider, *mZRotationSlider;
 	Gwen::Controls::HorizontalSlider* mXScaleSlider, *mYScaleSlider, *mZScaleSlider;
+	ObjectMover* mObjectMover;
 };

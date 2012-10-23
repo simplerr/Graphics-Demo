@@ -31,6 +31,10 @@ public:
 	void SetObject(Light* pLight);
 	void SetInspector(BaseInspector* pInspector);
 
+	// These are only supposed to be called by an BaseInspector type.
+	void SetPosition(XMFLOAT3 position);
+	void SetScale(XMFLOAT3 scale);
+
 	// Callback hookups.
 	template <class T>
 	void AddOnPositionChange(void(T::*_callback)(XMFLOAT3), T* _object)	{

@@ -5,6 +5,7 @@
 #include "Gwen/Controls/ComboBox.h"
 #include "Util.h"
 #include "Object3D.h"
+#include "ObjectMover.h"
 
 LightInspector::LightInspector(Gwen::Controls::Base* pParent)
 	: BaseInspector(pParent)
@@ -140,7 +141,11 @@ void LightInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
 	else if(label == "Z")
 		pos.z = xyz;
 
+	// Set the lights position.
 	mLight->SetPosition(pos);
+
+	// Move the ObjectMover.
+	mObjectMover->SetPosition(pos);
 }
 
 void LightInspector::OnDirectionSliderMoved(Base* pControl)
@@ -451,4 +456,9 @@ void LightInspector::OnPositionChangeEvent(XMFLOAT3 position)
 
 	sprintf(buffer, "%.3f", position.z);
 	mZProperty->GetProperty()->SetPropertyValue(buffer);
+}
+
+void LightInspector::SetObjectMover(ObjectMover* pObjectMover)
+{
+	mObjectMover = pObjectMover;
 }
