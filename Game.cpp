@@ -35,27 +35,6 @@ BillboardVertex* billboard;
 
 Gwen::Renderer::DirectX11* pRenderer;
 
-void drawText(ID3D11Device *pDevice, ID3D11DeviceContext *pContext) {
-	IFW1Factory *pFW1Factory;
-	HRESULT hResult = FW1CreateFactory(FW1_VERSION, &pFW1Factory);
-	
-	IFW1FontWrapper *pFontWrapper;
-	hResult = pFW1Factory->CreateFontWrapper(pDevice, L"Arial", &pFontWrapper);
-	
-	pFontWrapper->DrawString(
-		pContext,
-		L"Text",// String
-		12.0f,// Font size
-		100.0f,// X position
-		50.0f,// Y position
-		0xff0099ff,// Text color, 0xAaBbGgRr
-		0// Flags (for example FW1_RESTORESTATE to keep context states unchanged)
-	);
-	
-	pFontWrapper->Release();
-	pFW1Factory->Release();
-}
-
 //! The program starts here.
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
 {
@@ -108,7 +87,7 @@ void Game::Init()
 
 	// Create the model importer.
 	mModelImporter = new ModelImporter(gPrimitiveFactory);
-	mEditor->Init(mModelImporter);
+	mEditor->Init(mModelImporter, mWorld);
 
 	// Connect the graphics light list to the one in World.
 	GetGraphics()->SetLightList(mWorld->GetLights());
@@ -144,9 +123,6 @@ void Game::Init()
 	mObject->SetMaterial(Material(Colors::Red));
 	mObject->SetScale(XMFLOAT3(10, 10, 10));
 	mWorld->AddObject(mObject);
-
-	mEditor->SetLight(mLight);
-	mEditor->SetWorld(mWorld);
 }
 	
 void Game::GwenInit()

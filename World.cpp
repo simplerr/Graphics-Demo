@@ -14,6 +14,10 @@
 #include "Input.h"
 #include <limits>
 
+float toolDelta = 0;
+float toolDelta2 = 0;
+float toolDelta3 = 0;
+
 World::World()
 {
 	mNumVisibleObjects = 0;
@@ -179,6 +183,12 @@ LightList* World::GetLights()
 ObjectList* World::GetObjects()
 {
 	return &mObjectList;
+}
+
+//! Returns a pointer to the terrain.
+Terrain* World::GetTerrain()
+{
+	return mTerrain;
 }
 
 //! Returns the number of visible objects (inside the camera frustum).

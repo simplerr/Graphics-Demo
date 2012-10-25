@@ -27,8 +27,9 @@ public:
 	void AddObject(Object3D* object);
 	void AddLight(Light* light);
 
-	LightList* GetLights();
+	LightList*	GetLights();
 	ObjectList* GetObjects();
+	Terrain*	GetTerrain();
 	int GetVisibleObjects();
 
 	// Callback hookups.

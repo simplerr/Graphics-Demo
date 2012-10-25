@@ -13,6 +13,7 @@
 #include "Graphics.h"
 #include "Camera.h"
 #include "World.h"
+#include "TerrainTool.h"
 
 Editor::Editor(int width, int height)
 {
@@ -30,11 +31,21 @@ Editor::~Editor()
 	delete mGwenSkin;
 	delete mGwenRenderer;
 	delete mObjectMover;
+	delete mTerrainTool;
 }
 
-void Editor::Init(ModelImporter* pImporter)
+void Editor::Init(ModelImporter* pImporter, World* pWorld)
 {
 	mObjectMover = new ObjectMover(pImporter);
+
+	// Init the terrain tool.
+	mTerrainTool = new TerrainTool();
+	mTerrainTool->SetTerrain(pWorld->GetTerrain());
+
+	mWorld = pWorld;
+	mWorldTree->CreateTree(mWorld);
+	mWorld->AddObjectSelectedListender(&Editor::OnObjectSelected, this);
+	mWorld->AddLightSelectedListender(&Editor::OnLightSelected, this);
 }
 
 void Editor::GwenInit(int width, int height)
@@ -60,6 +71,7 @@ void Editor::GwenInit(int width, int height)
 void Editor::Update(float dt)
 {
 	mObjectMover->Update(dt);
+	mTerrainTool->Update(dt);
 }
 	
 void Editor::Draw(Graphics* pGraphics)
@@ -74,8 +86,11 @@ void Editor::Draw(Graphics* pGraphics)
 	camera->Move();
 	camera->UpdateViewMatrix();
 
-	// Render the canvas and all controls in it.
+	// Render the tools.
 	mObjectMover->Draw(pGraphics);
+	mTerrainTool->Draw(pGraphics);
+
+	// Render the canvas and all controls in it.
 	mGwenCanvas->RenderCanvas();
 }
 	
@@ -121,19 +136,6 @@ void Editor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	message.lParam = lParam;
 
 	mGwenInput.ProcessMessage(message);
-}
-
-void Editor::SetLight(Light* light)
-{
-	//mActiveInspector->SetObject(light);
-}
-
-void Editor::SetWorld(World* world)
-{
-	mWorld = world;
-	mWorldTree->CreateTree(mWorld);
-	mWorld->AddObjectSelectedListender(&Editor::OnObjectSelected, this);
-	mWorld->AddLightSelectedListender(&Editor::OnLightSelected, this);
 }
 
 void Editor::OnObjectSelected(Object3D* pObject)

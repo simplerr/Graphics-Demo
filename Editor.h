@@ -21,6 +21,7 @@ class WorldTree;
 class ObjectMover;
 class ModelImporter;
 class Object3D;
+class TerrainTool;
 
 class Editor
 {
@@ -28,15 +29,12 @@ public:
 	Editor(int width, int height);
 	~Editor();
 	
-	void Init(ModelImporter* pImporter);
+	void Init(ModelImporter* pImporter, World* pWorld);
 	void GwenInit(int width, int height);
 	void Update(float dt);
 	void Draw(Graphics* pGraphics);
 	void MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	void ItemSelected(void* pItem, int type);
-
-	void SetLight(Light* light);
-	void SetWorld(World* world);
 
 	void OnObjectSelected(Object3D* pObject);
 	void OnLightSelected(Light* pLight);
@@ -49,4 +47,5 @@ private:
 	World*						mWorld;
 	WorldTree*					mWorldTree;
 	ObjectMover*				mObjectMover;
+	TerrainTool*				mTerrainTool;
 };
