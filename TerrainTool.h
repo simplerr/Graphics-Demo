@@ -23,8 +23,10 @@ public:
 	void SetTerrain(Terrain* pTerrain);
 	void SetEnabled(bool enabled);
 	void SetTool(ToolType tool);
-	void SetSize(float size);
+	void SetRadius(float radius);
 	void SetStrength(float strength);
+	float GetRadius();
+	float GetStrength();
 private:
 	void ChangeHeight(XMFLOAT3 center, bool raise);
 	void SmothTerrain(XMFLOAT3 center);
@@ -33,7 +35,7 @@ private:
 	Terrain*	mTerrain;
 	ToolType	mCurrentTool;
 	bool		mEnabled;
-	float		mSize;
+	float		mRadius;
 	float		mStrength;
 	const float mUpdateInterval;
 };

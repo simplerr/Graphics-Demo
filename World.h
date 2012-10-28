@@ -42,10 +42,16 @@ public:
 	void AddLightSelectedListender(void(T::*_callback)(Light*), T* _object)	{
 		OnLightSelected = boost::bind(_callback, _object, _1);
 	}
+
+	template <class T>
+	void AddTerrainSelectedListender(void(T::*_callback)(Terrain*), T* _object)	{
+		OnTerrainSelected = boost::bind(_callback, _object, _1);
+	}
 private:
 	// Callbacks.
 	boost::function<void(Object3D*)>	OnObjectSelected;
 	boost::function<void(Light*)>		OnLightSelected;
+	boost::function<void(Terrain*)>		OnTerrainSelected;
 private:
 	ObjectList	mObjectList;
 	LightList	mLightList;//LightList mLightList;	

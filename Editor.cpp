@@ -14,6 +14,7 @@
 #include "Camera.h"
 #include "World.h"
 #include "TerrainTool.h"
+#include "TerrainInspector.h"
 
 Editor::Editor(int width, int height)
 {
@@ -46,6 +47,7 @@ void Editor::Init(ModelImporter* pImporter, World* pWorld)
 	mWorldTree->CreateTree(mWorld);
 	mWorld->AddObjectSelectedListender(&Editor::OnObjectSelected, this);
 	mWorld->AddLightSelectedListender(&Editor::OnLightSelected, this);
+	mWorld->AddTerrainSelectedListender(&Editor::OnTerrainSelected, this);
 }
 
 void Editor::GwenInit(int width, int height)
@@ -107,18 +109,21 @@ void Editor::ItemSelected(void* pItem, int type)
 			mActiveInspector = new ObjectInspector(mGwenCanvas);
 		else if(type == LIGHT) 
 			mActiveInspector = new LightInspector(mGwenCanvas);
+		else if(type == TERRAIN)
+			mActiveInspector = new TerrainInspector(mGwenCanvas, mTerrainTool);
 
 		mActiveInspector->Init();
-		mActiveInspector->SetObjectMover(mObjectMover);
 		mObjectMover->SetVisible(true);
 	}
 	
 	if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) {
+		mActiveInspector->SetObjectMover(mObjectMover);
 		mObjectMover->SetObject((Object3D*)pItem);
 		mObjectMover->AddOnPositionChange(&ObjectInspector::OnPositionChangeEvent, (ObjectInspector*)mActiveInspector);
 		mObjectMover->AddOnScaleChange(&ObjectInspector::OnScaleChangeEvent, (ObjectInspector*)mActiveInspector);
 	}
 	else if(type == LIGHT) {
+		mActiveInspector->SetObjectMover(mObjectMover);
 		mObjectMover->SetObject((Light*)pItem);
 		mObjectMover->AddOnPositionChange(&LightInspector::OnPositionChangeEvent, (LightInspector*)mActiveInspector);
 	}
@@ -146,4 +151,9 @@ void Editor::OnObjectSelected(Object3D* pObject)
 void Editor::OnLightSelected(Light* pLight)
 {
 	ItemSelected(pLight, LIGHT);
+}
+
+void Editor::OnTerrainSelected(Terrain* pTerrain)
+{
+	ItemSelected(pTerrain, TERRAIN);
 }

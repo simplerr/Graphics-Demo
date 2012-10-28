@@ -22,6 +22,7 @@ class ObjectMover;
 class ModelImporter;
 class Object3D;
 class TerrainTool;
+class Terrain;
 
 class Editor
 {
@@ -38,6 +39,7 @@ public:
 
 	void OnObjectSelected(Object3D* pObject);
 	void OnLightSelected(Light* pLight);
+	void OnTerrainSelected(Terrain* pTerrain);
 private:
 	Gwen::Controls::Canvas*		mGwenCanvas;
 	Gwen::Skin::TexturedBase*	mGwenSkin;

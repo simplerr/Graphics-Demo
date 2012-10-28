@@ -67,6 +67,8 @@ World::~World()
 //! Updates all objects.
 void World::Update(float dt)
 {
+	bool objectSelected = false;
+
 	// Loop through all objects.
 	float closestDist = numeric_limits<float>::infinity();
 	Object3D* closestObject = nullptr;
@@ -84,6 +86,7 @@ void World::Update(float dt)
 					closestObject = mObjectList[i];
 					closestDist = dist;
 				}
+				objectSelected = true;
 			}
 		}
 
@@ -119,8 +122,18 @@ void World::Update(float dt)
 					closestLight = mLightList[i];
 					closestDist = dist;
 				}
+				objectSelected = true;
 			}
 		}
+	}
+
+	// Was the terrain selected?
+	// [NOTE] Only check if an object weren't selected.
+	if(gInput->KeyPressed(VK_LBUTTON) && !objectSelected)
+	{
+		XMFLOAT3 intersectPoint = mTerrain->GetIntersectPoint(gInput->GetWorldPickingRay());
+		if(intersectPoint.x != numeric_limits<float>::infinity())
+			OnTerrainSelected(mTerrain);
 	}
 
 	// A light was selected.

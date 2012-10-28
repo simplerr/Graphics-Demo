@@ -34,6 +34,12 @@ void WorldTree::CreateTree(World* pWorld)
 	Gwen::Controls::TreeNode* animatedObjects = objects->AddNode("Animated");
 	Gwen::Controls::TreeNode* lights = AddNode("Lights");
 
+	// Add the terrain node.
+	Gwen::Controls::TreeNode* terrain = AddNode("Terrain");
+	terrain->onSelect.Add(this, &WorldTree::OnSelectChange);
+	mNodeMap["Terrain"].pData = pWorld->GetTerrain();
+	mNodeMap["Terrain"].type = TERRAIN;
+
 	// Add all static objects.
 	ObjectList* objectList = pWorld->GetObjects();
 	int statics, animated;
