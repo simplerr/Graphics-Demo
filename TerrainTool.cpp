@@ -1,6 +1,7 @@
 #include "TerrainTool.h"
 #include "Terrain.h"
 #include "Input.h"
+#include "Effects.h"
 
 TerrainTool::TerrainTool() : mUpdateInterval(0.03f)
 {
@@ -52,6 +53,15 @@ void TerrainTool::Update(float dt)
 			mTerrain->BuildHeightmapSRV(GetD3DDevice());
 		}
 	}
+
+	if(GetIntersectPoint().x != numeric_limits<float>::infinity()) {
+		Effects::TerrainFX->SetToolCenter(XMFLOAT2(GetIntersectPoint().x, GetIntersectPoint().z));
+		Effects::TerrainFX->Apply();
+	}
+	else {
+		Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
+		Effects::TerrainFX->Apply();
+	}
 }
 	
 void TerrainTool::Draw(Graphics* pGraphics)
@@ -102,6 +112,8 @@ XMFLOAT3 TerrainTool::GetIntersectPoint()
 void TerrainTool::SetRadius(float radius)
 {
 	mRadius = radius;
+	Effects::TerrainFX->SetToolRadius(radius);
+	Effects::TerrainFX->Apply();
 }
 
 void TerrainTool::SetStrength(float strength)
