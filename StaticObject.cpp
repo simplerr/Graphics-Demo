@@ -36,6 +36,7 @@ void StaticObject::Draw(Graphics* pGraphics)
 		pGraphics->DrawBoundingBox(&GetBoundingBox(), GetWorldMatrix(), Material(Colors::Blue));
 }
 
+//! Returns true if the ray hits the mesh, triangle level check.
 bool StaticObject::RayIntersect(XMVECTOR origin, XMVECTOR direction, float& pDist)
 {
 	XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(GetWorldMatrix()), GetWorldMatrix());

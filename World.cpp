@@ -20,6 +20,7 @@ World::World()
 	mNumVisibleObjects = 0;
 }
 
+//! Init.
 void World::Init()
 {
 	// Add test billboards.
@@ -63,69 +64,25 @@ World::~World()
 //! Updates all objects.
 void World::Update(float dt)
 {
-	bool objectSelected = false;
-
 	// Loop through all objects.
-	float closestDist = numeric_limits<float>::infinity();
-	Object3D* closestObject = nullptr;
 	for(int i = 0; i < mObjectList.size(); i++)
 	{
-		// Left mouse button pressed?
-		if(gInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen())
-		{
-			XMFLOAT3 pos = gGame->GetGraphics()->GetCamera()->GetPosition();
-			XMFLOAT3 dir = gInput->GetWorldPickingRay().direction;
-			float dist;
-			if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &mObjectList[i]->GetBoundingBox(), &dist)) 
-			{
-				if(dist < closestDist) {
-					closestObject = mObjectList[i];
-					closestDist = dist;
-				}
-				objectSelected = true;
-			}
-		}
-
+		// Update the object.
 		mObjectList[i]->Update(dt);
 	}
-	
-	// An object was selected.
-	if(closestObject != nullptr) 
-		OnItemSelected(closestObject, closestObject->GetType());
 
-	//
-	// [NOTE] An object can be pressed and then a light could be in the ray as well, the closest of the Light and Object3D should be selected.
-	//
-
-	// Was a light selected?
-	Light* closestLight = nullptr;
-	if(gInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen()) 
+	// Was an object or light selected? [NOTE] Objects have priority.
+	if(gInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen())
 	{
-		// Loop through all lights.
-		closestDist = numeric_limits<float>::infinity();
-		closestLight = nullptr;
-		for(int i = 0; i < mLightList.size(); i++)
-		{
-			XMFLOAT3 pos = gGame->GetGraphics()->GetCamera()->GetPosition();
-			XMFLOAT3 dir = gInput->GetWorldPickingRay().direction;
-			float dist;
-			AxisAlignedBox box;
-			box.Center = mLightList[i]->GetPosition();
-			box.Extents = XMFLOAT3(3, 3, 3);
-			if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &box, &dist)) 
-			{
-				if(dist < closestDist) {
-					closestLight = mLightList[i];
-					closestDist = dist;
-				}
-				objectSelected = true;
-			}
+		Object3D* selectedObject = GetSelectedObject();
+		if(selectedObject != nullptr)
+			OnItemSelected(selectedObject, selectedObject->GetType());
+		else {
+			Light* selectedLight = GetSelectedLight();
+			if(selectedLight != nullptr)
+				OnItemSelected(selectedLight, LIGHT);
 		}
 	}
-
-	// A light was selected.
-	if(closestLight != nullptr)
-		OnItemSelected(closestLight, LIGHT);
 }
 	
 //! Draws all objects.
@@ -151,13 +108,62 @@ void World::Draw(Graphics* pGraphics)
 		//}
 	}
 
+	// Draw the lights with a billboard.
 	for(int i = 0; i < mLightList.size(); i++)
 	{
 		mLightBillboard->SetPos(mLightList[i]->GetPosition());
 		pGraphics->DrawBillboards();
 	}
 
+	// Draw the skybox.
 	mSkyBox->Draw();
+}
+
+//! Returns the selected object, if any.
+Object3D* World::GetSelectedObject()
+{
+	// Loop through all objects.
+	float closestDist = numeric_limits<float>::infinity();
+	Object3D* closestObject = nullptr;
+	for(int i = 0; i < mObjectList.size(); i++)
+	{
+		float dist;
+		XMFLOAT3 pos = gGame->GetGraphics()->GetCamera()->GetPosition();
+		XMFLOAT3 dir = gInput->GetWorldPickingRay().direction;
+		if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &mObjectList[i]->GetBoundingBox(), &dist)) {
+			if(dist < closestDist) {
+				closestObject = mObjectList[i];
+				closestDist = dist;
+			}
+		}
+	}
+
+	return closestObject;
+}
+
+//! Returns the selected light, if any.
+Light* World::GetSelectedLight()
+{
+	// Loop through all lights.
+	Light* closestLight = nullptr;
+	float closestDist = numeric_limits<float>::infinity();
+	for(int i = 0; i < mLightList.size(); i++)
+	{
+		XMFLOAT3 pos = gGame->GetGraphics()->GetCamera()->GetPosition();
+		XMFLOAT3 dir = gInput->GetWorldPickingRay().direction;
+		float dist;
+		AxisAlignedBox box;
+		box.Center = mLightList[i]->GetPosition();
+		box.Extents = XMFLOAT3(3, 3, 3);
+		if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &box, &dist)) {
+			if(dist < closestDist) {
+				closestLight = mLightList[i];
+				closestDist = dist;
+			}
+		}
+	}
+	
+	return closestLight;
 }
 
 //! Adds a object to the object list.

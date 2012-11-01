@@ -32,7 +32,7 @@ public:
 	Editor(int width, int height);
 	~Editor();
 	
-	void Init(ModelImporter* pImporter);
+	void Init(ModelImporter* pImporter, World* pWorld);
 	void GwenInit(int width, int height);
 	void Update(float dt);
 	void UpdateCamera(Camera* pCamera);

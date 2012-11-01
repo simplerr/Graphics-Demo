@@ -38,7 +38,7 @@ Editor::~Editor()
 }
 
 //! Initializes everything.
-void Editor::Init(ModelImporter* pImporter)
+void Editor::Init(ModelImporter* pImporter, World* pWorld)
 {
 	// Create the tools.
 	mTerrainTool = new TerrainTool();

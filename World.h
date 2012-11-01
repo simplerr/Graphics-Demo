@@ -15,6 +15,7 @@ class BillboardManager;
 class Terrain;
 struct BillboardVertex;
 
+//! Contains all objects, lights and the terrain.
 class World
 {
 public:
@@ -40,6 +41,8 @@ public:
 private:
 	// Callback.
 	boost::function<void(void*, int)>	OnItemSelected;
+	Light*		GetSelectedLight();
+	Object3D*	GetSelectedObject();
 private:
 	ObjectList	mObjectList;
 	LightList	mLightList;//LightList mLightList;	

@@ -79,6 +79,7 @@ XMFLOAT3 Object3D::GetScale()
 
 }
 
+//! Returns the material.
 Material Object3D::GetMaterial()
 {
 	return mMaterial;
@@ -90,6 +91,7 @@ void Object3D::SetType(ObjectType type)
 	mType = type;
 }
 
+//! Sets the material.
 void Object3D::SetMaterial(Material material)
 {
 	mMaterial = material;
@@ -101,11 +103,14 @@ ObjectType Object3D::GetType()
 	return mType;
 }
 
+//! True if the bounding box should be drawn.
 void Object3D::SetBoundingBoxVisible(bool visible)
 {
 	mDrawBoundingBox = visible;
 }
 
+
+//! Returns true if the bounding box is visible.
 bool Object3D::IsBoundingBoxVisible()
 {
 	return mDrawBoundingBox;

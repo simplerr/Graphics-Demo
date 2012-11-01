@@ -11,6 +11,7 @@ class Terrain;
 class TerrainTool;
 class World;
 
+//! The inspector for the terrain.
 class TerrainInspector : public BaseInspector
 {
 public:

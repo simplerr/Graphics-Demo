@@ -8,6 +8,7 @@ using namespace std;
 class StaticObject;
 class ObjectTool;
 
+//! The inspector for Object3D objects.
 class ObjectInspector : public BaseInspector
 {
 public:

@@ -49,6 +49,7 @@ void AnimatedObject::SetAnimation(int index)
 	mCurrentAnimIndex = index;
 }
 
+//! [NOTE] Doesn't do anything.
 void AnimatedObject::SetMaterial(Material material)
 {
 
