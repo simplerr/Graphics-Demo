@@ -30,7 +30,7 @@ public:
 	LightList*	GetLights();
 	ObjectList* GetObjects();
 	Terrain*	GetTerrain();
-	int GetVisibleObjects();
+	int			GetVisibleObjects();
 
 	// Callback hookups.
 	template <class T>

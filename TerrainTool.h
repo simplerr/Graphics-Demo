@@ -23,6 +23,7 @@ public:
 	void SetSelectedTexture(int texture);
 	float GetRadius();
 	float GetStrength();
+	ToolType GetActiveTool();
 private:
 	void ChangeHeight(XMFLOAT3 center, bool raise);
 	void SmothTerrain(XMFLOAT3 center);

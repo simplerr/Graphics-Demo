@@ -12,6 +12,7 @@
 #include "Primitive.h"
 #include "Effects.h"
 #include "RenderStates.h"
+#include "Util.h"
 
 ObjectMover::ObjectMover(ModelImporter* pImporter)
 {
@@ -43,7 +44,7 @@ ObjectMover::~ObjectMover()
 
 void ObjectMover::Update(float dt)
 {
-	if(gInput->KeyPressed(VK_LBUTTON)) {
+	if(gInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen()) {
 		float dist = numeric_limits<float>::infinity();
 		XMVECTOR pos  = XMLoadFloat3(&gGame->GetGraphics()->GetCamera()->GetPosition());
 		XMFLOAT3 d = gInput->GetWorldPickingRay().direction;

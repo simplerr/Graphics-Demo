@@ -10,4 +10,6 @@ enum ToolType
 	TOOL_TEXTURE
 };
 
+bool IsIn3DScreen();
+
 string ToString(wstring str);

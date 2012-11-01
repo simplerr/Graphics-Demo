@@ -49,7 +49,7 @@ void TerrainInspector::Init()
 	label->SetPos(3, 60);
 
 	mRadiusSlider = new Gwen::Controls::HorizontalSlider(ptree);
-	InitSlider(mRadiusSlider, "RadiusSlider", 73, 0.0f, 1.0f, 60.0f, false);
+	InitSlider(mRadiusSlider, "RadiusSlider", 73, 0.0f, 3.0f, 20.0f, false);
 	mRadiusSlider->onValueChanged.Add(this, &TerrainInspector::OnRadiusChange);
 
 	// Strength.
@@ -87,7 +87,7 @@ void TerrainInspector::Init()
 	ptree->ExpandAll();
 
 	// Set the height tool as starting tool.
-	SetActiveTool(TOOL_HEIGHT);
+	SetActiveTool(mTerrainTool->GetActiveTool());
 }
 
 void TerrainInspector::OnTextureSelected(Gwen::Controls::Base* pControl)

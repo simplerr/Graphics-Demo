@@ -12,6 +12,7 @@
 #include "StaticModel.h"
 #include "BillboardManager.h"
 #include "Input.h"
+#include "Util.h"
 #include <limits>
 
 float toolDelta = 0;
@@ -75,7 +76,7 @@ void World::Update(float dt)
 	for(int i = 0; i < mObjectList.size(); i++)
 	{
 		// Left mouse button pressed?
-		if(gInput->KeyPressed(VK_LBUTTON))
+		if(gInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen())
 		{
 			XMFLOAT3 pos = gGame->GetGraphics()->GetCamera()->GetPosition();
 			XMFLOAT3 dir = gInput->GetWorldPickingRay().direction;
@@ -103,7 +104,7 @@ void World::Update(float dt)
 
 	// Was a light selected?
 	Light* closestLight = nullptr;
-	if(gInput->KeyPressed(VK_LBUTTON)) 
+	if(gInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen()) 
 	{
 		// Loop through all lights.
 		closestDist = numeric_limits<float>::infinity();
@@ -125,15 +126,6 @@ void World::Update(float dt)
 				objectSelected = true;
 			}
 		}
-	}
-
-	// Was the terrain selected?
-	// [NOTE] Only check if an object weren't selected.
-	if(gInput->KeyPressed(VK_LBUTTON) && !objectSelected)
-	{
-		XMFLOAT3 intersectPoint = mTerrain->GetIntersectPoint(gInput->GetWorldPickingRay());
-		if(intersectPoint.x != numeric_limits<float>::infinity())
-			OnTerrainSelected(mTerrain);
 	}
 
 	// A light was selected.

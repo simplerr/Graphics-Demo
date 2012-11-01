@@ -42,6 +42,7 @@ void Editor::Init(ModelImporter* pImporter, World* pWorld)
 	// Init the terrain tool.
 	mTerrainTool = new TerrainTool();
 	mTerrainTool->SetTerrain(pWorld->GetTerrain());
+	mTerrainTool->SetEnabled(false);
 
 	mWorld = pWorld;
 	mWorldTree->CreateTree(mWorld);
@@ -105,15 +106,18 @@ void Editor::ItemSelected(void* pItem, int type)
 	}
 
 	if(mActiveInspector == nullptr) {
+		mTerrainTool->SetEnabled(false);
+		mObjectMover->SetVisible(true);
 		if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) 
 			mActiveInspector = new ObjectInspector(mGwenCanvas);
 		else if(type == LIGHT) 
 			mActiveInspector = new LightInspector(mGwenCanvas);
-		else if(type == TERRAIN)
+		else if(type == TERRAIN) {
 			mActiveInspector = new TerrainInspector(mGwenCanvas, mTerrainTool);
-
+			mObjectMover->SetVisible(false);
+			mTerrainTool->SetEnabled(true);
+		}
 		mActiveInspector->Init();
-		mObjectMover->SetVisible(true);
 	}
 	
 	if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) {

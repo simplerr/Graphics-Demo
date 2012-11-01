@@ -93,14 +93,14 @@ void Game::Init()
 
 	// Add some lights.
 	mLight = new Light();
-	mLight->SetMaterials(Colors::White, Colors::White, Colors::White);
+	mLight->SetMaterials(Colors::White, Colors::White, XMFLOAT4(229/255.0f, 106/255.0f, 5.0f/255.0f, 1.0f));
 	mLight->SetDirection(0.0f, -1.0f, 0.0f);
 	mLight->SetType(DIRECTIONAL_LIGHT);
 	mLight->SetAtt(0, 0.1, 0);
 	mLight->SetRange(2000.0f);
 	mLight->SetSpot(64.0f);
 	mLight->SetPosition(0, 50, 5);
-	mLight->SetIntensity(1.0f, 0.2f, 0.04f);
+	mLight->SetIntensity(0.2f, 1.0f, 0.2f);
 	mWorld->AddLight(mLight);
 
 	GetGraphics()->SetFogColor(XMFLOAT4(1.0f, 0.2f, 0.8, 1.0f));
@@ -137,13 +137,6 @@ void Game::Update(float dt)
 	GetGraphics()->Update(dt);
 	mWorld->Update(dt);
 	mEditor->Update(dt);
-
-	if(gInput->KeyPressed(VK_SPACE)) {
-		XMFLOAT3 pos = GetGraphics()->GetCamera()->GetPosition();
-		char buffer[256];
-		sprintf(buffer, "x: %f, y: %f, z: %f\n", pos.x, pos.y, pos.z);
-		OutputDebugString(buffer);
-	}
 
 	return;
 

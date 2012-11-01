@@ -2,6 +2,7 @@
 #include "Terrain.h"
 #include "Input.h"
 #include "Effects.h"
+#include "Util.h"
 
 TerrainTool::TerrainTool() : mUpdateInterval(0.03f)
 {
@@ -23,29 +24,33 @@ void TerrainTool::Update(float dt)
 	timer += dt;
 
 	// Enabled?
-	if(!mEnabled)
+	if(!mEnabled) {
+		Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
+		Effects::TerrainFX->Apply();
 		return;
+	}
 
 	// Don't use the tools every frame.
+	XMFLOAT3 intersectPoint = GetIntersectPoint();
 	if(timer > mUpdateInterval)
 	{
 		// Which tool is selected and was any mouse button pressed?
 		if(mCurrentTool == TOOL_HEIGHT)
 		{
-			if(gInput->KeyDown(VK_LBUTTON))
-				ChangeHeight(GetIntersectPoint(), true);
-			else if(gInput->KeyDown(VK_RBUTTON))
-				ChangeHeight(GetIntersectPoint(), false);
+			if(gInput->KeyDown(VK_LBUTTON) && IsIn3DScreen())
+				ChangeHeight(intersectPoint, true);
+			else if(gInput->KeyDown(VK_RBUTTON) && IsIn3DScreen())
+				ChangeHeight(intersectPoint, false);
 		}
 		else if(mCurrentTool == TOOL_TEXTURE)
 		{
-			if(gInput->KeyDown(VK_LBUTTON))
-				EditTextures(GetIntersectPoint());
+			if(gInput->KeyDown(VK_LBUTTON) && IsIn3DScreen())
+				EditTextures(intersectPoint);
 		}
 		else if(mCurrentTool == TOOL_SMOTH)
 		{
-			if(gInput->KeyDown(VK_LBUTTON))
-				SmothTerrain(GetIntersectPoint());
+			if(gInput->KeyDown(VK_LBUTTON) && IsIn3DScreen())
+				SmothTerrain(intersectPoint);
 		}
 
 		// Reset the timer.
@@ -60,8 +65,8 @@ void TerrainTool::Update(float dt)
 		}
 	}
 
-	if(GetIntersectPoint().x != numeric_limits<float>::infinity()) {
-		Effects::TerrainFX->SetToolCenter(XMFLOAT2(GetIntersectPoint().x, GetIntersectPoint().z));
+	if(intersectPoint.x != numeric_limits<float>::infinity()) {
+		Effects::TerrainFX->SetToolCenter(XMFLOAT2(intersectPoint.x, intersectPoint.z));
 		Effects::TerrainFX->Apply();
 	}
 	else {
@@ -172,4 +177,9 @@ float TerrainTool::GetStrength()
 void TerrainTool::SetSelectedTexture(int texture)
 {
 	mSelectedTexture = texture;
+}
+
+ToolType TerrainTool::GetActiveTool()
+{
+	return mCurrentTool;
 }
