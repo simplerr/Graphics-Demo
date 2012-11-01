@@ -24,6 +24,7 @@ class Object3D;
 class TerrainTool;
 class Terrain;
 
+//! Contains the UI and the different tools.
 class Editor
 {
 public:
@@ -35,7 +36,7 @@ public:
 	void Update(float dt);
 	void Draw(Graphics* pGraphics);
 	void MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	void ItemSelected(void* pItem, int type);
+	void OnItemSelected(void* pItem, int type);
 
 	void OnObjectSelected(Object3D* pObject);
 	void OnLightSelected(Light* pLight);

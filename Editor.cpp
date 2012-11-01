@@ -16,16 +16,17 @@
 #include "TerrainTool.h"
 #include "TerrainInspector.h"
 
+//! Constructor.
 Editor::Editor(int width, int height)
 {
+	// Init Gwen.
 	GwenInit(width, height);
 
+	// No inspector to start with.
 	mActiveInspector = nullptr;
-
-	mWorldTree = new WorldTree(mGwenCanvas);
-	mWorldTree->SetEditor(this);
 }
-	
+
+//! Cleanup.
 Editor::~Editor()
 {
 	mGwenCanvas->Release();
@@ -35,8 +36,10 @@ Editor::~Editor()
 	delete mTerrainTool;
 }
 
+//! Initializes everything.
 void Editor::Init(ModelImporter* pImporter, World* pWorld)
 {
+	// Create the object mover.
 	mObjectMover = new ObjectMover(pImporter);
 
 	// Init the terrain tool.
@@ -44,15 +47,20 @@ void Editor::Init(ModelImporter* pImporter, World* pWorld)
 	mTerrainTool->SetTerrain(pWorld->GetTerrain());
 	mTerrainTool->SetEnabled(false);
 
+	// Create the world tree.
+	mWorldTree = new WorldTree(mGwenCanvas);
+	mWorldTree->SetEditor(this);
+	mWorldTree->CreateTree(pWorld);
+
+	// Connect selection callbacks.
 	mWorld = pWorld;
-	mWorldTree->CreateTree(mWorld);
-	mWorld->AddObjectSelectedListender(&Editor::OnObjectSelected, this);
-	mWorld->AddLightSelectedListender(&Editor::OnLightSelected, this);
-	mWorld->AddTerrainSelectedListender(&Editor::OnTerrainSelected, this);
+	mWorld->AddItemSelectedListender(&Editor::OnItemSelected, this);
 }
 
+//! Inits the Gwen renderer, canvas, input and skin.
 void Editor::GwenInit(int width, int height)
 {
+	// Create the renderer.
 	mGwenRenderer = new Gwen::Renderer::DirectX11(GetD3DDevice(), GetD3DContext());
 	mGwenRenderer->SetScreenSize(width, height);
 
@@ -71,17 +79,17 @@ void Editor::GwenInit(int width, int height)
 	mGwenInput.Initialize( mGwenCanvas );
 }
 	
+//! Update the tools.
 void Editor::Update(float dt)
 {
 	mObjectMover->Update(dt);
 	mTerrainTool->Update(dt);
 }
 	
+//! Draws all elements in the editor.
 void Editor::Draw(Graphics* pGraphics)
 {
-	//
 	// Rotate and move the camera.
-	//
 	Camera* camera = pGraphics->GetCamera();
 	if(gInput->KeyDown(VK_MBUTTON))
 		camera->Rotate();
@@ -89,15 +97,16 @@ void Editor::Draw(Graphics* pGraphics)
 	camera->Move();
 	camera->UpdateViewMatrix();
 
-	// Render the tools.
+	// Draw the tools.
 	mObjectMover->Draw(pGraphics);
 	mTerrainTool->Draw(pGraphics);
 
-	// Render the canvas and all controls in it.
+	// Draw the canvas and all controls in it.
 	mGwenCanvas->RenderCanvas();
 }
 	
-void Editor::ItemSelected(void* pItem, int type)
+//! Called when an object in the world gets selected. Indirectly a callback.
+void Editor::OnItemSelected(void* pItem, int type)
 {
 	// Delete the current inspector if not the same type as pItem.
 	if(mActiveInspector != nullptr && !mActiveInspector->IsResponsible(type)) {
@@ -145,19 +154,4 @@ void Editor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	message.lParam = lParam;
 
 	mGwenInput.ProcessMessage(message);
-}
-
-void Editor::OnObjectSelected(Object3D* pObject)
-{
-	ItemSelected(pObject, pObject->GetType());
-}
-	
-void Editor::OnLightSelected(Light* pLight)
-{
-	ItemSelected(pLight, LIGHT);
-}
-
-void Editor::OnTerrainSelected(Terrain* pTerrain)
-{
-	ItemSelected(pTerrain, TERRAIN);
 }

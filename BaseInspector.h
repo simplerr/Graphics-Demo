@@ -5,7 +5,7 @@
 
 class ObjectMover;
 
-//! The base class that all different inspectors ineherit from. 
+//! The base class that all different inspectors inherit from. 
 class BaseInspector : public Gwen::Controls::CollapsibleList
 {
 public: 

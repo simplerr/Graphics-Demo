@@ -23,7 +23,7 @@ void WorldTree::OnSelectChange(Gwen::Controls::Base* pControl)
 	string name = ToString(node->GetButton()->GetText());
 
 	WorldTreeNode worldNode = mNodeMap[name];
-	mEditor->ItemSelected(worldNode.pData, worldNode.type);
+	mEditor->OnItemSelected(worldNode.pData, worldNode.type);
 }
 
 void WorldTree::CreateTree(World* pWorld)

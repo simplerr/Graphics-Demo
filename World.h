@@ -32,26 +32,14 @@ public:
 	Terrain*	GetTerrain();
 	int			GetVisibleObjects();
 
-	// Callback hookups.
+	// Callback hookup.
 	template <class T>
-	void AddObjectSelectedListender(void(T::*_callback)(Object3D*), T* _object)	{
-		OnObjectSelected = boost::bind(_callback, _object, _1);
-	}
-
-	template <class T>
-	void AddLightSelectedListender(void(T::*_callback)(Light*), T* _object)	{
-		OnLightSelected = boost::bind(_callback, _object, _1);
-	}
-
-	template <class T>
-	void AddTerrainSelectedListender(void(T::*_callback)(Terrain*), T* _object)	{
-		OnTerrainSelected = boost::bind(_callback, _object, _1);
+	void AddItemSelectedListender(void(T::*_callback)(void*, int), T* _object)	{
+		OnItemSelected = boost::bind(_callback, _object, _1, _2);
 	}
 private:
-	// Callbacks.
-	boost::function<void(Object3D*)>	OnObjectSelected;
-	boost::function<void(Light*)>		OnLightSelected;
-	boost::function<void(Terrain*)>		OnTerrainSelected;
+	// Callback.
+	boost::function<void(void*, int)>	OnItemSelected;
 private:
 	ObjectList	mObjectList;
 	LightList	mLightList;//LightList mLightList;	

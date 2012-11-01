@@ -15,10 +15,6 @@
 #include "Util.h"
 #include <limits>
 
-float toolDelta = 0;
-float toolDelta2 = 0;
-float toolDelta3 = 0;
-
 World::World()
 {
 	mNumVisibleObjects = 0;
@@ -54,7 +50,6 @@ World::~World()
 {
 	delete mSkyBox;
 	delete mTerrain;
-	//delete mDebugObject;
 
 	// Delete all objects.
 	for(int i = 0; i < mObjectList.size(); i++)
@@ -96,7 +91,7 @@ void World::Update(float dt)
 	
 	// An object was selected.
 	if(closestObject != nullptr) 
-		OnObjectSelected(closestObject);
+		OnItemSelected(closestObject, closestObject->GetType());
 
 	//
 	// [NOTE] An object can be pressed and then a light could be in the ray as well, the closest of the Light and Object3D should be selected.
@@ -130,7 +125,7 @@ void World::Update(float dt)
 
 	// A light was selected.
 	if(closestLight != nullptr)
-		OnLightSelected(closestLight);
+		OnItemSelected(closestLight, LIGHT);
 }
 	
 //! Draws all objects.
