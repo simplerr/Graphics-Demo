@@ -93,14 +93,14 @@ void Game::Init()
 
 	// Add some lights.
 	mLight = new Light();
-	mLight->SetMaterials(Colors::White, Colors::Red, Colors::White);
+	mLight->SetMaterials(Colors::White, Colors::White, Colors::White);
 	mLight->SetDirection(0.0f, -1.0f, 0.0f);
 	mLight->SetType(DIRECTIONAL_LIGHT);
 	mLight->SetAtt(0, 0.1, 0);
 	mLight->SetRange(2000.0f);
 	mLight->SetSpot(64.0f);
 	mLight->SetPosition(0, 50, 5);
-	mLight->SetIntensity(1.0f, 0.8f, 0.2f);
+	mLight->SetIntensity(1.0f, 0.2f, 0.04f);
 	mWorld->AddLight(mLight);
 
 	GetGraphics()->SetFogColor(XMFLOAT4(1.0f, 0.2f, 0.8, 1.0f));

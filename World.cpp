@@ -40,7 +40,7 @@ void World::Init()
 	initInfo.LayerMapFilename2 = "textures/stone.dds";
 	initInfo.LayerMapFilename3 = "textures/lightdirt.dds";
 	initInfo.LayerMapFilename4 = "textures/snow.dds";
-	initInfo.BlendMapFilename = "textures/blend.dds";
+	initInfo.BlendMapFilename = "textures/blend.raw";
 	initInfo.HeightScale = 15.0f;
 	initInfo.HeightmapWidth = 257;
 	initInfo.HeightmapHeight = 257;

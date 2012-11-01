@@ -1,5 +1,6 @@
 #include "TerrainInspector.h"
 #include "Gwen/Controls/PropertyTree.h"
+#include "Gwen/Controls/ComboBox.h"
 #include "Terrain.h"
 #include "Object3D.h"
 #include "TerrainTool.h"
@@ -34,6 +35,7 @@ void TerrainInspector::Init()
 	//
 	Gwen::Controls::PropertyTree* ptree = new Gwen::Controls::PropertyTree(dataCategory);
 	ptree->SetBounds(0, 20, 200, 600);
+
 	Gwen::Controls::Properties* scaleProps = ptree->Add(L"Properties");
 
 	mRadiusProperty = scaleProps->Add("Radius");
@@ -59,6 +61,22 @@ void TerrainInspector::Init()
 	InitSlider(mStrengthSlider, "StrengthSlider", 113, 0.0f, 0.6f, 10.0f, false);
 	mStrengthSlider->onValueChanged.Add(this, &TerrainInspector::OnStrengthChange);
 
+	// Tool type.
+	Gwen::Controls::ComboBox* combo = new Gwen::Controls::ComboBox(dataCategory);
+	combo->SetPos(0, 200);
+	combo->SetWidth(200);
+	combo->AddItem(L"Height tool", "height");
+	combo->AddItem(L"Smooth tool", "smooth");
+	combo->AddItem(L"Texture tool", "texture");
+	combo->onSelection.Add(this, &TerrainInspector::OnComboSelect);
+
+	// Terrain textures.
+	mTexture0 = CreateTerrainTexture("textures/grass.dds", "0", 10, 230, this);
+	mTexture1 = CreateTerrainTexture("textures/darkdirt.dds", "0", 60, 230, this);
+	mTexture2 = CreateTerrainTexture("textures/stone.dds", "0", 110, 230, this);
+	mTexture3 = CreateTerrainTexture("textures/lightdirt.dds", "0", 10, 280, this);
+	mTexture4 = CreateTerrainTexture("textures/snow.dds", "0", 60, 280, this);
+
 	//
 	// Set the values.
 	//
@@ -67,6 +85,22 @@ void TerrainInspector::Init()
 	mStrengthSlider->SetValue(mTerrainTool->GetStrength());
 
 	ptree->ExpandAll();
+
+	// Set the height tool as starting tool.
+	SetActiveTool(TOOL_HEIGHT);
+}
+
+void TerrainInspector::OnComboSelect(Gwen::Controls::Base* pControl)
+{
+	Gwen::Controls::ComboBox* combo = (Gwen::Controls::ComboBox*)pControl;
+	string name = combo->GetSelectedItem()->GetName();
+
+	if(name == "height")
+		SetActiveTool(TOOL_HEIGHT);
+	else if(name == "smooth")
+		SetActiveTool(TOOL_SMOTH);
+	else if(name == "texture")
+		SetActiveTool(TOOL_TEXTURE);
 }
 
 void TerrainInspector::OnRadiusChange(Gwen::Controls::Base* pControl)
@@ -125,4 +159,35 @@ void TerrainInspector::InitSlider(Gwen::Controls::HorizontalSlider* slider, stri
 	slider->SetValue(value);
 	slider->SetNotchCount(20);
 	slider->SetClampToNotches(clamp);
+}
+
+Gwen::Controls::ImagePanel* TerrainInspector::CreateTerrainTexture(string texture, string name, float x,  float y, Base* pParent)
+{
+	Gwen::Controls::ImagePanel* img = new Gwen::Controls::ImagePanel(pParent);
+	img->SetImage(texture);
+	img->SetName(name);
+	img->SetBounds(x, y, 40, 40);
+	return img;
+}
+
+void TerrainInspector::SetActiveTool(ToolType tool)
+{
+	if(tool == TOOL_TEXTURE)
+	{
+		mTexture0->Show();
+		mTexture1->Show();
+		mTexture2->Show();
+		mTexture3->Show();
+		mTexture4->Show();
+	}
+	else
+	{
+		mTexture0->Hide();
+		mTexture1->Hide();
+		mTexture2->Hide();
+		mTexture3->Hide();
+		mTexture4->Hide();
+	}
+
+	mTerrainTool->SetTool(tool);
 }

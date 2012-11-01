@@ -7,8 +7,9 @@ TerrainTool::TerrainTool() : mUpdateInterval(0.03f)
 {
 	SetEnabled(true);	// [NOTE]
 	SetTool(TOOL_HEIGHT);
-	SetRadius(40.0f);
+	SetRadius(20.0f);
 	SetStrength(6.0f);
+	SetSelectedTexture(4);
 }
 
 TerrainTool::~TerrainTool()
@@ -35,6 +36,11 @@ void TerrainTool::Update(float dt)
 				ChangeHeight(GetIntersectPoint(), true);
 			else if(gInput->KeyDown(VK_RBUTTON))
 				ChangeHeight(GetIntersectPoint(), false);
+		}
+		else if(mCurrentTool == TOOL_TEXTURE)
+		{
+			if(gInput->KeyDown(VK_LBUTTON))
+				EditTextures(GetIntersectPoint());
 		}
 		else if(mCurrentTool == TOOL_SMOTH)
 		{
@@ -76,19 +82,17 @@ void TerrainTool::ChangeHeight(XMFLOAT3 center, bool raise)
 	{
 		int dir = raise ? 1 : -1;				// Lower or increase height?
 		float halfSize = mRadius / 2.0f;
-		for(int x = -halfSize; x < halfSize; x++) {
-			for(int z = -halfSize; z < halfSize; z++) {
+		for(int x = -mRadius; x < mRadius; x++) {
+			for(int z = -mRadius; z < mRadius; z++) {
 				float dist = sqrt(x*x + z*z);	// Distance from center.
-				float newHeight = mTerrain->GetHeight(center.x + x, center.z + z) + max(0, 14 - dist) / 10 * mStrength * dir;
+				float newHeight = mTerrain->GetHeight(center.x + x, center.z + z) + max(0, mRadius - dist) / 10 * mStrength * dir;
 				mTerrain->SetHeigt(center.x + x, center.z + z, newHeight);
 			}
 		}
 
 		// Apply some smoothing.
-		mTerrain->Smooth(center, mRadius*1.2);
-		//mTerrain->Smooth(center, mSize*1.2);
-		mTerrain->Smooth(center, mRadius/2*1.2);
-		mTerrain->Smooth(center, mRadius/4*1.2);
+		mTerrain->Smooth(center, mRadius*2);
+		mTerrain->Smooth(center, mRadius*2);
 		mTerrain->BuildHeightmapSRV(GetD3DDevice());
 	}
 }
@@ -101,6 +105,25 @@ void TerrainTool::SmothTerrain(XMFLOAT3 center)
 		mTerrain->Smooth(center, mRadius);
 		mTerrain->Smooth(center, mRadius);
 		mTerrain->BuildHeightmapSRV(GetD3DDevice());
+	}
+}
+
+void TerrainTool::EditTextures(XMFLOAT3 center)
+{
+	// Did the ray hit the terrain?
+	if(center.x != numeric_limits<float>::infinity())
+	{
+		float halfSize = mRadius / 2.0f;
+		for(float x = -mRadius; x < mRadius; x+=0.5f) {
+			for(float z = -mRadius; z < mRadius; z+=0.5f) {
+				float dist = sqrt(x*x + z*z);	// Distance from center.
+				float modifier = max(0, mRadius - dist) / 10 / 6;
+				mTerrain->SetBlend(XMFLOAT3(center.x + x, 0, center.z + z), modifier, mSelectedTexture);
+			}
+		}
+
+		// Apply some smoothing.
+		mTerrain->BuildBlendMapSRV(GetD3DDevice());
 	}
 }
 
@@ -144,4 +167,9 @@ float TerrainTool::GetRadius()
 float TerrainTool::GetStrength()
 {
 	return mStrength;
+}
+
+void TerrainTool::SetSelectedTexture(int texture)
+{
+	mSelectedTexture = texture;
 }
