@@ -7,17 +7,22 @@
 #include "Object3D.h"
 #include "Util.h"
 #include "StaticObject.h"
-#include "ObjectMover.h"
+#include "ObjectTool.h"
+#include "ModelImporter.h"
+#include "Effects.h"
 
-ObjectInspector::ObjectInspector(Gwen::Controls::Base* pParent)
+ObjectInspector::ObjectInspector(Gwen::Controls::Base* pParent, ObjectTool* pTool)
 	: BaseInspector(pParent)
 {
+	mObjectTool = pTool;
 
+	Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
+	Effects::TerrainFX->Apply();
 }
 	
 ObjectInspector::~ObjectInspector()
 {
-
+	Cleanup();
 }
 
 void ObjectInspector::Init()
@@ -136,6 +141,16 @@ void ObjectInspector::Cleanup()
 
 }
 
+void ObjectInspector::Update(float dt)
+{
+	mObjectTool->Update(dt);
+}
+
+void ObjectInspector::Draw(Graphics* pGraphics)
+{
+	mObjectTool->Draw(pGraphics);
+}
+
 void ObjectInspector::OnAABBCheckBoxChange(Base* pControl)
 {
 	Gwen::Controls::CheckBox* check = (Gwen::Controls::CheckBox*)pControl;
@@ -207,7 +222,7 @@ void ObjectInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
 	mObject->SetPosition(pos);
 
 	// Move the ObjectMover.
-	mObjectMover->SetPosition(pos);
+	mObjectTool->SetPosition(pos);
 }
 
 void ObjectInspector::OnScaleSliderMoved(Base* pControl)
@@ -259,6 +274,11 @@ void ObjectInspector::OnScaleChange(Base* pControl)
 
 void ObjectInspector::SetObject(void* pObject)
 {
+	// Send to the object tool.
+	mObjectTool->SetObject((Object3D*)pObject);
+	mObjectTool->AddOnPositionChange(&ObjectInspector::OnPositionChangeEvent, this);
+	mObjectTool->AddOnScaleChange(&ObjectInspector::OnScaleChangeEvent, this);
+
 	mObject = (StaticObject*)pObject;
 
 	// Set the position properties.
@@ -334,9 +354,4 @@ void ObjectInspector::OnPositionChangeEvent(XMFLOAT3 position)
 void ObjectInspector::OnScaleChangeEvent(XMFLOAT3 scale)
 {
 
-}
-
-void ObjectInspector::SetObjectMover(ObjectMover* pObjectMover)
-{
-	mObjectMover = pObjectMover;
 }

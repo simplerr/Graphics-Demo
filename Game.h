@@ -35,7 +35,6 @@ private:
 	StaticObject*	mObject;
 	StaticObject*	mObject2;
 	StaticObject*	mTerrain;
-	ModelImporter*	mModelImporter;
 	AnimatedObject* mAnimatedObject;
 	Editor*			mEditor;
 };

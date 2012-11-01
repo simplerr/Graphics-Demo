@@ -6,16 +6,18 @@
 using namespace std;
 
 class StaticObject;
-class ObjectMover;
+class ObjectTool;
 
 class ObjectInspector : public BaseInspector
 {
 public:
-	ObjectInspector(Gwen::Controls::Base* pParent);
+	ObjectInspector(Gwen::Controls::Base* pParent, ObjectTool* pTool);
 	~ObjectInspector();
 
 	void Init();
 	void Cleanup();
+	void Update(float dt);
+	void Draw(Graphics* pGraphics);
 	void SetObject(void* pObject);
 	void OnRotationSliderMoved(Base* pControl);
 	void OnRotationChange(Base* pControl);
@@ -29,7 +31,7 @@ public:
 	void OnPositionChangeEvent(XMFLOAT3 position);
 	void OnScaleChangeEvent(XMFLOAT3 scale);
 
-	void SetObjectMover(ObjectMover* pObjectMover);
+	void SetObjectMover(ObjectTool* pObjectMover);
 private:
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:
@@ -39,5 +41,5 @@ private:
 	Gwen::Controls::PropertyRow* mXScaleProperty, *mYScaleProperty, *mZScaleProperty;
 	Gwen::Controls::HorizontalSlider* mXRotationSlider, *mYRotationSlider, *mZRotationSlider;
 	Gwen::Controls::HorizontalSlider* mXScaleSlider, *mYScaleSlider, *mZScaleSlider;
-	ObjectMover* mObjectMover;
+	ObjectTool* mObjectTool;
 };

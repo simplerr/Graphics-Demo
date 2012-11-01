@@ -18,11 +18,12 @@ class BaseInspector;
 class Light;
 class World;
 class WorldTree;
-class ObjectMover;
+class ObjectTool;
 class ModelImporter;
 class Object3D;
 class TerrainTool;
 class Terrain;
+class Camera;
 
 //! Contains the UI and the different tools.
 class Editor
@@ -31,24 +32,20 @@ public:
 	Editor(int width, int height);
 	~Editor();
 	
-	void Init(ModelImporter* pImporter, World* pWorld);
+	void Init(ModelImporter* pImporter);
 	void GwenInit(int width, int height);
 	void Update(float dt);
+	void UpdateCamera(Camera* pCamera);
 	void Draw(Graphics* pGraphics);
 	void MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	void OnItemSelected(void* pItem, int type);
-
-	void OnObjectSelected(Object3D* pObject);
-	void OnLightSelected(Light* pLight);
-	void OnTerrainSelected(Terrain* pTerrain);
 private:
 	Gwen::Controls::Canvas*		mGwenCanvas;
 	Gwen::Skin::TexturedBase*	mGwenSkin;
 	Gwen::Input::Windows		mGwenInput;
 	Gwen::Renderer::DirectX11*	mGwenRenderer;
 	BaseInspector*				mActiveInspector;
-	World*						mWorld;
 	WorldTree*					mWorldTree;
-	ObjectMover*				mObjectMover;
 	TerrainTool*				mTerrainTool;
+	ObjectTool*					mObjectTool;
 };

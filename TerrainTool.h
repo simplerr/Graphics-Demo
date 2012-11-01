@@ -16,7 +16,6 @@ public:
 	void Draw(Graphics* pGraphics);
 
 	void SetTerrain(Terrain* pTerrain);
-	void SetEnabled(bool enabled);
 	void SetTool(ToolType tool);
 	void SetRadius(float radius);
 	void SetStrength(float strength);
@@ -24,6 +23,7 @@ public:
 	float GetRadius();
 	float GetStrength();
 	ToolType GetActiveTool();
+	int GetSelectedLayer();
 private:
 	void ChangeHeight(XMFLOAT3 center, bool raise);
 	void SmothTerrain(XMFLOAT3 center);
@@ -32,7 +32,6 @@ private:
 private:
 	Terrain*	mTerrain;
 	ToolType	mCurrentTool;
-	bool		mEnabled;
 	float		mRadius;
 	float		mStrength;
 	const float mUpdateInterval;

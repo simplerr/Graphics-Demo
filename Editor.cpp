@@ -9,12 +9,13 @@
 #include "AnimatedObject.h"
 #include "Light.h"
 #include "Input.h"
-#include "ObjectMover.h"
+#include "ObjectTool.h"
 #include "Graphics.h"
 #include "Camera.h"
 #include "World.h"
 #include "TerrainTool.h"
 #include "TerrainInspector.h"
+#include "Effects.h"
 
 //! Constructor.
 Editor::Editor(int width, int height)
@@ -32,29 +33,21 @@ Editor::~Editor()
 	mGwenCanvas->Release();
 	delete mGwenSkin;
 	delete mGwenRenderer;
-	delete mObjectMover;
+	delete mObjectTool;
 	delete mTerrainTool;
 }
 
 //! Initializes everything.
-void Editor::Init(ModelImporter* pImporter, World* pWorld)
+void Editor::Init(ModelImporter* pImporter)
 {
-	// Create the object mover.
-	mObjectMover = new ObjectMover(pImporter);
-
-	// Init the terrain tool.
+	// Create the tools.
 	mTerrainTool = new TerrainTool();
-	mTerrainTool->SetTerrain(pWorld->GetTerrain());
-	mTerrainTool->SetEnabled(false);
+	mObjectTool = new ObjectTool(pImporter);
 
 	// Create the world tree.
 	mWorldTree = new WorldTree(mGwenCanvas);
 	mWorldTree->SetEditor(this);
 	mWorldTree->CreateTree(pWorld);
-
-	// Connect selection callbacks.
-	mWorld = pWorld;
-	mWorld->AddItemSelectedListender(&Editor::OnItemSelected, this);
 }
 
 //! Inits the Gwen renderer, canvas, input and skin.
@@ -82,69 +75,50 @@ void Editor::GwenInit(int width, int height)
 //! Update the tools.
 void Editor::Update(float dt)
 {
-	mObjectMover->Update(dt);
-	mTerrainTool->Update(dt);
+	if(mActiveInspector != nullptr)
+		mActiveInspector->Update(dt);
 }
 	
 //! Draws all elements in the editor.
 void Editor::Draw(Graphics* pGraphics)
 {
-	// Rotate and move the camera.
-	Camera* camera = pGraphics->GetCamera();
-	if(gInput->KeyDown(VK_MBUTTON))
-		camera->Rotate();
+	// Update the camera.
+	UpdateCamera(pGraphics->GetCamera());
 
-	camera->Move();
-	camera->UpdateViewMatrix();
-
-	// Draw the tools.
-	mObjectMover->Draw(pGraphics);
-	mTerrainTool->Draw(pGraphics);
+	// Draw the active inspector.
+	if(mActiveInspector != nullptr)
+		mActiveInspector->Draw(pGraphics);
 
 	// Draw the canvas and all controls in it.
 	mGwenCanvas->RenderCanvas();
 }
 	
-//! Called when an object in the world gets selected. Indirectly a callback.
+//! Callback that World calls when an object gets selected.
 void Editor::OnItemSelected(void* pItem, int type)
 {
-	// Delete the current inspector if not the same type as pItem.
+	// Delete the current inspector if it's not responsible for the selected item.
 	if(mActiveInspector != nullptr && !mActiveInspector->IsResponsible(type)) {
 		delete mActiveInspector;
 		mActiveInspector = nullptr;
 	}
 
+	// The active inspector haven't been created.
 	if(mActiveInspector == nullptr) {
-		mTerrainTool->SetEnabled(false);
-		mObjectMover->SetVisible(true);
 		if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) 
-			mActiveInspector = new ObjectInspector(mGwenCanvas);
+			mActiveInspector = new ObjectInspector(mGwenCanvas, mObjectTool);
 		else if(type == LIGHT) 
-			mActiveInspector = new LightInspector(mGwenCanvas);
+			mActiveInspector = new LightInspector(mGwenCanvas, mObjectTool);
 		else if(type == TERRAIN) {
 			mActiveInspector = new TerrainInspector(mGwenCanvas, mTerrainTool);
-			mObjectMover->SetVisible(false);
-			mTerrainTool->SetEnabled(true);
 		}
 		mActiveInspector->Init();
 	}
-	
-	if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) {
-		mActiveInspector->SetObjectMover(mObjectMover);
-		mObjectMover->SetObject((Object3D*)pItem);
-		mObjectMover->AddOnPositionChange(&ObjectInspector::OnPositionChangeEvent, (ObjectInspector*)mActiveInspector);
-		mObjectMover->AddOnScaleChange(&ObjectInspector::OnScaleChangeEvent, (ObjectInspector*)mActiveInspector);
-	}
-	else if(type == LIGHT) {
-		mActiveInspector->SetObjectMover(mObjectMover);
-		mObjectMover->SetObject((Light*)pItem);
-		mObjectMover->AddOnPositionChange(&LightInspector::OnPositionChangeEvent, (LightInspector*)mActiveInspector);
-	}
 
-
+	// Set the inspectors object, can be Object3D Light or Terrain.
 	mActiveInspector->SetObject(pItem);
 }
 
+//! Lets Gwen::Input process messaages.
 void Editor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	MSG message;
@@ -154,4 +128,15 @@ void Editor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	message.lParam = lParam;
 
 	mGwenInput.ProcessMessage(message);
+}
+
+//! Rotates and moves the camera.
+void Editor::UpdateCamera(Camera* pCamera)
+{
+	// Rotate and move the camera.
+	if(gInput->KeyDown(VK_MBUTTON))
+		pCamera->Rotate();
+
+	pCamera->Move();
+	pCamera->UpdateViewMatrix();
 }

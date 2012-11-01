@@ -6,11 +6,13 @@
 
 TerrainTool::TerrainTool() : mUpdateInterval(0.03f)
 {
-	SetEnabled(true);	// [NOTE]
 	SetTool(TOOL_HEIGHT);
 	SetRadius(20.0f);
 	SetStrength(1.0f);
 	SetSelectedTexture(4);
+
+	Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
+	Effects::TerrainFX->Apply();
 }
 
 TerrainTool::~TerrainTool()
@@ -22,13 +24,6 @@ void TerrainTool::Update(float dt)
 {
 	static float timer = 0;
 	timer += dt;
-
-	// Enabled?
-	if(!mEnabled) {
-		Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
-		Effects::TerrainFX->Apply();
-		return;
-	}
 
 	// Don't use the tools every frame.
 	XMFLOAT3 intersectPoint = GetIntersectPoint();
@@ -153,11 +148,6 @@ void TerrainTool::SetTerrain(Terrain* pTerrain)
 {
 	mTerrain = pTerrain;
 }
-
-void TerrainTool::SetEnabled(bool enabled)
-{
-	mEnabled = enabled;
-}
 	
 void TerrainTool::SetTool(ToolType tool)
 {
@@ -182,4 +172,9 @@ void TerrainTool::SetSelectedTexture(int texture)
 ToolType TerrainTool::GetActiveTool()
 {
 	return mCurrentTool;
+}
+
+int TerrainTool::GetSelectedLayer()
+{
+	return mSelectedTexture;
 }

@@ -30,6 +30,7 @@
 Runnable*			gGame				= nullptr;
 PrimitiveFactory*	gPrimitiveFactory	= nullptr;
 Input*				gInput				= nullptr;
+ModelImporter*		gModelImporter		= nullptr;
 
 BillboardVertex* billboard;
 
@@ -69,8 +70,8 @@ Game::~Game()
 {
 	delete gPrimitiveFactory;	
 	delete gInput;
+	delete gModelImporter;
 	delete mWorld;
-	delete mModelImporter;
 	delete mEditor;
 }
 
@@ -84,9 +85,10 @@ void Game::Init()
 	// Create the world.
 	mWorld = new World();
 	mWorld->Init();
+	mWorld->AddItemSelectedListender(&Editor::OnItemSelected, mEditor);
 
 	// Create the model importer.
-	mModelImporter = new ModelImporter(gPrimitiveFactory);
+	gModelImporter = new ModelImporter(gPrimitiveFactory);
 
 	// Connect the graphics light list to the one in World.
 	GetGraphics()->SetLightList(mWorld->GetLights());
@@ -111,19 +113,19 @@ void Game::Init()
 	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 	GetGraphics()->GetContext()->OMSetBlendState(RenderStates::TransparentBS, blendFactor, 0xffffffff);
 
-	mAnimatedObject = new AnimatedObject(mModelImporter, "models/smith/smith.x");
+	mAnimatedObject = new AnimatedObject(gModelImporter, "models/smith/smith.x");
 	mAnimatedObject->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
 	mAnimatedObject->SetPosition(XMFLOAT3(0, 30, 0));
 	mAnimatedObject->SetRotation(XMFLOAT3(0.7, 0.6, 0.6));
 	mWorld->AddObject(mAnimatedObject);
 
-	mObject = new StaticObject(mModelImporter, "models/sword/uld-sword.obj");
+	mObject = new StaticObject(gModelImporter, "models/sword/uld-sword.obj");
 	mObject->SetPosition(XMFLOAT3(0, 30, 0));
 	mObject->SetMaterial(Material(Colors::Red));
 	mObject->SetScale(XMFLOAT3(10, 10, 10));
 	mWorld->AddObject(mObject);
 
-	mEditor->Init(mModelImporter, mWorld);
+	mEditor->Init(gModelImporter, mWorld);
 }
 	
 void Game::GwenInit()

@@ -5,13 +5,19 @@
 #include "Gwen/Controls/ComboBox.h"
 #include "Util.h"
 #include "Object3D.h"
-#include "ObjectMover.h"
+#include "ObjectTool.h"
+#include "ModelImporter.h"
+#include "Effects.h"
 
-LightInspector::LightInspector(Gwen::Controls::Base* pParent)
+LightInspector::LightInspector(Gwen::Controls::Base* pParent, ObjectTool* pTool)
 	: BaseInspector(pParent)
 {
 	mLight = nullptr;
 	mRangeSlider = mSpotSlider = nullptr;
+	mObjectTool = pTool;
+
+	Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
+	Effects::TerrainFX->Apply();
 }
 	
 LightInspector::~LightInspector()
@@ -45,8 +51,22 @@ void LightInspector::Cleanup()
 	// Cleanup all the controls.
 }
 
+void LightInspector::Update(float dt)
+{
+	mObjectTool->Update(dt);
+}
+
+void LightInspector::Draw(Graphics* pGraphics)
+{
+	mObjectTool->Draw(pGraphics);
+}
+
 void LightInspector::SetObject(void* pObject)
 {
+	// Send to the object tool.
+	mObjectTool->SetObject((Light*)pObject);
+	mObjectTool->AddOnPositionChange(&LightInspector::OnPositionChangeEvent, this);
+
 	mLight = (Light*)pObject;
 	mCurrentMaterial = mLight->GetMaterial();
 	Material oldMat = mLight->GetMaterial();
@@ -145,7 +165,7 @@ void LightInspector::OnOrientationChange(Gwen::Controls::Base* pControl)
 	mLight->SetPosition(pos);
 
 	// Move the ObjectMover.
-	mObjectMover->SetPosition(pos);
+	mObjectTool->SetPosition(pos);
 }
 
 void LightInspector::OnDirectionSliderMoved(Base* pControl)
@@ -456,9 +476,4 @@ void LightInspector::OnPositionChangeEvent(XMFLOAT3 position)
 
 	sprintf(buffer, "%.3f", position.z);
 	mZProperty->GetProperty()->SetPropertyValue(buffer);
-}
-
-void LightInspector::SetObjectMover(ObjectMover* pObjectMover)
-{
-	mObjectMover = pObjectMover;
 }

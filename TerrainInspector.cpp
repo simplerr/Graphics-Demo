@@ -5,12 +5,13 @@
 #include "Object3D.h"
 #include "TerrainTool.h"
 #include "Util.h"
+#include "World.h"
 
-TerrainInspector::TerrainInspector(Gwen::Controls::Base* pParent, TerrainTool* pTerrainTool)
+TerrainInspector::TerrainInspector(Gwen::Controls::Base* pParent, TerrainTool* pTool)
 	: BaseInspector(pParent)
 {
-	mTerrain = nullptr;
-	mTerrainTool = pTerrainTool;
+	// Init the terrain tool.
+	mTerrainTool = pTool;
 }
 	
 TerrainInspector::~TerrainInspector()
@@ -77,17 +78,23 @@ void TerrainInspector::Init()
 	mTexture3 = CreateTerrainTexture("textures/lightdirt.dds", "2", 10, 280, this);
 	mTexture4 = CreateTerrainTexture("textures/snow.dds", "3", 60, 280, this);
 
-	//
 	// Set the values.
-	//
-
 	mRadiusSlider->SetValue(mTerrainTool->GetRadius());
 	mStrengthSlider->SetValue(mTerrainTool->GetStrength());
 
 	ptree->ExpandAll();
 
-	// Set the height tool as starting tool.
 	SetActiveTool(mTerrainTool->GetActiveTool());
+}
+
+void TerrainInspector::Update(float dt)
+{
+	mTerrainTool->Update(dt);
+}
+
+void TerrainInspector::Draw(Graphics* pGraphics)
+{
+	mTerrainTool->Draw(pGraphics);
 }
 
 void TerrainInspector::OnTextureSelected(Gwen::Controls::Base* pControl)
@@ -149,7 +156,7 @@ void TerrainInspector::OnPropertyChange(Gwen::Controls::Base* pControl)
 
 void TerrainInspector::SetObject(void* pObject)
 {
-	mTerrain = (Terrain*)pObject;
+	mTerrainTool->SetTerrain((Terrain*)pObject);
 }
 	
 bool TerrainInspector::IsResponsible(int type)
