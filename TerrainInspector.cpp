@@ -102,7 +102,7 @@ void TerrainInspector::OnTextureSelected(Gwen::Controls::Base* pControl)
 	string name = pControl->GetName();
 
 	int layer = atoi(name.c_str());
-	mTerrainTool->SetSelectedTexture(layer);
+	mTerrainTool->SetSelectedLayer(layer);
 }
 
 void TerrainInspector::OnComboSelect(Gwen::Controls::Base* pControl)

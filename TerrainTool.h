@@ -6,6 +6,7 @@
 class World;
 class Terrain;
 
+//! Can change the height and texture of the terrain.
 class TerrainTool
 {
 public:
@@ -19,7 +20,7 @@ public:
 	void SetTool(ToolType tool);
 	void SetRadius(float radius);
 	void SetStrength(float strength);
-	void SetSelectedTexture(int texture);
+	void SetSelectedLayer(int layer);
 	float GetRadius();
 	float GetStrength();
 	ToolType GetActiveTool();
@@ -35,5 +36,5 @@ private:
 	float		mRadius;
 	float		mStrength;
 	const float mUpdateInterval;
-	int			mSelectedTexture;
+	int			mSelectedLayer;
 };

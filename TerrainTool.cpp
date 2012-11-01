@@ -9,17 +9,19 @@ TerrainTool::TerrainTool() : mUpdateInterval(0.03f)
 	SetTool(TOOL_HEIGHT);
 	SetRadius(20.0f);
 	SetStrength(1.0f);
-	SetSelectedTexture(4);
+	SetSelectedLayer(4);
 
 	Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
 	Effects::TerrainFX->Apply();
 }
 
+//! Cleanup.
 TerrainTool::~TerrainTool()
 {
 
 }
 
+//! Poll for input and perform actions.
 void TerrainTool::Update(float dt)
 {
 	static float timer = 0;
@@ -52,29 +54,24 @@ void TerrainTool::Update(float dt)
 		timer = 0.0f;
 	}
 
-	if(mCurrentTool == TOOL_HEIGHT)
-	{
-		if(gInput->KeyReleased(VK_LBUTTON) || gInput->KeyReleased(VK_RBUTTON)) {
-			mTerrain->Smooth();
-			mTerrain->BuildHeightmapSRV(GetD3DDevice());
-		}
+	// Smooth the terrain if any mouse button is released when TOOL_HEIGHT.
+	if(IsIn3DScreen() && mCurrentTool == TOOL_HEIGHT && (gInput->KeyReleased(VK_LBUTTON) || gInput->KeyReleased(VK_RBUTTON))) {
+		mTerrain->Smooth();
+		mTerrain->BuildHeightmapSRV(GetD3DDevice());
 	}
 
-	if(intersectPoint.x != numeric_limits<float>::infinity()) {
-		Effects::TerrainFX->SetToolCenter(XMFLOAT2(intersectPoint.x, intersectPoint.z));
-		Effects::TerrainFX->Apply();
-	}
-	else {
-		Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
-		Effects::TerrainFX->Apply();
-	}
+	// Set the tool center position.
+	Effects::TerrainFX->SetToolCenter(XMFLOAT2(intersectPoint.x, intersectPoint.z));
+	Effects::TerrainFX->Apply();
 }
 	
+//! Draw the terrain tool. [NOTE] Unused.
 void TerrainTool::Draw(Graphics* pGraphics)
 {
 
 }
 
+//! Changes the height in a circle around center.
 void TerrainTool::ChangeHeight(XMFLOAT3 center, bool raise)
 {
 	// Did the ray hit the terrain?
@@ -97,6 +94,7 @@ void TerrainTool::ChangeHeight(XMFLOAT3 center, bool raise)
 	}
 }
 
+//! Smoothen the terrain in a circle around center.
 void TerrainTool::SmothTerrain(XMFLOAT3 center)
 {
 	// Did the ray hit the terrain?
@@ -108,6 +106,7 @@ void TerrainTool::SmothTerrain(XMFLOAT3 center)
 	}
 }
 
+//! Changes the texture in a circle around center.
 void TerrainTool::EditTextures(XMFLOAT3 center)
 {
 	// Did the ray hit the terrain?
@@ -118,7 +117,7 @@ void TerrainTool::EditTextures(XMFLOAT3 center)
 			for(float z = -mRadius; z < mRadius; z+=0.5f) {
 				float dist = sqrt(x*x + z*z);	// Distance from center.
 				float modifier = max(0, mRadius - dist) / 10 * mStrength/14;
-				mTerrain->SetBlend(XMFLOAT3(center.x + x, 0, center.z + z), modifier, mSelectedTexture);
+				mTerrain->SetBlend(XMFLOAT3(center.x + x, 0, center.z + z), modifier, mSelectedLayer);
 			}
 		}
 
@@ -127,11 +126,13 @@ void TerrainTool::EditTextures(XMFLOAT3 center)
 	}
 }
 
+//! Returns the intersect point between the mouse pointer and the terrain.
 XMFLOAT3 TerrainTool::GetIntersectPoint()
 {
 	return mTerrain->GetIntersectPoint(gInput->GetWorldPickingRay());
 }
 
+//! Sets the tool radius.
 void TerrainTool::SetRadius(float radius)
 {
 	mRadius = radius;
@@ -139,42 +140,50 @@ void TerrainTool::SetRadius(float radius)
 	Effects::TerrainFX->Apply();
 }
 
+//! Sets the tool strength.
 void TerrainTool::SetStrength(float strength)
 {
 	mStrength = strength;
 }
 
+//! Sets the terrain.
 void TerrainTool::SetTerrain(Terrain* pTerrain)
 {
 	mTerrain = pTerrain;
 }
 	
+//! Sets the active tool type.
 void TerrainTool::SetTool(ToolType tool)
 {
 	mCurrentTool = tool;
 }
 
+//! Returns the tool radius.
 float TerrainTool::GetRadius()
 {
 	return mRadius;
 }
 	
+//! Returns the tool strength.
 float TerrainTool::GetStrength()
 {
 	return mStrength;
 }
 
-void TerrainTool::SetSelectedTexture(int texture)
+//! Sets the selected layer.
+void TerrainTool::SetSelectedLayer(int layer)
 {
-	mSelectedTexture = texture;
+	mSelectedLayer = layer;
 }
 
+//! Returns the active tool.
 ToolType TerrainTool::GetActiveTool()
 {
 	return mCurrentTool;
 }
 
+//! Returns the selected layer.
 int TerrainTool::GetSelectedLayer()
 {
-	return mSelectedTexture;
+	return mSelectedLayer;
 }
