@@ -8,7 +8,7 @@ TerrainTool::TerrainTool() : mUpdateInterval(0.03f)
 	SetEnabled(true);	// [NOTE]
 	SetTool(TOOL_HEIGHT);
 	SetRadius(20.0f);
-	SetStrength(6.0f);
+	SetStrength(1.0f);
 	SetSelectedTexture(4);
 }
 
@@ -117,7 +117,7 @@ void TerrainTool::EditTextures(XMFLOAT3 center)
 		for(float x = -mRadius; x < mRadius; x+=0.5f) {
 			for(float z = -mRadius; z < mRadius; z+=0.5f) {
 				float dist = sqrt(x*x + z*z);	// Distance from center.
-				float modifier = max(0, mRadius - dist) / 10 / 6;
+				float modifier = max(0, mRadius - dist) / 10 * mStrength/14;
 				mTerrain->SetBlend(XMFLOAT3(center.x + x, 0, center.z + z), modifier, mSelectedTexture);
 			}
 		}

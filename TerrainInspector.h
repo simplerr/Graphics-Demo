@@ -26,9 +26,10 @@ public:
 	void OnStrengthChange(Gwen::Controls::Base* pControl);
 	void OnPropertyChange(Gwen::Controls::Base* pControl);
 	void OnComboSelect(Gwen::Controls::Base* pControl);
+	void OnTextureSelected(Gwen::Controls::Base* pControl);
 private:
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
-	Gwen::Controls::ImagePanel* CreateTerrainTexture(string texture, string name, float x, float y, Base* pParent);
+	Gwen::Controls::Button* CreateTerrainTexture(string texture, string name, float x, float y, Base* pParent);
 private:
 	Terrain*	 mTerrain;
 	TerrainTool* mTerrainTool;
@@ -36,5 +37,5 @@ private:
 	Gwen::Controls::HorizontalSlider* mStrengthSlider;
 	Gwen::Controls::PropertyRow*	  mRadiusProperty;
 	Gwen::Controls::PropertyRow*	  mStrengthProperty;
-	Gwen::Controls::ImagePanel*		  mTexture0, *mTexture1, *mTexture2, *mTexture3, *mTexture4;
+	Gwen::Controls::Button*				  mTexture0, *mTexture1, *mTexture2, *mTexture3, *mTexture4;
 };

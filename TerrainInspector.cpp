@@ -71,11 +71,11 @@ void TerrainInspector::Init()
 	combo->onSelection.Add(this, &TerrainInspector::OnComboSelect);
 
 	// Terrain textures.
-	mTexture0 = CreateTerrainTexture("textures/grass.dds", "0", 10, 230, this);
+	mTexture0 = CreateTerrainTexture("textures/grass.dds", "4", 10, 230, this);
 	mTexture1 = CreateTerrainTexture("textures/darkdirt.dds", "0", 60, 230, this);
-	mTexture2 = CreateTerrainTexture("textures/stone.dds", "0", 110, 230, this);
-	mTexture3 = CreateTerrainTexture("textures/lightdirt.dds", "0", 10, 280, this);
-	mTexture4 = CreateTerrainTexture("textures/snow.dds", "0", 60, 280, this);
+	mTexture2 = CreateTerrainTexture("textures/stone.dds", "1", 110, 230, this);
+	mTexture3 = CreateTerrainTexture("textures/lightdirt.dds", "2", 10, 280, this);
+	mTexture4 = CreateTerrainTexture("textures/snow.dds", "3", 60, 280, this);
 
 	//
 	// Set the values.
@@ -88,6 +88,14 @@ void TerrainInspector::Init()
 
 	// Set the height tool as starting tool.
 	SetActiveTool(TOOL_HEIGHT);
+}
+
+void TerrainInspector::OnTextureSelected(Gwen::Controls::Base* pControl)
+{
+	string name = pControl->GetName();
+
+	int layer = atoi(name.c_str());
+	mTerrainTool->SetSelectedTexture(layer);
 }
 
 void TerrainInspector::OnComboSelect(Gwen::Controls::Base* pControl)
@@ -161,10 +169,11 @@ void TerrainInspector::InitSlider(Gwen::Controls::HorizontalSlider* slider, stri
 	slider->SetClampToNotches(clamp);
 }
 
-Gwen::Controls::ImagePanel* TerrainInspector::CreateTerrainTexture(string texture, string name, float x,  float y, Base* pParent)
+Gwen::Controls::Button* TerrainInspector::CreateTerrainTexture(string texture, string name, float x,  float y, Base* pParent)
 {
-	Gwen::Controls::ImagePanel* img = new Gwen::Controls::ImagePanel(pParent);
-	img->SetImage(texture);
+	Gwen::Controls::Button* img = new Gwen::Controls::Button(pParent);
+	img->onPress.Add(this, &TerrainInspector::OnTextureSelected);
+	img->SetImage(texture, true);
 	img->SetName(name);
 	img->SetBounds(x, y, 40, 40);
 	return img;
