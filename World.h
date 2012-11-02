@@ -32,6 +32,7 @@ public:
 	ObjectList* GetObjects();
 	Terrain*	GetTerrain();
 	int			GetVisibleObjects();
+	XMFLOAT3	GetTerrainIntersectPoint(Ray ray);
 
 	// Callback hookup.
 	template <class T>

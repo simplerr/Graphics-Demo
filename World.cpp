@@ -202,3 +202,8 @@ int World::GetVisibleObjects()
 {
 	return mNumVisibleObjects;
 }
+
+XMFLOAT3 World::GetTerrainIntersectPoint( Ray ray )
+{
+	return mTerrain->GetIntersectPoint(ray);
+}

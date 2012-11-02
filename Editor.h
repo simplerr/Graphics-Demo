@@ -25,6 +25,7 @@ class Object3D;
 class TerrainTool;
 class Terrain;
 class Camera;
+class CreationTool;
 
 //! Contains the UI and the different tools.
 class Editor
@@ -50,4 +51,5 @@ private:
 	WorldTree*					mWorldTree;
 	TerrainTool*				mTerrainTool;
 	ObjectTool*					mObjectTool;
+	CreationTool*			    mCreationTool;
 };

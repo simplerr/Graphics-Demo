@@ -16,6 +16,7 @@
 #include "TerrainTool.h"
 #include "TerrainInspector.h"
 #include "Effects.h"
+#include "CreationTool.h"
 
 //! Constructor.
 Editor::Editor(int width, int height)
@@ -40,21 +41,20 @@ Editor::~Editor()
 //! Initializes everything.
 void Editor::Init(ModelImporter* pImporter, World* pWorld)
 {
-	// Create the tools.
-	mTerrainTool = new TerrainTool();
-	mObjectTool = new ObjectTool(pImporter);
-
-	return;
-
 	// Create the right list.
 	mRightList = new Gwen::Controls::CollapsibleList(mGwenCanvas);
-	mRightList->SetBounds(800, 0, 200, 800);
+	mRightList->SetBounds(1000, 0, 200, 800);
 	mRightList->SetShouldDrawBackground(true);
-	
+
 	// Create the world tree.
 	mWorldTree = new WorldTree(mRightList);
 	mWorldTree->SetEditor(this);
 	mWorldTree->CreateTree(pWorld);
+
+	// Create the tools.
+	mTerrainTool = new TerrainTool();
+	mObjectTool = new ObjectTool(pImporter);
+	mCreationTool = new CreationTool(mRightList, pWorld);
 }
 
 //! Inits the Gwen renderer, canvas, input and skin.
@@ -82,6 +82,8 @@ void Editor::GwenInit(int width, int height)
 //! Update the tools.
 void Editor::Update(float dt)
 {
+	mCreationTool->Update(dt);
+
 	if(mActiveInspector != nullptr)
 		mActiveInspector->Update(dt);
 }
@@ -98,6 +100,8 @@ void Editor::Draw(Graphics* pGraphics)
 
 	// Draw the canvas and all controls in it.
 	mGwenCanvas->RenderCanvas();
+
+	mCreationTool->Draw(pGraphics);
 }
 	
 //! Callback that World calls when an object gets selected.

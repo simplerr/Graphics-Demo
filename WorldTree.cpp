@@ -8,8 +8,16 @@
 WorldTree::WorldTree(Gwen::Controls::Base* pParent)
 	: Gwen::Controls::CollapsibleCategory(pParent)
 {
+	SetText("World objects");
+	SetSize(200, 400);
+
 	mTreeControl = new Gwen::Controls::TreeControl(this);
+	mTreeControl->SetBounds(0, 20, 200, 380);
 	mTreeControl->onSelect.Add(this, &WorldTree::OnSelectChange);
+
+	// Add as a category.
+	Gwen::Controls::CollapsibleList* parent = (Gwen::Controls::CollapsibleList*)pParent;
+	parent->Add(this);
 }
 	
 WorldTree::~WorldTree()

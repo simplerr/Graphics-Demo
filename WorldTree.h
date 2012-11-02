@@ -27,5 +27,6 @@ public:
 private:
 	map<string, WorldTreeNode> mNodeMap;
 	Gwen::Controls::TreeControl* mTreeControl;
+	Gwen::Controls::CollapsibleCategory* mCategory;
 	Editor* mEditor;
 };

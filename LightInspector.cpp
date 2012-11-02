@@ -44,6 +44,8 @@ void LightInspector::Init()
 	// Add the data properties.
 	CreateDataProperties(dataCategory);
 	colorCategory->SetSize(200, 200);
+
+	SetShouldDrawBackground(true);
 }
 	
 void LightInspector::Cleanup()
