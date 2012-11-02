@@ -10,6 +10,7 @@
 #include "Gwen/Input/Windows.h"
 #include "Gwen/Renderers/GDIPlus.h"
 #include "Gwen/Controls/Button.h"
+#include "Gwen/Controls/CollapsibleList.h"
 #include "DirectX11Renderer.h"
 
 class Gwen::Renderer::DirectX11;
@@ -44,6 +45,7 @@ private:
 	Gwen::Skin::TexturedBase*	mGwenSkin;
 	Gwen::Input::Windows		mGwenInput;
 	Gwen::Renderer::DirectX11*	mGwenRenderer;
+	Gwen::Controls::CollapsibleList* mRightList;
 	BaseInspector*				mActiveInspector;
 	WorldTree*					mWorldTree;
 	TerrainTool*				mTerrainTool;

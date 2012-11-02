@@ -1,4 +1,5 @@
 #pragma once
+#include "Gwen/Controls/CollapsibleCategory.h"
 #include "Gwen/Controls/TreeControl.h"
 #include <map>
 #include <string>
@@ -13,7 +14,8 @@ struct WorldTreeNode
 	int type;
 };
 
-class WorldTree : public Gwen::Controls::TreeControl
+//! A TreeControl that contains all objects in World.
+class WorldTree : public Gwen::Controls::CollapsibleCategory
 {
 public:
 	WorldTree(Gwen::Controls::Base* pParent);
@@ -24,5 +26,6 @@ public:
 	void SetEditor(Editor* pEditor);
 private:
 	map<string, WorldTreeNode> mNodeMap;
+	Gwen::Controls::TreeControl* mTreeControl;
 	Editor* mEditor;
 };

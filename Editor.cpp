@@ -44,8 +44,15 @@ void Editor::Init(ModelImporter* pImporter, World* pWorld)
 	mTerrainTool = new TerrainTool();
 	mObjectTool = new ObjectTool(pImporter);
 
+	return;
+
+	// Create the right list.
+	mRightList = new Gwen::Controls::CollapsibleList(mGwenCanvas);
+	mRightList->SetBounds(800, 0, 200, 800);
+	mRightList->SetShouldDrawBackground(true);
+	
 	// Create the world tree.
-	mWorldTree = new WorldTree(mGwenCanvas);
+	mWorldTree = new WorldTree(mRightList);
 	mWorldTree->SetEditor(this);
 	mWorldTree->CreateTree(pWorld);
 }

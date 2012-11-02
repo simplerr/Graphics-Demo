@@ -6,10 +6,10 @@
 #include "Editor.h"
 
 WorldTree::WorldTree(Gwen::Controls::Base* pParent)
-	: Gwen::Controls::TreeControl(pParent)
+	: Gwen::Controls::CollapsibleCategory(pParent)
 {
-	SetBounds(1000, 0, 200, 800);
-	onSelect.Add(this, &WorldTree::OnSelectChange);
+	mTreeControl = new Gwen::Controls::TreeControl(this);
+	mTreeControl->onSelect.Add(this, &WorldTree::OnSelectChange);
 }
 	
 WorldTree::~WorldTree()
@@ -28,14 +28,14 @@ void WorldTree::OnSelectChange(Gwen::Controls::Base* pControl)
 
 void WorldTree::CreateTree(World* pWorld)
 {
-	Gwen::Controls::TreeNode* objects = AddNode("Objects");
+	Gwen::Controls::TreeNode* objects = mTreeControl->AddNode("Objects");
 	objects->onSelect.Add(this, &WorldTree::OnSelectChange);
 	Gwen::Controls::TreeNode* staticObjects = objects->AddNode("Static");
 	Gwen::Controls::TreeNode* animatedObjects = objects->AddNode("Animated");
-	Gwen::Controls::TreeNode* lights = AddNode("Lights");
+	Gwen::Controls::TreeNode* lights = mTreeControl->AddNode("Lights");
 
 	// Add the terrain node.
-	Gwen::Controls::TreeNode* terrain = AddNode("Terrain");
+	Gwen::Controls::TreeNode* terrain = mTreeControl->AddNode("Terrain");
 	terrain->onSelect.Add(this, &WorldTree::OnSelectChange);
 	mNodeMap["Terrain"].pData = pWorld->GetTerrain();
 	mNodeMap["Terrain"].type = TERRAIN;
