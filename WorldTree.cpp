@@ -34,10 +34,13 @@ void WorldTree::OnSelectChange(Gwen::Controls::Base* pControl)
 	mEditor->OnItemSelected(worldNode.pData, worldNode.type);
 }
 
-void WorldTree::CreateTree(World* pWorld)
+void WorldTree::CreateTree()
 {
+	// Remove the old content.
+	mTreeControl->Clear();
+	mNodeMap.clear();
+
 	Gwen::Controls::TreeNode* objects = mTreeControl->AddNode("Objects");
-	objects->onSelect.Add(this, &WorldTree::OnSelectChange);
 	Gwen::Controls::TreeNode* staticObjects = objects->AddNode("Static");
 	Gwen::Controls::TreeNode* animatedObjects = objects->AddNode("Animated");
 	Gwen::Controls::TreeNode* lights = mTreeControl->AddNode("Lights");
@@ -45,13 +48,12 @@ void WorldTree::CreateTree(World* pWorld)
 	// Add the terrain node.
 	Gwen::Controls::TreeNode* terrain = mTreeControl->AddNode("Terrain");
 	terrain->onSelect.Add(this, &WorldTree::OnSelectChange);
-	mNodeMap["Terrain"].pData = pWorld->GetTerrain();
+	mNodeMap["Terrain"].pData = mWorld->GetTerrain();
 	mNodeMap["Terrain"].type = TERRAIN;
 
 	// Add all static objects.
-	ObjectList* objectList = pWorld->GetObjects();
-	int statics, animated;
-	statics = animated = 1;
+	ObjectList* objectList = mWorld->GetObjects();
+	map<string, int> counter;
 	for(int i = 0; i < objectList->size(); i++)
 	{
 		Object3D* object = objectList->operator[](i);
@@ -60,21 +62,26 @@ void WorldTree::CreateTree(World* pWorld)
 		node.type = object->GetType();
 
 		char buffer[256];
+		string name = object->GetName();
+
+		if(counter.find(name) != counter.end())
+			counter[name]++;
+		else
+			counter[name] = 1;
+
 		if(node.type == STATIC_OBJECT) {
-			sprintf(buffer, "Static %i", statics);
+			sprintf(buffer, "%s %i", name.c_str(), counter[name]);
 			staticObjects->AddNode(buffer)->onSelect.Add(this, &WorldTree::OnSelectChange);
-			statics++;
 		}
 		else if(node.type == ANIMATED_OBJECT) {
-			sprintf(buffer, "Animated %i", animated);
+			sprintf(buffer, "%s %i", name.c_str(), counter[name]);
 			animatedObjects->AddNode(buffer)->onSelect.Add(this, &WorldTree::OnSelectChange);
-			animated++;
 		}
 
 		mNodeMap[buffer] = node;
 	}
 
-	LightList* lightList = pWorld->GetLights();
+	LightList* lightList = mWorld->GetLights();
 	for(int i = 0; i < lightList->size(); i++)
 	{
 		Light* light = lightList->operator[](i);
@@ -95,4 +102,9 @@ void WorldTree::CreateTree(World* pWorld)
 void WorldTree::SetEditor(Editor* pEditor)
 {
 	mEditor = pEditor;
+}
+
+void WorldTree::SetWorld(World* pWorld)
+{
+	mWorld = pWorld;
 }

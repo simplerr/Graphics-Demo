@@ -5,6 +5,7 @@
 
 class Graphics;
 class World;
+class Editor;
 
 class CreationTool : public Gwen::Controls::CollapsibleCategory
 {
@@ -18,8 +19,11 @@ public:
 	void CreateStaticModel(XMFLOAT3 position, ModelData data);
 	void CreateAnimatedModel(XMFLOAT3 position, ModelData data);
 	void OnSelectChange(Gwen::Controls::Base* pControl);
+
+	void SetEditor(Editor* pEditor);
 private:
 	ModelLoaderXML* mModelLoaderXML;
 	World*	mWorld;
+	Editor*	mEditor;
 	bool	mModelSelected;
 };

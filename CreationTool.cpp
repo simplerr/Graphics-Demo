@@ -7,12 +7,14 @@
 #include "StaticObject.h"
 #include "AnimatedObject.h"
 #include "ModelImporter.h"
+#include "Editor.h"
 
 CreationTool::CreationTool(Gwen::Controls::Base* pParent, World* pWorld)
 	: Gwen::Controls::CollapsibleCategory(pParent)
 {
 	mWorld = pWorld;
 	mModelSelected = false;
+	mEditor = nullptr;
 
 	SetText("Spawn list");
 	SetSize(200, 400);
@@ -49,9 +51,9 @@ void CreationTool::Update(float dt)
 			// Deselect the button.
 			this->GetSelected()->SetToggleState(false);
 			mModelSelected = false;
+			mEditor->UpdateWorldTree();
 		}
 	}
-	
 }
 
 void CreationTool::Draw(Graphics* pGraphics)
@@ -76,12 +78,14 @@ void CreationTool::CreateStaticModel(XMFLOAT3 position, ModelData data)
 	object->SetPosition(position);
 	object->SetScale(XMFLOAT3(10, 10, 10));
 	object->SetMaterial(Material(Colors::White));
+	object->SetName(data.name);
 	mWorld->AddObject(object);
 }
 
 void CreationTool::CreateAnimatedModel(XMFLOAT3 position, ModelData data)
 {
 	AnimatedObject* object = new AnimatedObject(gModelImporter, data.filename);
+	object->SetName(data.name);
 	object->SetPosition(position);
 	mWorld->AddObject(object);
 }
@@ -89,4 +93,9 @@ void CreationTool::CreateAnimatedModel(XMFLOAT3 position, ModelData data)
 void CreationTool::OnSelectChange(Gwen::Controls::Base* pControl)
 {
 	mModelSelected = true;
+}
+
+void CreationTool::SetEditor(Editor* pEditor)
+{
+	mEditor = pEditor;
 }

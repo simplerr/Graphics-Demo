@@ -49,12 +49,14 @@ void Editor::Init(ModelImporter* pImporter, World* pWorld)
 	// Create the world tree.
 	mWorldTree = new WorldTree(mRightList);
 	mWorldTree->SetEditor(this);
-	mWorldTree->CreateTree(pWorld);
+	mWorldTree->SetWorld(pWorld);
+	mWorldTree->CreateTree();
 
 	// Create the tools.
 	mTerrainTool = new TerrainTool();
 	mObjectTool = new ObjectTool(pImporter);
 	mCreationTool = new CreationTool(mRightList, pWorld);
+	mCreationTool->SetEditor(this);
 }
 
 //! Inits the Gwen renderer, canvas, input and skin.
@@ -150,4 +152,9 @@ void Editor::UpdateCamera(Camera* pCamera)
 
 	pCamera->Move();
 	pCamera->UpdateViewMatrix();
+}
+
+void Editor::UpdateWorldTree()
+{
+	mWorldTree->CreateTree();
 }

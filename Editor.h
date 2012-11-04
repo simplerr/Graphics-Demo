@@ -41,6 +41,7 @@ public:
 	void Draw(Graphics* pGraphics);
 	void MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	void OnItemSelected(void* pItem, int type);
+	void UpdateWorldTree();
 private:
 	Gwen::Controls::Canvas*		mGwenCanvas;
 	Gwen::Skin::TexturedBase*	mGwenSkin;

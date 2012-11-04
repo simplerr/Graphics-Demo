@@ -21,12 +21,14 @@ public:
 	WorldTree(Gwen::Controls::Base* pParent);
 	~WorldTree();
 
-	void CreateTree(World* pWorld);
+	void CreateTree();
 	void OnSelectChange(Gwen::Controls::Base* pControl);
 	void SetEditor(Editor* pEditor);
+	void SetWorld(World* pWorld);
 private:
 	map<string, WorldTreeNode> mNodeMap;
 	Gwen::Controls::TreeControl* mTreeControl;
 	Gwen::Controls::CollapsibleCategory* mCategory;
 	Editor* mEditor;
+	World* mWorld;
 };

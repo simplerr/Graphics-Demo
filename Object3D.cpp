@@ -15,6 +15,7 @@ Object3D::Object3D(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scale)
 	mRotation = rotation;
 	mScale = scale;
 	SetBoundingBoxVisible(false);
+	SetName("Object");
 }
 
 //! Cleanup.
@@ -103,15 +104,24 @@ ObjectType Object3D::GetType()
 	return mType;
 }
 
+string Object3D::GetName()
+{
+	return mName;
+}
+
 //! True if the bounding box should be drawn.
 void Object3D::SetBoundingBoxVisible(bool visible)
 {
 	mDrawBoundingBox = visible;
 }
 
-
 //! Returns true if the bounding box is visible.
 bool Object3D::IsBoundingBoxVisible()
 {
 	return mDrawBoundingBox;
+}
+
+void Object3D::SetName(string name)
+{
+	mName = name;
 }

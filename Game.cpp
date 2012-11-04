@@ -119,9 +119,9 @@ void Game::Init()
 	mAnimatedObject->SetRotation(XMFLOAT3(0.7, 0.6, 0.6));
 	mWorld->AddObject(mAnimatedObject);
 
-	/*mObject = new StaticObject(gModelImporter, "models/sword/uld-sword.obj");
+	/*mObject = new StaticObject(gModelImporter, "models/bandit_male/bandit_male.obj");
 	mObject->SetPosition(XMFLOAT3(0, 30, 0));
-	mObject->SetMaterial(Material(Colors::Red));
+	mObject->SetMaterial(Material(Colors::White));
 	mObject->SetScale(XMFLOAT3(10, 10, 10));
 	mWorld->AddObject(mObject);*/
 
