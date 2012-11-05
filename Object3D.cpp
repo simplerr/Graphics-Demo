@@ -16,6 +16,7 @@ Object3D::Object3D(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scale)
 	mScale = scale;
 	SetBoundingBoxVisible(false);
 	SetName("Object");
+	SetDefualtScale(1.0f);
 }
 
 //! Cleanup.
@@ -56,7 +57,7 @@ XMMATRIX Object3D::GetWorldMatrix()
 	XMMATRIX T, R, S, W;
 	T = XMMatrixTranslation(mPosition.x, mPosition.y, mPosition.z);
 	R = XMMatrixRotationRollPitchYaw(mRotation.x, mRotation.y, mRotation.z);
-	S = XMMatrixScaling(mScale.x, mScale.y, mScale.z);
+	S = XMMatrixScaling(mScale.x * mDefaultScale.x, mScale.y * mDefaultScale.y, mScale.z * mDefaultScale.z);
 
 	return S*R*T;
 }
@@ -121,7 +122,14 @@ bool Object3D::IsBoundingBoxVisible()
 	return mDrawBoundingBox;
 }
 
+//! Sets the object name.
 void Object3D::SetName(string name)
 {
 	mName = name;
+}
+
+//! Sets the default scale.
+void Object3D::SetDefualtScale(float scale)
+{
+	mDefaultScale = XMFLOAT3(scale, scale, scale);
 }

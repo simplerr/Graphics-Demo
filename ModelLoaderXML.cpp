@@ -18,7 +18,9 @@ ModelLoaderXML::ModelLoaderXML(string source)
 		data.name = item->Attribute("name") == NULL ? "#NOVALUE" : item->Attribute("name");
 		data.filename = item->Attribute("filename") == NULL ? "#NOVALUE" : item->Attribute("filename");
 		data.type = atoi(item->Attribute("type") == NULL ? "#NOVALUE" : item->Attribute("type"));
+		data.defaultScale = atof(item->Attribute("default_scale") == NULL ? "#NOVALUE" : item->Attribute("default_scale"));
 
+		// [NOTE] atof("#NOVALUE")
 		mDataMap[data.name] = data;
 	}
 }

@@ -59,10 +59,12 @@ public:
 	void SetType(ObjectType type);
 	void SetBoundingBoxVisible(bool visible);
 	void SetName(string name);
+	void SetDefualtScale(float scale);
 private:
 	XMFLOAT3	mPosition;
 	XMFLOAT3	mRotation;
 	XMFLOAT3	mScale;
+	XMFLOAT3	mDefaultScale;
 	ObjectType	mType;
 	Material	mMaterial;
 	bool		mDrawBoundingBox;

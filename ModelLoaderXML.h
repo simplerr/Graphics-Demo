@@ -6,9 +6,10 @@ using namespace std;
 
 struct ModelData
 {
-	string name;
-	string filename;
-	int type;
+	string	name;
+	string	filename;
+	int		type;
+	float	defaultScale;
 };
 
 class ModelLoaderXML

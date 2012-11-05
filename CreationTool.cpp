@@ -81,6 +81,7 @@ void CreationTool::CreateStaticModel(XMFLOAT3 position, ModelData data)
 	object->SetScale(XMFLOAT3(10, 10, 10));
 	object->SetMaterial(Material(Colors::White));
 	object->SetName(data.name);
+	object->SetDefualtScale(data.defaultScale);
 	mWorld->AddObject(object);
 }
 
@@ -89,6 +90,7 @@ void CreationTool::CreateAnimatedModel(XMFLOAT3 position, ModelData data)
 	AnimatedObject* object = new AnimatedObject(gModelImporter, data.filename);
 	object->SetName(data.name);
 	object->SetPosition(position);
+	object->SetDefualtScale(data.defaultScale);
 	mWorld->AddObject(object);
 }
 
