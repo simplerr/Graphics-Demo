@@ -24,6 +24,7 @@ public:
 	void OnSelectChange(Gwen::Controls::Base* pControl);
 
 	void SetEditor(Editor* pEditor);
+	bool IsCreatingModel();
 private:
 	ModelLoaderXML* mModelLoaderXML;
 	World*	mWorld;

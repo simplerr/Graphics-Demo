@@ -53,7 +53,9 @@ void CreationTool::Update(float dt)
 			else if(data.type == 1)
 				object = CreateAnimatedModel(intersectPoint, data);
 
+			// Add the created object to the world and make it the selected one.
 			mWorld->AddObject(object);
+			mEditor->OnItemSelected(object, object->GetType());
 
 			// Deselect the button if SHIFT isn't held down.
 			if(!gInput->KeyDown(VK_SHIFT)) {
@@ -64,6 +66,13 @@ void CreationTool::Update(float dt)
 			}
 			mEditor->UpdateWorldTree();
 		}
+	}
+
+	if(gInput->KeyDown(VK_SHIFT)) {
+		this->GetSelected()->SetToggleState(false);
+		mModelSelected = false;
+		delete mPreviewObject;
+		mPreviewObject = nullptr;
 	}
 }
 
@@ -133,4 +142,9 @@ void CreationTool::OnSelectChange(Gwen::Controls::Base* pControl)
 void CreationTool::SetEditor(Editor* pEditor)
 {
 	mEditor = pEditor;
+}
+
+bool CreationTool::IsCreatingModel()
+{
+	return mModelSelected;
 }

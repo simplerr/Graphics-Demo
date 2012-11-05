@@ -86,7 +86,7 @@ void Editor::Update(float dt)
 {
 	mCreationTool->Update(dt);
 
-	if(mActiveInspector != nullptr)
+	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel())
 		mActiveInspector->Update(dt);
 }
 	
@@ -97,7 +97,7 @@ void Editor::Draw(Graphics* pGraphics)
 	UpdateCamera(pGraphics->GetCamera());
 
 	// Draw the active inspector.
-	if(mActiveInspector != nullptr)
+	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel())
 		mActiveInspector->Draw(pGraphics);
 
 	mCreationTool->Draw(pGraphics);
