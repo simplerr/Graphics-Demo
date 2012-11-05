@@ -15,6 +15,7 @@ CreationTool::CreationTool(Gwen::Controls::Base* pParent, World* pWorld)
 	mWorld = pWorld;
 	mModelSelected = false;
 	mEditor = nullptr;
+	mPreviewObject = nullptr;
 
 	SetText("Spawn list");
 	SetSize(200, 400);
@@ -34,6 +35,9 @@ CreationTool::~CreationTool()
 
 void CreationTool::Update(float dt)
 {
+	if(mPreviewObject != nullptr)
+		mPreviewObject->SetPosition(mWorld->GetTerrainIntersectPoint(gInput->GetWorldPickingRay()));
+
 	if(gInput->KeyPressed(VK_LBUTTON) && mModelSelected && IsIn3DScreen())
 	{
 		string name = ToString(this->GetSelected()->GetText());
@@ -43,15 +47,20 @@ void CreationTool::Update(float dt)
 		if(intersectPoint.x != numeric_limits<float>::infinity())
 		{
 			// Static model.
+			Object3D* object;
 			if(data.type == 0)
-				CreateStaticModel(intersectPoint, data);
+				object = CreateStaticModel(intersectPoint, data);
 			else if(data.type == 1)
-				CreateAnimatedModel(intersectPoint, data);
+				object = CreateAnimatedModel(intersectPoint, data);
+
+			mWorld->AddObject(object);
 
 			// Deselect the button if SHIFT isn't held down.
 			if(!gInput->KeyDown(VK_SHIFT)) {
 				this->GetSelected()->SetToggleState(false);
 				mModelSelected = false;
+				delete mPreviewObject;
+				mPreviewObject = nullptr;
 			}
 			mEditor->UpdateWorldTree();
 		}
@@ -60,7 +69,8 @@ void CreationTool::Update(float dt)
 
 void CreationTool::Draw(Graphics* pGraphics)
 {
-	
+	if(mPreviewObject != nullptr)
+		mPreviewObject->Draw(pGraphics);
 }
 
 void CreationTool::BuildSpawnList()
@@ -74,29 +84,50 @@ void CreationTool::BuildSpawnList()
 	}
 }
 
-void CreationTool::CreateStaticModel(XMFLOAT3 position, ModelData data)
+StaticObject* CreationTool::CreateStaticModel(XMFLOAT3 position, ModelData data)
 {
 	StaticObject* object = new StaticObject(gModelImporter, data.filename);
 	object->SetPosition(position);
-	object->SetScale(XMFLOAT3(10, 10, 10));
 	object->SetMaterial(Material(Colors::White));
 	object->SetName(data.name);
 	object->SetDefualtScale(data.defaultScale);
-	mWorld->AddObject(object);
+	return object;
 }
 
-void CreationTool::CreateAnimatedModel(XMFLOAT3 position, ModelData data)
+AnimatedObject* CreationTool::CreateAnimatedModel(XMFLOAT3 position, ModelData data)
 {
 	AnimatedObject* object = new AnimatedObject(gModelImporter, data.filename);
 	object->SetName(data.name);
 	object->SetPosition(position);
 	object->SetDefualtScale(data.defaultScale);
-	mWorld->AddObject(object);
+	return object;
 }
 
 void CreationTool::OnSelectChange(Gwen::Controls::Base* pControl)
 {
 	mModelSelected = true;
+
+	string name = ToString(((Gwen::Controls::Button*)pControl)->GetText());
+	ModelData data = mModelLoaderXML->GetData(name);
+	XMFLOAT3 intersectPoint = mWorld->GetTerrainIntersectPoint(gInput->GetWorldPickingRay());
+
+	// Delete the old preview object if it cant be used again.
+	if(mPreviewObject != nullptr && mPreviewObject->GetName() != data.name) {
+		delete mPreviewObject;
+		mPreviewObject = nullptr;
+	}
+
+	// Create the new preview object.
+	if(data.type == 0)
+	{
+		if(mPreviewObject == nullptr || mPreviewObject->GetName() != data.name)
+			mPreviewObject = CreateStaticModel(intersectPoint, data);
+	}
+	else if(data.type == 1)
+	{
+		if(mPreviewObject == nullptr || mPreviewObject->GetName() != data.name)
+			mPreviewObject = CreateAnimatedModel(intersectPoint, data);
+	}
 }
 
 void CreationTool::SetEditor(Editor* pEditor)

@@ -100,10 +100,10 @@ void Editor::Draw(Graphics* pGraphics)
 	if(mActiveInspector != nullptr)
 		mActiveInspector->Draw(pGraphics);
 
+	mCreationTool->Draw(pGraphics);
+
 	// Draw the canvas and all controls in it.
 	mGwenCanvas->RenderCanvas();
-
-	mCreationTool->Draw(pGraphics);
 }
 	
 //! Callback that World calls when an object gets selected.
