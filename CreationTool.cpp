@@ -48,9 +48,11 @@ void CreationTool::Update(float dt)
 			else if(data.type == 1)
 				CreateAnimatedModel(intersectPoint, data);
 
-			// Deselect the button.
-			this->GetSelected()->SetToggleState(false);
-			mModelSelected = false;
+			// Deselect the button if SHIFT isn't held down.
+			if(!gInput->KeyDown(VK_SHIFT)) {
+				this->GetSelected()->SetToggleState(false);
+				mModelSelected = false;
+			}
 			mEditor->UpdateWorldTree();
 		}
 	}
