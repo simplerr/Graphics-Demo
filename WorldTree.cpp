@@ -11,9 +11,7 @@ WorldTree::WorldTree(Gwen::Controls::Base* pParent)
 	SetText("World objects");
 	SetSize(200, 400);
 
-	mTreeControl = new Gwen::Controls::TreeControl(this);
-	mTreeControl->SetBounds(0, 20, 200, 380);
-	mTreeControl->onSelect.Add(this, &WorldTree::OnSelectChange);
+	mTreeControl = nullptr;
 
 	// Add as a category.
 	Gwen::Controls::CollapsibleList* parent = (Gwen::Controls::CollapsibleList*)pParent;
@@ -22,7 +20,7 @@ WorldTree::WorldTree(Gwen::Controls::Base* pParent)
 	
 WorldTree::~WorldTree()
 {
-
+	delete mTreeControl;
 }
 
 void WorldTree::OnSelectChange(Gwen::Controls::Base* pControl)
@@ -37,8 +35,11 @@ void WorldTree::OnSelectChange(Gwen::Controls::Base* pControl)
 void WorldTree::CreateTree()
 {
 	// Remove the old content.
-	mTreeControl->Clear();
 	mNodeMap.clear();
+	delete mTreeControl;
+	mTreeControl = new Gwen::Controls::TreeControl(this);
+	mTreeControl->SetBounds(0, 20, 200, 380);
+	mTreeControl->onSelect.Add(this, &WorldTree::OnSelectChange);
 
 	Gwen::Controls::TreeNode* objects = mTreeControl->AddNode("Objects");
 	Gwen::Controls::TreeNode* staticObjects = objects->AddNode("Static");

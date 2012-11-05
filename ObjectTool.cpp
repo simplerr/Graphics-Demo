@@ -47,7 +47,9 @@ ObjectTool::ObjectTool(ModelImporter* pImporter)
 //! Cleanup.
 ObjectTool::~ObjectTool()
 {
-
+	delete mAxisX;
+	delete mAxisY;
+	delete mAxisZ;
 }
 
 //! Poll for input and perform actions.
