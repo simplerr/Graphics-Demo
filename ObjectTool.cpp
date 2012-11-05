@@ -25,18 +25,21 @@ ObjectTool::ObjectTool(ModelImporter* pImporter)
 	mAxisX->SetPosition(XMFLOAT3(0, 30, 30));
 	mAxisX->SetMaterial(Material(Colors::Green));
 	mAxisX->SetRotation(XMFLOAT3(3.14f/2.0f, 3.14f/2.0f, 0));
+	mAxisX->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 
 	// Create the Y axis.
 	mAxisY = new StaticObject(pImporter, "models/arrow/arrow.obj");
 	mAxisY->SetPosition(XMFLOAT3(0, 30, 30));
 	mAxisY->SetMaterial(Material(Colors::Red));
 	mAxisY->SetRotation(XMFLOAT3(0, 1, 0));
+	mAxisY->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 
 	// Create the Z axis.
 	mAxisZ = new StaticObject(pImporter, "models/arrow/arrow.obj");
 	mAxisZ->SetPosition(XMFLOAT3(0, 30, 30));
 	mAxisZ->SetMaterial(Material(Colors::Blue));
 	mAxisZ->SetRotation(XMFLOAT3(0, 3.14f/2.0f, 3.14f/2.0f));
+	mAxisZ->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 
 	mMovingAxis = NONE;
 }
@@ -99,10 +102,14 @@ void ObjectTool::Draw(Graphics* pGraphics)
 	pGraphics->GetContext()->OMGetDepthStencilState(&oldState, 0);
 	pGraphics->GetContext()->OMSetDepthStencilState(RenderStates::EnableAllDSS, 0);
 
+	Effects::BasicFX->SetUseLighting(false);
+
 	// The axes will be rendered through the object.
 	mAxisX->Draw(pGraphics);
 	mAxisY->Draw(pGraphics);
 	mAxisZ->Draw(pGraphics);
+
+	Effects::BasicFX->SetUseLighting(true);
 
 	// Restore to standard depth stencil state (enable depth testing).
 	pGraphics->GetContext()->OMSetDepthStencilState(oldState, 0);
