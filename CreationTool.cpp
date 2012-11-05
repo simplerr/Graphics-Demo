@@ -68,7 +68,7 @@ void CreationTool::Update(float dt)
 		}
 	}
 
-	if(gInput->KeyDown(VK_SHIFT)) {
+	if(gInput->KeyReleased(VK_SHIFT) && mModelSelected) {
 		this->GetSelected()->SetToggleState(false);
 		mModelSelected = false;
 		delete mPreviewObject;
