@@ -126,6 +126,8 @@ void Game::Init()
 	mWorld->AddObject(mObject);*/
 
 	mEditor->Init(gModelImporter, mWorld);
+
+	SwitchScreenMode();
 }
 	
 void Game::GwenInit()

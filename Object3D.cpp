@@ -17,6 +17,7 @@ Object3D::Object3D(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scale)
 	SetBoundingBoxVisible(false);
 	SetName("Object");
 	SetDefualtScale(1.0f);
+	SetMaterial(Colors::White);
 }
 
 //! Cleanup.

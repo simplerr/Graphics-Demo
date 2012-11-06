@@ -137,6 +137,9 @@ void CreationTool::OnSelectChange(Gwen::Controls::Base* pControl)
 		if(mPreviewObject == nullptr || mPreviewObject->GetName() != data.name)
 			mPreviewObject = CreateAnimatedModel(intersectPoint, data);
 	}
+
+	// Orange with transparency.
+	mPreviewObject->SetMaterial(Material(XMFLOAT4(1.0f, 127.0f/255.0f, 38/255.0f, 0.06f) * 6));
 }
 
 void CreationTool::SetEditor(Editor* pEditor)

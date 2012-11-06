@@ -35,6 +35,7 @@ void AnimatedObject::Draw(Graphics* pGraphics)
 {
 	mSkinnedModel->SetAnimation(mCurrentAnimIndex);
 	mSkinnedModel->SetElapsedTime(mElapsedTime);
+	Effects::BasicFX->SetMaterial(GetMaterial());
 	mSkinnedModel->Draw(pGraphics, GetWorldMatrix());
 
 	Effects::BasicFX->SetUseAnimation(false);
