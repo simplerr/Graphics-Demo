@@ -24,12 +24,14 @@ public:
 	void Draw(Graphics* pGraphics);
 	void SetObject(void* pObject);
 	bool IsResponsible(int type);
+	bool IsInspecting(int id);
 	void SetActiveTool(ToolType tool);
 	void OnRadiusChange(Gwen::Controls::Base* pControl);
 	void OnStrengthChange(Gwen::Controls::Base* pControl);
 	void OnPropertyChange(Gwen::Controls::Base* pControl);
 	void OnComboSelect(Gwen::Controls::Base* pControl);
 	void OnTextureSelected(Gwen::Controls::Base* pControl);
+	Object3D* GetInspectedObject();
 private:
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 	Gwen::Controls::Button* CreateTerrainTexture(string texture, string name, float x, float y, Base* pParent);

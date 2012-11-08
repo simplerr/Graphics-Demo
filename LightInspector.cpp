@@ -9,6 +9,7 @@
 #include "ModelImporter.h"
 #include "Effects.h"
 #include "LightObject.h"
+#include "World.h"
 
 LightInspector::LightInspector(Gwen::Controls::Base* pParent, ObjectTool* pTool)
 	: BaseInspector(pParent)
@@ -480,4 +481,17 @@ void LightInspector::OnPositionChangeEvent(XMFLOAT3 position)
 
 	sprintf(buffer, "%.3f", position.z);
 	mZProperty->GetProperty()->SetPropertyValue(buffer);
+}
+
+bool LightInspector::IsInspecting(int id)
+{
+	if(mLight->GetId() == id)
+		return true;
+	else
+		return false;
+}
+
+Object3D* LightInspector::GetInspectedObject()
+{
+	return mLight;
 }

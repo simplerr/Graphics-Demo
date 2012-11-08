@@ -87,6 +87,9 @@ void World::Draw(Graphics* pGraphics)
 	// Draw the terrain.
 	mTerrain->Draw(pGraphics);
 
+	// Draw the skybox.
+	mSkyBox->Draw();
+
 	mNumVisibleObjects = 0;
 	for(int i = 0; i < mObjectList.size(); i++)
 	{
@@ -100,9 +103,6 @@ void World::Draw(Graphics* pGraphics)
 
 	// Draw the lights with a billboard.
 	pGraphics->DrawBillboards();
-
-	// Draw the skybox.
-	mSkyBox->Draw();
 }
 
 //! Returns the selected object, if any.

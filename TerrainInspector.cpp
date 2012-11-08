@@ -209,3 +209,13 @@ void TerrainInspector::SetActiveTool(ToolType tool)
 
 	mTerrainTool->SetTool(tool);
 }
+
+bool TerrainInspector::IsInspecting(int id)
+{
+	return false;
+}
+
+Object3D* TerrainInspector::GetInspectedObject()
+{
+	return nullptr;
+}

@@ -6,6 +6,7 @@
 class ObjectTool;
 class Graphics;
 class Editor;
+class Object3D;
 
 enum InspectorType
 {
@@ -27,6 +28,8 @@ public:
 	virtual void Draw(Graphics* pGraphics) = 0;
 	virtual void SetObject(void* pObject) = 0;
 	virtual bool IsResponsible(int type) = 0;
+	virtual bool IsInspecting(int id) = 0;
+	virtual Object3D* GetInspectedObject() = 0;
 
 	void	SetInspectorType(InspectorType type) { mInspectorType = type; }
 	void	SetEditor(Editor* pEditor)	{ mEditor = pEditor; }

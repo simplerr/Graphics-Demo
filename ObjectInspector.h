@@ -27,6 +27,8 @@ public:
 	void OnOrientationChange(Gwen::Controls::Base* pControl);
 	void OnAABBCheckBoxChange(Base* pControl);
 	bool IsResponsible(int type);
+	bool IsInspecting(int id);
+	Object3D* GetInspectedObject();
 
 	// Callback.
 	void OnPositionChangeEvent(XMFLOAT3 position);

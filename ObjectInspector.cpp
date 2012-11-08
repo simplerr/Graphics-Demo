@@ -12,6 +12,7 @@
 #include "Effects.h"
 #include "Input.h"
 #include "Editor.h"
+#include "World.h"
 
 ObjectInspector::ObjectInspector(Gwen::Controls::Base* pParent, ObjectTool* pTool)
 	: BaseInspector(pParent)
@@ -142,7 +143,7 @@ void ObjectInspector::Init()
 	
 void ObjectInspector::Cleanup()
 {
-
+	// Cleanup all the controls.
 }
 
 void ObjectInspector::Update(float dt)
@@ -361,6 +362,19 @@ void ObjectInspector::OnScaleChangeEvent(XMFLOAT3 scale)
 }
 
 StaticObject* ObjectInspector::GetSelectedObject()
+{
+	return mObject;
+}
+
+bool ObjectInspector::IsInspecting(int id)
+{
+	if(mObject->GetId() == id)
+		return true;
+	else
+		return false;
+}
+
+Object3D* ObjectInspector::GetInspectedObject()
 {
 	return mObject;
 }

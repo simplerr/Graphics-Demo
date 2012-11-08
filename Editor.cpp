@@ -101,20 +101,18 @@ void Editor::Update(float dt)
 		Object3D* object = mWorld->GetSelectedObject();
 		if(object != nullptr)
 		{
-			if(mActiveInspector != nullptr && mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR) {
-				ObjectInspector* inspector = (ObjectInspector*)mActiveInspector;
-				if(object->GetId() == inspector->GetSelectedObject()->GetId())
-					RemoveInspector();
-			}
+			// Is the object thats getting deleted being inspected?
+			if(mActiveInspector != nullptr && mActiveInspector->IsInspecting(object->GetId()))
+				RemoveInspector();
+
 			mWorld->RemoveObject(object);
 			mWorldTree->CreateTree();
 		}
 	}
 
 	// DELETE pressed and an object selected?
-	if(gInput->KeyPressed(VK_DELETE) && mActiveInspector != nullptr && mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR) {
-		ObjectInspector* inspector = (ObjectInspector*)mActiveInspector;
-		mWorld->RemoveObject(inspector->GetSelectedObject());
+	if(gInput->KeyPressed(VK_DELETE) && mActiveInspector != nullptr && mActiveInspector->GetInspectorType() != TERRAIN_INSPECTOR) {
+		mWorld->RemoveObject(mActiveInspector->GetInspectedObject());
 		mWorldTree->CreateTree();
 		RemoveInspector();
 	}

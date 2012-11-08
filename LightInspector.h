@@ -33,6 +33,8 @@ public:
 	void OnSpotSlider(Base* pControl);
 	void SetLightMaterial();
 	bool IsResponsible(int type);
+	bool IsInspecting(int id);
+	Object3D* GetInspectedObject();
 
 	// Callback.
 	void OnPositionChangeEvent(XMFLOAT3 position);
