@@ -99,11 +99,7 @@ void World::Draw(Graphics* pGraphics)
 	}
 
 	// Draw the lights with a billboard.
-	for(int i = 0; i < mLightList.size(); i++)
-	{
-		//mLightBillboard->SetPos(mLightList[i]->GetPosition());
-		pGraphics->DrawBillboards();
-	}
+	pGraphics->DrawBillboards();
 
 	// Draw the skybox.
 	mSkyBox->Draw();

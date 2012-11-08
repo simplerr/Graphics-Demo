@@ -9,7 +9,7 @@ LightObject::LightObject()
 	: Object3D(LIGHT_OBJECT)
 {
 	// Add test billboards.
-	mBillboard = GetGraphics()->AddBillboard(XMFLOAT3(-30, 30, 60), XMFLOAT2(5, 5), "textures\\grass.dds"); //[NOTE] Ugly.
+	mBillboard = GetGraphics()->AddBillboard(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(5, 5), "textures\\light_icon.png"); //[NOTE] Ugly.
 
 	// Create the light.
 	mLight = new Light();
@@ -21,7 +21,8 @@ LightObject::~LightObject()
 	mBillboard->Remove();
 
 	// Remove the light from the world.
-	GetWorld()->RemoveLight(mLight);
+	if(GetWorld() != nullptr)
+		GetWorld()->RemoveLight(mLight);
 }
 
 void LightObject::Init()
@@ -32,7 +33,7 @@ void LightObject::Init()
 
 void LightObject::Update(float dt)
 {
-	mBillboard->SetPos(GetPosition());
+
 }
 
 void LightObject::Draw(Graphics* pGraphics)
@@ -66,7 +67,6 @@ void LightObject::SetRotation(XMFLOAT3 rotation)
 	Object3D::SetRotation(rotation);
 	mLight->SetDirection(rotation);
 }
-
 
 void LightObject::SetRange(float range)
 {

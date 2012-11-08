@@ -20,6 +20,7 @@ Object3D::Object3D(ObjectType type, XMFLOAT3 position, XMFLOAT3 rotation, XMFLOA
 	SetMaterials(Colors::White);
 	SetId(-1);
 	SetType(type);
+	SetWorld(nullptr);
 }
 
 //! Cleanup.
