@@ -18,26 +18,25 @@ ObjectTool::ObjectTool(ModelImporter* pImporter)
 {
 	// nullptr as default.
 	mMovingObject = nullptr;
-	mMovingLight = nullptr;
 
 	// Create the X axis.
 	mAxisX = new StaticObject(pImporter, "models/arrow/arrow.obj");
 	mAxisX->SetPosition(XMFLOAT3(0, 30, 30));
-	mAxisX->SetMaterial(Material(Colors::Green));
+	mAxisX->SetMaterials(Material(Colors::Green));
 	mAxisX->SetRotation(XMFLOAT3(3.14f/2.0f, 3.14f/2.0f, 0));
 	mAxisX->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 
 	// Create the Y axis.
 	mAxisY = new StaticObject(pImporter, "models/arrow/arrow.obj");
 	mAxisY->SetPosition(XMFLOAT3(0, 30, 30));
-	mAxisY->SetMaterial(Material(Colors::Red));
+	mAxisY->SetMaterials(Material(Colors::Red));
 	mAxisY->SetRotation(XMFLOAT3(0, 1, 0));
 	mAxisY->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 
 	// Create the Z axis.
 	mAxisZ = new StaticObject(pImporter, "models/arrow/arrow.obj");
 	mAxisZ->SetPosition(XMFLOAT3(0, 30, 30));
-	mAxisZ->SetMaterial(Material(Colors::Blue));
+	mAxisZ->SetMaterials(Material(Colors::Blue));
 	mAxisZ->SetRotation(XMFLOAT3(0, 3.14f/2.0f, 3.14f/2.0f));
 	mAxisZ->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
 
@@ -126,10 +125,6 @@ void ObjectTool::UpdatePosition(XMFLOAT3 delta)
 	if(mMovingObject != nullptr) {
 		mMovingObject->SetPosition(mMovingObject->GetPosition() + delta);
 		onPositionChange(mMovingObject->GetPosition());
-	}
-	else if(mMovingLight != nullptr) {
-		mMovingLight->SetPosition(mMovingLight->GetPosition() + delta);
-		onPositionChange(mMovingLight->GetPosition());
 	}
 
 	mAxisX->SetPosition(mAxisX->GetPosition() + delta);
@@ -242,19 +237,10 @@ XMFLOAT3 ObjectTool::MoveAxisZ(XMFLOAT3 pos, XMFLOAT3 dir)
 //! Set the moving object.
 void ObjectTool::SetObject(Object3D* pObject)
 {
-	mMovingLight = nullptr;
 	mMovingObject = pObject;
 	mAxisX->SetPosition(pObject->GetPosition());
 
 	SetPosition(pObject->GetPosition());
-}
-
-//! Set the moving light.
-void ObjectTool::SetObject(Light* pLight)
-{
-	mMovingObject = nullptr;
-	mMovingLight = pLight;
-	SetPosition(pLight->GetPosition());
 }
 
 //! Sets the axis positions.

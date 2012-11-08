@@ -2,6 +2,7 @@
 
 #include "Object3D.h"
 class SkinnedModel;
+class World;
 
 /**
 	Represents an animated object. 
@@ -12,11 +13,11 @@ public:
 	AnimatedObject(ModelImporter* importer, string filename);
 	virtual ~AnimatedObject();
 
+	virtual void Init();
 	virtual void Update(float dt);
 	virtual void Draw(Graphics* pGraphics);
 
 	void SetAnimation(int index);
-	void SetMaterial(Material material);
 	AxisAlignedBox GetBoundingBox();
 	SkinnedModel* GetModel();
 private:

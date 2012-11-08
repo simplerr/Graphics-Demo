@@ -29,7 +29,6 @@ public:
 	void Update(float dt);
 	void Draw(Graphics* pGraphics);
 	void SetObject(Object3D* pObject);
-	void SetObject(Light* pLight);
 	void SetInspector(BaseInspector* pInspector);
 
 	// These are only supposed to be called by an BaseInspector type.
@@ -59,7 +58,6 @@ private:
 	StaticObject* mAxisY;
 	StaticObject* mAxisZ;
 	Object3D*	  mMovingObject;
-	Light*		  mMovingLight;
 	MovingAxis	  mMovingAxis;
 	XMFLOAT3	  mLastPlanePos;
 	BaseInspector*mInspector;

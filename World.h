@@ -26,8 +26,10 @@ public:
 	void Draw(Graphics* pGraphics);
 	void Init();
 	void AddObject(Object3D* object);
+	void AddLight(Light* pLight);
 	void RemoveObject(Object3D* pObject);
-	void AddLight(Light* light);
+	void RemoveLight(Light* pLight);
+	
 
 	LightList*	GetLights();
 	ObjectList* GetObjects();

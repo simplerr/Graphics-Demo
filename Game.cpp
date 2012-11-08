@@ -25,6 +25,8 @@
 #include "vld.h"
 #include "Primitive.h"
 #include "Editor.h"
+#include "LightObject.h"
+#include "LightObject.h"
 
 // Set globals to nullptrs
 Runnable*			gGame				= nullptr;
@@ -94,21 +96,21 @@ void Game::Init()
 	GetGraphics()->SetLightList(mWorld->GetLights());
 
 	// Add some lights.
-	mLight = new Light();
-	mLight->SetMaterials(Colors::White, Colors::White, XMFLOAT4(229/255.0f, 106/255.0f, 5.0f/255.0f, 1.0f));
-	mLight->SetDirection(0.0f, -1.0f, 0.0f);
-	mLight->SetType(DIRECTIONAL_LIGHT);
-	mLight->SetAtt(0, 0.1, 0);
-	mLight->SetRange(2000.0f);
-	mLight->SetSpot(64.0f);
-	mLight->SetPosition(0, 50, 5);
-	mLight->SetIntensity(0.2f, 1.0f, 0.2f);
-	mWorld->AddLight(mLight);
+	LightObject* lightObject = new LightObject();
+	lightObject->SetMaterials(Material(Colors::White, Colors::White, XMFLOAT4(229/255.0f, 106/255.0f, 5.0f/255.0f, 1.0f)));
+	lightObject->SetRotation(XMFLOAT3(0.0f, -1.0f, 0.0f));
+	lightObject->SetLightType(DIRECTIONAL_LIGHT);
+	lightObject->SetAtt(0, 0.1, 0);
+	lightObject->SetRange(2000.0f);
+	lightObject->SetSpot(16.0f);
+	lightObject->SetPosition(XMFLOAT3(0, 50, 0));
+	lightObject->SetIntensity(0.2f, 1.0f, 0.2f);
+	mWorld->AddObject(lightObject);
 
 	GetGraphics()->SetFogColor(XMFLOAT4(1.0f, 0.2f, 0.8, 1.0f));
 	
 	// Add test billboards.
-	billboard = GetGraphics()->AddBillboard(XMFLOAT3(0, 10, 0), XMFLOAT2(5, 5), "textures\\crate.dds");
+	//billboard = GetGraphics()->AddBillboard(XMFLOAT3(0, 10, 0), XMFLOAT2(5, 5), "textures\\crate.dds");
 
 	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 	GetGraphics()->GetContext()->OMSetBlendState(RenderStates::TransparentBS, blendFactor, 0xffffffff);

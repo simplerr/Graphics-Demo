@@ -7,17 +7,21 @@
 #include "Effects.h"
 
 StaticObject::StaticObject(ModelImporter* importer, string filename)
-	: Object3D()
+	: Object3D(STATIC_OBJECT)
 {
 	// Load the model.
 	mModel = importer->LoadStaticModel(filename);
-	SetType(STATIC_OBJECT);
 }
 
 //! Cleanup.
 StaticObject::~StaticObject()
 {
 	
+}
+
+void StaticObject::Init()
+{
+
 }
 
 //! Updates the object.

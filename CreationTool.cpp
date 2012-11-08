@@ -10,6 +10,7 @@
 #include "Editor.h"
 #include "Graphics.h"
 #include "RenderStates.h"
+#include "LightObject.h"
 
 CreationTool::CreationTool(Gwen::Controls::Base* pParent, World* pWorld)
 	: Gwen::Controls::CollapsibleCategory(pParent)
@@ -37,8 +38,11 @@ CreationTool::~CreationTool()
 
 void CreationTool::Update(float dt)
 {
-	if(mPreviewObject != nullptr)
-		mPreviewObject->SetPosition(mWorld->GetTerrainIntersectPoint(gInput->GetWorldPickingRay()));
+	if(mPreviewObject != nullptr) {
+		XMFLOAT3 offset = mPreviewObject->GetName() == "Light" ? XMFLOAT3(0, 20, 0) : XMFLOAT3(0, 0, 0);
+		XMFLOAT3 intersectPoint = mWorld->GetTerrainIntersectPoint(gInput->GetWorldPickingRay());
+		mPreviewObject->SetPosition(intersectPoint + offset);
+	}
 
 	if(gInput->KeyPressed(VK_LBUTTON) && mModelSelected && IsIn3DScreen())
 	{
@@ -48,12 +52,13 @@ void CreationTool::Update(float dt)
 		XMFLOAT3 intersectPoint = mWorld->GetTerrainIntersectPoint(gInput->GetWorldPickingRay());
 		if(intersectPoint.x != numeric_limits<float>::infinity())
 		{
-			// Static model.
 			Object3D* object;
-			if(data.type == 0)
+			if(data.type == 0)		// Static object.
 				object = CreateStaticModel(intersectPoint, data);
-			else if(data.type == 1)
+			else if(data.type == 1) // Animated object.
 				object = CreateAnimatedModel(intersectPoint, data);
+			else if(data.type == 2)	// Light object.
+				object = CreateLightObject(intersectPoint + XMFLOAT3(0, 20, 0));
 
 			// Add the created object to the world and make it the selected one.
 			mWorld->AddObject(object);
@@ -80,7 +85,7 @@ void CreationTool::Update(float dt)
 
 void CreationTool::Draw(Graphics* pGraphics)
 {
-	//pGraphics->GetContext()->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
+	pGraphics->GetContext()->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
 
 	if(mPreviewObject != nullptr)
 		mPreviewObject->Draw(pGraphics);
@@ -103,7 +108,7 @@ StaticObject* CreationTool::CreateStaticModel(XMFLOAT3 position, ModelData data)
 {
 	StaticObject* object = new StaticObject(gModelImporter, data.filename);
 	object->SetPosition(position);
-	object->SetMaterial(Material(Colors::White));
+	object->SetMaterials(Material(Colors::White));
 	object->SetName(data.name);
 	object->SetDefualtScale(data.defaultScale);
 	return object;
@@ -116,6 +121,22 @@ AnimatedObject* CreationTool::CreateAnimatedModel(XMFLOAT3 position, ModelData d
 	object->SetPosition(position);
 	object->SetDefualtScale(data.defaultScale);
 	return object;
+}
+
+LightObject* CreationTool::CreateLightObject(XMFLOAT3 position)
+{
+	LightObject* lightObject = new LightObject();
+	lightObject->SetPosition(position);
+	lightObject->SetName("Light");
+	lightObject->SetMaterials(Material(Colors::White, Colors::White, XMFLOAT4(229/255.0f, 106/255.0f, 5.0f/255.0f, 1.0f)));
+	lightObject->SetRotation(XMFLOAT3(0.0f, -1.0f, 0.0f));
+	lightObject->SetLightType(SPOT_LIGHT);
+	lightObject->SetAtt(0, 0.1, 0);
+	lightObject->SetRange(2000.0f);
+	lightObject->SetSpot(16.0f);
+	lightObject->SetPosition(position);
+	lightObject->SetIntensity(1.0f, 1.0f, 0.2f);
+	return lightObject;
 }
 
 void CreationTool::OnSelectChange(Gwen::Controls::Base* pControl)
@@ -133,19 +154,18 @@ void CreationTool::OnSelectChange(Gwen::Controls::Base* pControl)
 	}
 
 	// Create the new preview object.
-	if(data.type == 0)
+	if(mPreviewObject == nullptr || mPreviewObject->GetName() != data.name)
 	{
-		if(mPreviewObject == nullptr || mPreviewObject->GetName() != data.name)
+		if(data.type == 0)		// Static object.
 			mPreviewObject = CreateStaticModel(intersectPoint, data);
-	}
-	else if(data.type == 1)
-	{
-		if(mPreviewObject == nullptr || mPreviewObject->GetName() != data.name)
+		else if(data.type == 1)	// Animated object.
 			mPreviewObject = CreateAnimatedModel(intersectPoint, data);
+		else if(data.type == 2) // Light object.
+			mPreviewObject = CreateLightObject(intersectPoint);
 	}
 
 	// Orange with transparency.
-	mPreviewObject->SetMaterial(Material(XMFLOAT4(1.0f, 127.0f/255.0f, 38/255.0f, 0.06f) * 6));
+	mPreviewObject->SetMaterials(Material(XMFLOAT4(1.0f, 127.0f/255.0f, 38/255.0f, 0.06f) * 6));
 }
 
 void CreationTool::SetEditor(Editor* pEditor)

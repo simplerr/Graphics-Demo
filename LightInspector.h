@@ -7,7 +7,7 @@
 #include "Light.h"
 #include <xnamath.h>
 
-class Light;
+class LightObject;
 class ObjectTool;
 
 //! The inspector for Light objects.
@@ -42,7 +42,7 @@ private:
 	void CreateDataProperties(Gwen::Controls::Base* pParent);
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:
-	Light* mLight;
+	LightObject* mLight;
 	Material mCurrentMaterial;
 
 	Gwen::Controls::PropertyRow* mXProperty, *mYProperty, *mZProperty;

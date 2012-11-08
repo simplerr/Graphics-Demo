@@ -8,6 +8,7 @@
 #include "ObjectTool.h"
 #include "ModelImporter.h"
 #include "Effects.h"
+#include "LightObject.h"
 
 LightInspector::LightInspector(Gwen::Controls::Base* pParent, ObjectTool* pTool)
 	: BaseInspector(pParent)
@@ -67,10 +68,10 @@ void LightInspector::Draw(Graphics* pGraphics)
 void LightInspector::SetObject(void* pObject)
 {
 	// Send to the object tool.
-	mObjectTool->SetObject((Light*)pObject);
+	mObjectTool->SetObject((LightObject*)pObject);
 	mObjectTool->AddOnPositionChange(&LightInspector::OnPositionChangeEvent, this);
 
-	mLight = (Light*)pObject;
+	mLight = (LightObject*)pObject;
 	mCurrentMaterial = mLight->GetMaterial();
 	Material oldMat = mLight->GetMaterial();
 
@@ -103,7 +104,7 @@ void LightInspector::SetObject(void* pObject)
 	//
 	// Set the color selectors.
 	//
-	mLight->SetMaterials(oldMat.ambient, oldMat.diffuse, oldMat.specular);
+	mLight->SetMaterials(Material(oldMat.ambient, oldMat.diffuse, oldMat.specular));
 	Material material = mLight->GetMaterial();
 	int r, g, b;
 
@@ -146,7 +147,7 @@ void LightInspector::SetLightMaterial()
 	XMFLOAT4 specular = XMFLOAT4(material.specular.x, material.specular.y, material.specular.z, material.specular.w);
 
 	// Set the light material and intensity.
-	mLight->SetMaterials(ambient, diffuse, specular);
+	mLight->SetMaterials(Material(ambient, diffuse, specular));
 	mLight->SetIntensity(mAmbientIntensitySlider->GetValue(), mDiffuseIntensitySlider->GetValue(), mSpecularIntensitySlider->GetValue());
 }
 
@@ -175,7 +176,7 @@ void LightInspector::OnDirectionSliderMoved(Base* pControl)
 {
 	Gwen::Controls::Slider* slider = (Gwen::Controls::Slider*)pControl;
 
-	XMFLOAT3 direction = mLight->GetDirection();
+	XMFLOAT3 direction = mLight->GetRotation();
 	float value = slider->GetValue();
 	if(slider->GetName() == "DirectionSliderX") 
 		direction.x = value;
@@ -184,7 +185,7 @@ void LightInspector::OnDirectionSliderMoved(Base* pControl)
 	else if(slider->GetName() == "DirectionSliderZ")		
 		direction.z = value;
 	
-	mLight->SetDirection(direction);
+	mLight->SetRotation(direction);
 }
 
 void LightInspector::OnColorChange(Gwen::Controls::Base* pControl)
@@ -217,11 +218,11 @@ void LightInspector::OnLightTypeChange(Base* pControl)
 	string name = combo->GetSelectedItem()->GetName();
 
 	if(name == "Directional")
-		mLight->SetType(DIRECTIONAL_LIGHT);
+		mLight->SetLightType(DIRECTIONAL_LIGHT);
 	else if(name == "Spot")
-		mLight->SetType(SPOT_LIGHT);
+		mLight->SetLightType(SPOT_LIGHT);
 	else if(name == "Point")
-		mLight->SetType(POINT_LIGHT);
+		mLight->SetLightType(POINT_LIGHT);
 }
 
 void LightInspector::OnRangeChange(Base* pControl)
@@ -462,7 +463,7 @@ void LightInspector::InitSlider(Gwen::Controls::HorizontalSlider* slider, string
 
 bool LightInspector::IsResponsible(int type)
 {
-	if(type == LIGHT)
+	if(type == LIGHT_OBJECT)
 		return true;
 	else 
 		return false;

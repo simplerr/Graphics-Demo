@@ -7,19 +7,23 @@
 #include "Effects.h"
 
 AnimatedObject::AnimatedObject(ModelImporter* importer, string filename)
-	: Object3D()
+	: Object3D(ANIMATED_OBJECT)
 {
 	// Load the model.
 	mSkinnedModel = importer->LoadSkinnedModel(filename);
 	mElapsedTime = 0.0f;
 	mCurrentAnimIndex = 0;
-	SetType(ANIMATED_OBJECT);
 }
 
 //! Cleanup.
 AnimatedObject::~AnimatedObject()
 {
 	
+}
+
+void AnimatedObject::Init()
+{
+
 }
 
 //! Updates the object.
@@ -48,12 +52,6 @@ void AnimatedObject::Draw(Graphics* pGraphics)
 void AnimatedObject::SetAnimation(int index)
 {
 	mCurrentAnimIndex = index;
-}
-
-//! [NOTE] Doesn't do anything.
-void AnimatedObject::SetMaterial(Material material)
-{
-
 }
 
 //! Returns the bounding box in world space. [NOTE] Does not work [TODO].

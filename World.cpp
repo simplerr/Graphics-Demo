@@ -24,7 +24,7 @@ World::World()
 void World::Init()
 {
 	// Add test billboards.
-	mLightBillboard = GetGraphics()->AddBillboard(XMFLOAT3(0, 10, 0), XMFLOAT2(5, 5), "textures\\light_icon.png");
+	//mLightBillboard = GetGraphics()->AddBillboard(XMFLOAT3(0, 10, 0), XMFLOAT2(5, 5), "textures\\light_icon.png");
 
 	// Create the sky box.
 	mSkyBox = new Sky("textures/sky.dds", 5000.0f);
@@ -101,7 +101,7 @@ void World::Draw(Graphics* pGraphics)
 	// Draw the lights with a billboard.
 	for(int i = 0; i < mLightList.size(); i++)
 	{
-		mLightBillboard->SetPos(mLightList[i]->GetPosition());
+		//mLightBillboard->SetPos(mLightList[i]->GetPosition());
 		pGraphics->DrawBillboards();
 	}
 
@@ -162,7 +162,17 @@ void World::AddObject(Object3D* object)
 	// [TODO] Set Id.
 	static int id = 0;
 	object->SetId(id++);
+	object->SetWorld(this);
+	object->Init();
 	mObjectList.push_back(object);
+}
+
+//! Adds a light to the light list.
+void World::AddLight(Light* light)
+{
+	static int id = 0;
+	light->SetId(id++);
+	mLightList.push_back(light);
 }
 
 //! Removes an object from the list.
@@ -187,10 +197,26 @@ void World::RemoveObject(Object3D* pObject)
 	}
 }
 
-//! Adds a light to the light list.
-void World::AddLight(Light* light)
+//! Removes a light from the light list.
+void World::RemoveLight(Light* pLight)
 {
-	mLightList.push_back(light);
+	// Loop through all objects and find out which one to delete.
+	int i = 0;
+	auto itr =  mLightList.begin();
+	while(itr != mLightList.end() && i < mLightList.size())
+	{
+		if(mLightList[i]->GetId() == pLight->GetId())
+		{
+			delete mLightList[i];		
+			mLightList[i] = NULL;
+			itr = mLightList.erase(itr);	
+			break;
+		}
+		else	{
+			itr++;
+			i++;
+		}
+	}
 }
 
 //! Returns the address to the light list.

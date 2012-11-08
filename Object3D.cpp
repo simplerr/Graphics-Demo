@@ -9,16 +9,17 @@
 #include "StaticMesh.h"
 #include "ModelImporter.h"
 
-Object3D::Object3D(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scale)
+Object3D::Object3D(ObjectType type, XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scale)
 {
-	mPosition = position;
-	mRotation = rotation;
-	mScale = scale;
+	SetPosition(position);
+	SetRotation(rotation);
+	SetScale(scale);
 	SetBoundingBoxVisible(false);
 	SetName("Object");
 	SetDefualtScale(1.0f);
-	SetMaterial(Colors::White);
+	SetMaterials(Colors::White);
 	SetId(-1);
+	SetType(type);
 }
 
 //! Cleanup.
@@ -45,12 +46,24 @@ void Object3D::SetScale(XMFLOAT3 scale)
 	mScale = scale;
 }
 
+//! Sets the world.
+void Object3D::SetWorld(World* pWorld)
+{
+	mWorld = pWorld;
+}
+
 //! Sets the default orientation.
 void Object3D::SetDefaultOrientation()
 {
 	SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	SetRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
+}
+
+//! Returns the world the object is in.
+World* Object3D::GetWorld()
+{
+	return mWorld;
 }
 
 //! Returns the world matrix.
@@ -96,7 +109,7 @@ void Object3D::SetType(ObjectType type)
 }
 
 //! Sets the material.
-void Object3D::SetMaterial(Material material)
+void Object3D::SetMaterials(Material material)
 {
 	mMaterial = material;
 }

@@ -78,21 +78,11 @@ void WorldTree::CreateTree()
 			sprintf(buffer, "%s %i", name.c_str(), counter[name]);
 			animatedObjects->AddNode(buffer)->onSelect.Add(this, &WorldTree::OnSelectChange);
 		}
+		else if(node.type == LIGHT_OBJECT) {
+			sprintf(buffer,  "Light %i", i+1);
+			lights->AddNode(buffer)->onSelect.Add(this, &WorldTree::OnSelectChange);
+		}
 
-		mNodeMap[buffer] = node;
-	}
-
-	LightList* lightList = mWorld->GetLights();
-	for(int i = 0; i < lightList->size(); i++)
-	{
-		Light* light = lightList->operator[](i);
-		WorldTreeNode node;
-		node.pData = light;
-		node.type = LIGHT;
-
-		char buffer[256];
-		sprintf(buffer,  "Light %i", i+1);
-		lights->AddNode(buffer)->onSelect.Add(this, &WorldTree::OnSelectChange);
 		mNodeMap[buffer] = node;
 	}
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Object3D.h"
+class World;
 
 /**
 	Represents a static object. 
@@ -12,6 +13,7 @@ public:
 	StaticObject(ModelImporter* importer, string filename);
 	~StaticObject();
 
+	virtual void Init();
 	virtual void Update(float dt);
 	virtual void Draw(Graphics* pGraphics);
 

@@ -88,18 +88,12 @@ void Editor::Update(float dt)
 {
 	mCreationTool->Update(dt);
 
-
 	// Was an object or light selected? [NOTE] Objects have priority.
 	if(gInput->KeyPressed(VK_LBUTTON) && !gInput->KeyDown(VK_CONTROL) && IsIn3DScreen())	// [NOTE] Only true if CTRL is not held down.
 	{
 		Object3D* selectedObject = mWorld->GetSelectedObject();
 		if(selectedObject != nullptr)
 			OnItemSelected(selectedObject, selectedObject->GetType());
-		else {
-			Light* selectedLight = mWorld->GetSelectedLight();
-			if(selectedLight != nullptr)
-				OnItemSelected(selectedLight, LIGHT);
-		}
 	}
 	// Remove any object that was pressed with CTRL.
 	else if(gInput->KeyPressed(VK_LBUTTON) && gInput->KeyDown(VK_CONTROL))
@@ -159,7 +153,7 @@ void Editor::OnItemSelected(void* pItem, int type)
 	if(mActiveInspector == nullptr) {
 		if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) 
 			mActiveInspector = new ObjectInspector(mGwenCanvas, mObjectTool);
-		else if(type == LIGHT) 
+		else if(type == LIGHT_OBJECT) 
 			mActiveInspector = new LightInspector(mGwenCanvas, mObjectTool);
 		else if(type == TERRAIN) {
 			mActiveInspector = new TerrainInspector(mGwenCanvas, mTerrainTool);
