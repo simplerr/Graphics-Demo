@@ -4,6 +4,7 @@
 #include "Gwen/Controls/NumericUpDown.h"
 #include "Gwen/Controls/HorizontalSlider.h"
 #include "Gwen/Controls/Property/ColorSelector.h"
+#include "Gwen/Controls/ComboBox.h"
 #include "Light.h"
 #include <xnamath.h>
 
@@ -54,5 +55,7 @@ private:
 	Gwen::Controls::HorizontalSlider* mRangeSlider;
 	Gwen::Controls::HorizontalSlider* mSpotSlider;
 	Gwen::Controls::Property::ColorSelector* mAmbientSelector, *mDiffuseSelector, *mSpecularSelector;
+	Gwen::Controls::ComboBox* mLigtTypeCombo;
+	Gwen::Controls::MenuItem* mDirectionalLight, *mSpotLight, *mPointLight;
 	ObjectTool* mObjectTool;
 };

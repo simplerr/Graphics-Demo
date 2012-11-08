@@ -112,3 +112,8 @@ float LightObject::GetSpot()
 {
 	return mLight->GetSpot();
 }
+
+int LightObject::GetLightType()
+{
+	return mLight->GetType();
+}

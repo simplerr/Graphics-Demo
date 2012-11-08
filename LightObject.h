@@ -34,6 +34,7 @@ public:
 	XMFLOAT3 GetIntensity();
 	float	 GetRange();
 	float	 GetSpot();
+	int GetLightType();
 
 	AxisAlignedBox GetBoundingBox();
 private:

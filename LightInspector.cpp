@@ -2,7 +2,6 @@
 #include "Light.h"
 #include "Gwen/Controls/Button.h"
 #include "Gwen/Controls/PropertyTree.h"
-#include "Gwen/Controls/ComboBox.h"
 #include "Util.h"
 #include "Object3D.h"
 #include "ObjectTool.h"
@@ -137,6 +136,14 @@ void LightInspector::SetObject(void* pObject)
 	// [NOTE] All the SetXXX on controls changes the light color to the value they had before, which is wrong. Gets restored here.
 	mCurrentMaterial = oldMat;
 	SetLightMaterial();
+
+	// Light type.
+	if(mLight->GetLightType() == DIRECTIONAL_LIGHT)
+		mLigtTypeCombo->OnItemSelected(mDirectionalLight);
+	else if(mLight->GetLightType() == SPOT_LIGHT)
+		mLigtTypeCombo->OnItemSelected(mSpotLight);
+	else if(mLight->GetLightType() == POINT_LIGHT)
+		mLigtTypeCombo->OnItemSelected(mPointLight);
 }
 
 void LightInspector::SetLightMaterial()
@@ -279,13 +286,13 @@ void LightInspector::CreateDataProperties(Gwen::Controls::Base* pParent)
 	label->SetText("Light type:");
 	label->SetPos(5, 25);
 
-	Gwen::Controls::ComboBox* combo = new Gwen::Controls::ComboBox(pParent);
-	combo->onSelection.Add(this, &LightInspector::OnLightTypeChange);
-	combo->SetPos(5, 45);
-	combo->SetWidth(170);
-	combo->AddItem(L"Directional light", "Directional");
-	combo->AddItem(L"Spot light", "Spot");
-	combo->AddItem(L"Point light", "Point");
+	mLigtTypeCombo = new Gwen::Controls::ComboBox(pParent);
+	mLigtTypeCombo->onSelection.Add(this, &LightInspector::OnLightTypeChange);
+	mLigtTypeCombo->SetPos(5, 45);
+	mLigtTypeCombo->SetWidth(170);
+	mDirectionalLight = mLigtTypeCombo->AddItem(L"Directional light", "Directional");
+	mSpotLight = mLigtTypeCombo->AddItem(L"Spot light", "Spot");
+	mPointLight = mLigtTypeCombo->AddItem(L"Point light", "Point");
 
 	// Range.
 	mRangeNumeric = new Gwen::Controls::NumericUpDown(pParent);
