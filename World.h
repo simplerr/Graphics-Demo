@@ -35,6 +35,7 @@ public:
 	int			GetVisibleObjects();
 	XMFLOAT3	GetTerrainIntersectPoint(Ray ray);
 	Object3D*	GetSelectedObject();
+	Light*		GetSelectedLight();
 
 	// Callback hookup.
 	template <class T>
@@ -44,7 +45,6 @@ public:
 private:
 	// Callback.
 	boost::function<void(void*, int)>	OnItemSelected;
-	Light*		GetSelectedLight();
 private:
 	ObjectList	mObjectList;
 	LightList	mLightList;//LightList mLightList;	

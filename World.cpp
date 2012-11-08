@@ -67,24 +67,11 @@ void World::Update(float dt)
 	// Loop through all objects.
 	for(int i = 0; i < mObjectList.size(); i++)
 	{
-		// Update the object.
+		// Update the object if alive.
 		if(mObjectList[i]->GetAlive())
 			mObjectList[i]->Update(dt);
 		else
 			RemoveObject(mObjectList[i]);
-	}
-
-	// Was an object or light selected? [NOTE] Objects have priority.
-	if(gInput->KeyPressed(VK_LBUTTON) && !gInput->KeyDown(VK_CONTROL) && IsIn3DScreen())	// [NOTE] Only true if CTRL is not held down.
-	{
-		Object3D* selectedObject = GetSelectedObject();
-		if(selectedObject != nullptr)
-			OnItemSelected(selectedObject, selectedObject->GetType());
-		else {
-			Light* selectedLight = GetSelectedLight();
-			if(selectedLight != nullptr)
-				OnItemSelected(selectedLight, LIGHT);
-		}
 	}
 }
 	

@@ -148,12 +148,6 @@ void ObjectInspector::Cleanup()
 void ObjectInspector::Update(float dt)
 {
 	mObjectTool->Update(dt);
-
-	// Remove the object?
-	if(gInput->KeyPressed(VK_DELETE)) {
-		mObject->Kill();
-		GetEditor()->RemoveInspector();
-	}
 }
 
 void ObjectInspector::Draw(Graphics* pGraphics)

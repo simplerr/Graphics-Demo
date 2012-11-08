@@ -88,21 +88,44 @@ void Editor::Update(float dt)
 {
 	mCreationTool->Update(dt);
 
+
+	// Was an object or light selected? [NOTE] Objects have priority.
+	if(gInput->KeyPressed(VK_LBUTTON) && !gInput->KeyDown(VK_CONTROL) && IsIn3DScreen())	// [NOTE] Only true if CTRL is not held down.
+	{
+		Object3D* selectedObject = mWorld->GetSelectedObject();
+		if(selectedObject != nullptr)
+			OnItemSelected(selectedObject, selectedObject->GetType());
+		else {
+			Light* selectedLight = mWorld->GetSelectedLight();
+			if(selectedLight != nullptr)
+				OnItemSelected(selectedLight, LIGHT);
+		}
+	}
 	// Remove any object that was pressed with CTRL.
-	if(gInput->KeyPressed(VK_LBUTTON) && gInput->KeyDown(VK_CONTROL))
+	else if(gInput->KeyPressed(VK_LBUTTON) && gInput->KeyDown(VK_CONTROL))
 	{
 		Object3D* object = mWorld->GetSelectedObject();
 		if(object != nullptr)
 		{
-			object->Kill();
 			if(mActiveInspector != nullptr && mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR) {
 				ObjectInspector* inspector = (ObjectInspector*)mActiveInspector;
 				if(object->GetId() == inspector->GetSelectedObject()->GetId())
 					RemoveInspector();
 			}
+			mWorld->RemoveObject(object);
+			mWorldTree->CreateTree();
 		}
 	}
 
+	// DELETE pressed and an object selected?
+	if(gInput->KeyPressed(VK_DELETE) && mActiveInspector != nullptr && mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR) {
+		ObjectInspector* inspector = (ObjectInspector*)mActiveInspector;
+		mWorld->RemoveObject(inspector->GetSelectedObject());
+		mWorldTree->CreateTree();
+		RemoveInspector();
+	}
+
+	// Update the active inspector.
 	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel())
 		mActiveInspector->Update(dt);
 }
@@ -187,8 +210,6 @@ void Editor::UpdateWorldTree()
 
 void Editor::RemoveInspector()
 {
-	// [TODO]....
-	mWorldTree->CreateTree();
 	delete mActiveInspector;
 	mActiveInspector = nullptr;
 }
