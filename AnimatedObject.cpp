@@ -83,6 +83,8 @@ AxisAlignedBox AnimatedObject::GetBoundingBox()
 	// Transform the AABB with the components.
 	TransformAxisAlignedBoxCustom(&aabb, &aabb, scale, rotation, translation);
 
+	aabb.Center = GetPosition();	// [NOTE] Not like this in StaticObject.
+
 	return aabb;
 }
 

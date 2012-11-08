@@ -10,6 +10,8 @@
 TerrainInspector::TerrainInspector(Gwen::Controls::Base* pParent, TerrainTool* pTool)
 	: BaseInspector(pParent)
 {
+	SetInspectorType(TERRAIN_INSPECTOR);
+
 	// Init the terrain tool.
 	mTerrainTool = pTool;
 }

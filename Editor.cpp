@@ -41,6 +41,8 @@ Editor::~Editor()
 //! Initializes everything.
 void Editor::Init(ModelImporter* pImporter, World* pWorld)
 {
+	mWorld = pWorld;
+
 	// Create the right list.
 	mRightList = new Gwen::Controls::CollapsibleList(mGwenCanvas);
 	mRightList->SetBounds(1000, 0, 200, 800);
@@ -86,6 +88,21 @@ void Editor::Update(float dt)
 {
 	mCreationTool->Update(dt);
 
+	// Remove any object that was pressed with CTRL.
+	if(gInput->KeyPressed(VK_LBUTTON) && gInput->KeyDown(VK_CONTROL))
+	{
+		Object3D* object = mWorld->GetSelectedObject();
+		if(object != nullptr)
+		{
+			object->Kill();
+			if(mActiveInspector != nullptr && mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR) {
+				ObjectInspector* inspector = (ObjectInspector*)mActiveInspector;
+				if(object->GetId() == inspector->GetSelectedObject()->GetId())
+					RemoveInspector();
+			}
+		}
+	}
+
 	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel())
 		mActiveInspector->Update(dt);
 }
@@ -125,10 +142,19 @@ void Editor::OnItemSelected(void* pItem, int type)
 			mActiveInspector = new TerrainInspector(mGwenCanvas, mTerrainTool);
 		}
 		mActiveInspector->Init();
+		mActiveInspector->SetEditor(this);
 	}
 
 	// Set the inspectors object, can be Object3D Light or Terrain.
 	mActiveInspector->SetObject(pItem);
+}
+
+//! Called when the window gets resized.
+void Editor::OnResize(int width, int height)
+{
+	mGwenRenderer->SetScreenSize(width, height);
+	mRightList->SetBounds(width-200, 0, 200, height);
+	mGwenCanvas->SetSize(width, height);
 }
 
 //! Lets Gwen::Input process messaages.
@@ -157,4 +183,12 @@ void Editor::UpdateCamera(Camera* pCamera)
 void Editor::UpdateWorldTree()
 {
 	mWorldTree->CreateTree();
+}
+
+void Editor::RemoveInspector()
+{
+	// [TODO]....
+	mWorldTree->CreateTree();
+	delete mActiveInspector;
+	mActiveInspector = nullptr;
 }

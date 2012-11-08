@@ -8,6 +8,8 @@
 #include "AnimatedObject.h"
 #include "ModelImporter.h"
 #include "Editor.h"
+#include "Graphics.h"
+#include "RenderStates.h"
 
 CreationTool::CreationTool(Gwen::Controls::Base* pParent, World* pWorld)
 	: Gwen::Controls::CollapsibleCategory(pParent)
@@ -78,8 +80,12 @@ void CreationTool::Update(float dt)
 
 void CreationTool::Draw(Graphics* pGraphics)
 {
+	//pGraphics->GetContext()->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
+
 	if(mPreviewObject != nullptr)
 		mPreviewObject->Draw(pGraphics);
+
+	pGraphics->GetContext()->OMSetDepthStencilState(0, 0);
 }
 
 void CreationTool::BuildSpawnList()

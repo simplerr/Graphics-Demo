@@ -24,6 +24,7 @@ public:
 	void Init();
 	void Update(float dt);
 	void Draw(Graphics* pGraphics);
+	void OnResize(int width, int height);
 
 	LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

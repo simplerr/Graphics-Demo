@@ -26,6 +26,7 @@ public:
 	void Draw(Graphics* pGraphics);
 	void Init();
 	void AddObject(Object3D* object);
+	void RemoveObject(Object3D* pObject);
 	void AddLight(Light* light);
 
 	LightList*	GetLights();
@@ -33,6 +34,7 @@ public:
 	Terrain*	GetTerrain();
 	int			GetVisibleObjects();
 	XMFLOAT3	GetTerrainIntersectPoint(Ray ray);
+	Object3D*	GetSelectedObject();
 
 	// Callback hookup.
 	template <class T>
@@ -43,7 +45,6 @@ private:
 	// Callback.
 	boost::function<void(void*, int)>	OnItemSelected;
 	Light*		GetSelectedLight();
-	Object3D*	GetSelectedObject();
 private:
 	ObjectList	mObjectList;
 	LightList	mLightList;//LightList mLightList;	

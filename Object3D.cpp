@@ -18,6 +18,7 @@ Object3D::Object3D(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scale)
 	SetName("Object");
 	SetDefualtScale(1.0f);
 	SetMaterial(Colors::White);
+	SetId(-1);
 }
 
 //! Cleanup.
@@ -133,4 +134,24 @@ void Object3D::SetName(string name)
 void Object3D::SetDefualtScale(float scale)
 {
 	mDefaultScale = XMFLOAT3(scale, scale, scale);
+}
+
+bool Object3D::GetAlive()
+{
+	return mAlive;
+}
+
+void Object3D::Kill()
+{
+	mAlive = false;
+}
+
+void Object3D::SetId(int id)
+{
+	mId = id;
+}
+
+int	Object3D::GetId()
+{
+	return mId;
 }

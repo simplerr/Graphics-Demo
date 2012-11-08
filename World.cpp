@@ -68,11 +68,14 @@ void World::Update(float dt)
 	for(int i = 0; i < mObjectList.size(); i++)
 	{
 		// Update the object.
-		mObjectList[i]->Update(dt);
+		if(mObjectList[i]->GetAlive())
+			mObjectList[i]->Update(dt);
+		else
+			RemoveObject(mObjectList[i]);
 	}
 
 	// Was an object or light selected? [NOTE] Objects have priority.
-	if(gInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen())
+	if(gInput->KeyPressed(VK_LBUTTON) && !gInput->KeyDown(VK_CONTROL) && IsIn3DScreen())	// [NOTE] Only true if CTRL is not held down.
 	{
 		Object3D* selectedObject = GetSelectedObject();
 		if(selectedObject != nullptr)
@@ -166,13 +169,37 @@ Light* World::GetSelectedLight()
 	return closestLight;
 }
 
-//! Adds a object to the object list.
+//! Adds an object to the object list.
 void World::AddObject(Object3D* object)
 {
 	// [TODO] Set Id.
+	static int id = 0;
+	object->SetId(id++);
 	mObjectList.push_back(object);
 }
-	
+
+//! Removes an object from the list.
+void World::RemoveObject(Object3D* pObject)
+{
+	// Loop through all objects and find out which one to delete.
+	int i = 0;
+	auto itr =  mObjectList.begin();
+	while(itr != mObjectList.end() && i < mObjectList.size())
+	{
+		if(mObjectList[i]->GetId() == pObject->GetId())
+		{
+			delete mObjectList[i];		
+			mObjectList[i] = NULL;
+			itr = mObjectList.erase(itr);	
+			break;
+		}
+		else	{
+			itr++;
+			i++;
+		}
+	}
+}
+
 //! Adds a light to the light list.
 void World::AddLight(Light* light)
 {

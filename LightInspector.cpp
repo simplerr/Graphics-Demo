@@ -12,6 +12,7 @@
 LightInspector::LightInspector(Gwen::Controls::Base* pParent, ObjectTool* pTool)
 	: BaseInspector(pParent)
 {
+	SetInspectorType(LIGHT_INSPECTOR);
 	mLight = nullptr;
 	mRangeSlider = mSpotSlider = nullptr;
 	mObjectTool = pTool;

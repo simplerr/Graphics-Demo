@@ -80,7 +80,7 @@ void Game::Init()
 	// Important to run Systems Init() function.
 	Runnable::Init();
 
-	mEditor = new Editor(GetScreenWidth(), GetScreenHeight());
+	mEditor = new Editor(GetClientWidth(), GetClientHeight());
 	
 	// Create the world.
 	mWorld = new World();
@@ -126,8 +126,6 @@ void Game::Init()
 	mWorld->AddObject(mObject);*/
 
 	mEditor->Init(gModelImporter, mWorld);
-
-	SwitchScreenMode();
 }
 	
 void Game::GwenInit()
@@ -188,8 +186,6 @@ void Game::Draw(Graphics* pGraphics)
 
 	mEditor->Draw(pGraphics);
 
-	pGraphics->DrawScreenQuad(0, 600, 400, 4, 4);
-
 	// Present the backbuffer.
 	pGraphics->Present();
 
@@ -200,8 +196,21 @@ void Game::Draw(Graphics* pGraphics)
 	Effects::BuildShadowMapFX->Apply();
 }
 
+//! Called when the window gets resized.
+void Game::OnResize(int width, int height)
+{
+	mEditor->OnResize(width, height);
+}
+
 LRESULT Game::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	// Toggle screen mode?
+	if(msg == WM_CHAR)
+	{
+		if(wParam == 'f')	// Toggle by pressing F.
+			SwitchScreenMode();
+	}
+
 	gInput->MsgProc(msg, wParam, lParam);
 	if(mEditor != nullptr)
 		mEditor->MsgProc(hwnd, msg, wParam, lParam);

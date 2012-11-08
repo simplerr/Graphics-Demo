@@ -10,10 +10,14 @@
 #include "ObjectTool.h"
 #include "ModelImporter.h"
 #include "Effects.h"
+#include "Input.h"
+#include "Editor.h"
 
 ObjectInspector::ObjectInspector(Gwen::Controls::Base* pParent, ObjectTool* pTool)
 	: BaseInspector(pParent)
 {
+	SetInspectorType(OBJECT_INSPECTOR);
+
 	mObjectTool = pTool;
 
 	Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
@@ -144,6 +148,12 @@ void ObjectInspector::Cleanup()
 void ObjectInspector::Update(float dt)
 {
 	mObjectTool->Update(dt);
+
+	// Remove the object?
+	if(gInput->KeyPressed(VK_DELETE)) {
+		mObject->Kill();
+		GetEditor()->RemoveInspector();
+	}
 }
 
 void ObjectInspector::Draw(Graphics* pGraphics)
@@ -354,4 +364,9 @@ void ObjectInspector::OnPositionChangeEvent(XMFLOAT3 position)
 void ObjectInspector::OnScaleChangeEvent(XMFLOAT3 scale)
 {
 
+}
+
+StaticObject* ObjectInspector::GetSelectedObject()
+{
+	return mObject;
 }

@@ -45,6 +45,8 @@ public:
 	Material	GetMaterial();
 	ObjectType	GetType();
 	string		GetName();
+	bool		GetAlive();
+	int			GetId();
 	bool		IsBoundingBoxVisible();
 	virtual AxisAlignedBox GetBoundingBox() = 0;
 	
@@ -58,8 +60,10 @@ public:
 	void SetDefaultOrientation();
 	void SetType(ObjectType type);
 	void SetBoundingBoxVisible(bool visible);
+	void Kill();
 	void SetName(string name);
 	void SetDefualtScale(float scale);
+	void SetId(int id);
 private:
 	XMFLOAT3	mPosition;
 	XMFLOAT3	mRotation;
@@ -68,5 +72,7 @@ private:
 	ObjectType	mType;
 	Material	mMaterial;
 	bool		mDrawBoundingBox;
+	bool		mAlive;
 	string		mName;
+	int			mId;
 };

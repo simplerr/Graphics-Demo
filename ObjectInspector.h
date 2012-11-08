@@ -33,6 +33,7 @@ public:
 	void OnScaleChangeEvent(XMFLOAT3 scale);
 
 	void SetObjectMover(ObjectTool* pObjectMover);
+	StaticObject* GetSelectedObject();
 private:
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:

@@ -37,11 +37,13 @@ public:
 	void Init(ModelImporter* pImporter, World* pWorld);
 	void GwenInit(int width, int height);
 	void Update(float dt);
+	void OnResize(int width, int height);
 	void UpdateCamera(Camera* pCamera);
 	void Draw(Graphics* pGraphics);
 	void MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	void OnItemSelected(void* pItem, int type);
 	void UpdateWorldTree();
+	void RemoveInspector();
 private:
 	Gwen::Controls::Canvas*		mGwenCanvas;
 	Gwen::Skin::TexturedBase*	mGwenSkin;
@@ -53,4 +55,5 @@ private:
 	TerrainTool*				mTerrainTool;
 	ObjectTool*					mObjectTool;
 	CreationTool*			    mCreationTool;
+	World*						mWorld;
 };
