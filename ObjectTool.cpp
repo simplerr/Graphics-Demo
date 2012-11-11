@@ -14,7 +14,9 @@
 #include "RenderStates.h"
 #include "Util.h"
 
-ObjectTool::ObjectTool(ModelImporter* pImporter)
+using namespace GLib;
+
+ObjectTool::ObjectTool(GLib::ModelImporter* pImporter)
 {
 	// nullptr as default.
 	mMovingObject = nullptr;
@@ -52,13 +54,13 @@ ObjectTool::~ObjectTool()
 }
 
 //! Poll for input and perform actions.
-void ObjectTool::Update(float dt)
+void ObjectTool::Update(GLib::Input* pInput, float dt)
 {
 	// LBUTTON pressed and inside 3D screen.
-	if(gInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen()) {
+	if(pInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen(pInput)) {
 		float dist = numeric_limits<float>::infinity();
-		XMVECTOR pos  = XMLoadFloat3(&gGame->GetGraphics()->GetCamera()->GetPosition());
-		XMFLOAT3 d = gInput->GetWorldPickingRay().direction;
+		XMVECTOR pos  = XMLoadFloat3(&GetCamera()->GetPosition());
+		XMFLOAT3 d = pInput->GetWorldPickingRay().direction;
 		XMVECTOR dir = XMLoadFloat3(&d);
 
 		// Find out which axis arrow was pressed.
@@ -77,14 +79,14 @@ void ObjectTool::Update(float dt)
 	}
 
 	// Not moving any axis any more.
-	if(gInput->KeyReleased(VK_LBUTTON))
+	if(pInput->KeyReleased(VK_LBUTTON))
 		mMovingAxis = NONE;
 
 	// Update the position.
 	if(mMovingAxis != NONE)
 	{
-		XMFLOAT3 pos  = gGame->GetGraphics()->GetCamera()->GetPosition();
-		XMFLOAT3 dir = gInput->GetWorldPickingRay().direction;
+		XMFLOAT3 pos  = GetCamera()->GetPosition();
+		XMFLOAT3 dir = pInput->GetWorldPickingRay().direction;
 
 		if(mMovingAxis == X_AXIS)
 			UpdatePosition(MoveAxisX(pos, dir));
@@ -96,7 +98,7 @@ void ObjectTool::Update(float dt)
 }
 
 //! Draws the arrow axis.
-void ObjectTool::Draw(Graphics* pGraphics)
+void ObjectTool::Draw(GLib::Graphics* pGraphics)
 {
 	// Disable the depth test.
 	ID3D11DepthStencilState* oldState = nullptr;
@@ -168,7 +170,7 @@ XMFLOAT3 ObjectTool::MoveAxisX(XMFLOAT3 pos, XMFLOAT3 dir)
 XMFLOAT3 ObjectTool::MoveAxisY(XMFLOAT3 pos, XMFLOAT3 dir)
 {
 	// Top right triangle.
-	XMFLOAT3 right = gGame->GetGraphics()->GetCamera()->GetRight();
+	XMFLOAT3 right = GetCamera()->GetRight();
 	XMFLOAT3 up = XMFLOAT3(0, 1, 0);
 	XMFLOAT3 objectPos = mAxisY->GetPosition();
 	float halfWidth = 60.0f;

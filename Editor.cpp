@@ -39,14 +39,14 @@ Editor::~Editor()
 }
 
 //! Initializes everything.
-void Editor::Init(ModelImporter* pImporter, World* pWorld)
+void Editor::Init(GLib::ModelImporter* pImporter, World* pWorld)
 {
 	mWorld = pWorld;
 
 	// Create the right list.
 	mRightList = new Gwen::Controls::CollapsibleList(mGwenCanvas);
 	mRightList->SetBounds(1000, 0, 200, 800);
-	mRightList->SetShouldDrawBackground(true);
+	mRightList->SetShouldDrawBackground(false);
 
 	// Create the world tree.
 	mWorldTree = new WorldTree(mRightList);
@@ -57,7 +57,7 @@ void Editor::Init(ModelImporter* pImporter, World* pWorld)
 	// Create the tools.
 	mTerrainTool = new TerrainTool();
 	mObjectTool = new ObjectTool(pImporter);
-	mCreationTool = new CreationTool(mRightList, pWorld);
+	mCreationTool = new CreationTool(mRightList, pWorld, pImporter);
 	mCreationTool->SetEditor(this);
 }
 
@@ -65,7 +65,7 @@ void Editor::Init(ModelImporter* pImporter, World* pWorld)
 void Editor::GwenInit(int width, int height)
 {
 	// Create the renderer.
-	mGwenRenderer = new Gwen::Renderer::DirectX11(GetD3DDevice(), GetD3DContext());
+	mGwenRenderer = new Gwen::Renderer::DirectX11(GLib::GetD3DDevice(), GLib::GetD3DContext());
 	mGwenRenderer->SetScreenSize(width, height);
 
 	// Create a GWEN skin.
@@ -84,21 +84,21 @@ void Editor::GwenInit(int width, int height)
 }
 	
 //! Update the tools.
-void Editor::Update(float dt)
+void Editor::Update(GLib::Input* pInput, float dt)
 {
-	mCreationTool->Update(dt);
+	mCreationTool->Update(pInput, dt);
 
 	// Was an object or light selected? [NOTE] Objects have priority.
-	if(gInput->KeyPressed(VK_LBUTTON) && !gInput->KeyDown(VK_CONTROL) && IsIn3DScreen())	// [NOTE] Only true if CTRL is not held down.
+	if(pInput->KeyPressed(VK_LBUTTON) && !pInput->KeyDown(VK_CONTROL) && IsIn3DScreen(pInput))	// [NOTE] Only true if CTRL is not held down.
 	{
-		Object3D* selectedObject = mWorld->GetSelectedObject();
+		Object3D* selectedObject = mWorld->GetSelectedObject(pInput->GetWorldPickingRay());
 		if(selectedObject != nullptr)
 			OnItemSelected(selectedObject, selectedObject->GetType());
 	}
 	// Remove any object that was pressed with CTRL.
-	else if(gInput->KeyPressed(VK_LBUTTON) && gInput->KeyDown(VK_CONTROL))
+	else if(pInput->KeyPressed(VK_LBUTTON) && pInput->KeyDown(VK_CONTROL))
 	{
-		Object3D* object = mWorld->GetSelectedObject();
+		Object3D* object = mWorld->GetSelectedObject(pInput->GetWorldPickingRay());
 		if(object != nullptr)
 		{
 			// Is the object thats getting deleted being inspected?
@@ -111,7 +111,7 @@ void Editor::Update(float dt)
 	}
 
 	// DELETE pressed and an object selected?
-	if(gInput->KeyPressed(VK_DELETE) && mActiveInspector != nullptr && mActiveInspector->GetInspectorType() != TERRAIN_INSPECTOR) {
+	if(pInput->KeyPressed(VK_DELETE) && mActiveInspector != nullptr && mActiveInspector->GetInspectorType() != TERRAIN_INSPECTOR) {
 		mWorld->RemoveObject(mActiveInspector->GetInspectedObject());
 		mWorldTree->CreateTree();
 		RemoveInspector();
@@ -120,10 +120,18 @@ void Editor::Update(float dt)
 	// Update the active inspector.
 	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel())
 		mActiveInspector->Update(dt);
+
+	// [NOTE][HACK]
+	if(mActiveInspector != nullptr && mActiveInspector->GetInspectorType() == TERRAIN_INSPECTOR)
+		mTerrainTool->Update(pInput, dt);
+	else if(mActiveInspector != nullptr && (mActiveInspector->GetInspectorType() == LIGHT_INSPECTOR 
+		|| mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR))
+		mObjectTool->Update(pInput, dt);
+
 }
 	
 //! Draws all elements in the editor.
-void Editor::Draw(Graphics* pGraphics)
+void Editor::Draw(GLib::Graphics* pGraphics)
 {
 	// Update the camera.
 	UpdateCamera(pGraphics->GetCamera());
@@ -185,14 +193,14 @@ void Editor::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 //! Rotates and moves the camera.
-void Editor::UpdateCamera(Camera* pCamera)
+void Editor::UpdateCamera(GLib::Camera* pCamera)
 {
 	// Rotate and move the camera.
-	if(gInput->KeyDown(VK_MBUTTON))
+	/*if(gInput->KeyDown(VK_MBUTTON))
 		pCamera->Rotate();
 
 	pCamera->Move();
-	pCamera->UpdateViewMatrix();
+	pCamera->UpdateViewMatrix();*/
 }
 
 void Editor::UpdateWorldTree()

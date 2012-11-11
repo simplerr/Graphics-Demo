@@ -1,12 +1,17 @@
 #pragma once
-
 #include "Gwen/Gwen.h"
 #include "Gwen/Controls/CollapsibleList.h"
 
+// Forward declarations.
+#pragma region Forward declarations.
+namespace GLib {
+	class Graphics;
+}
+
 class ObjectTool;
-class Graphics;
 class Editor;
 class Object3D;
+#pragma endregion
 
 enum InspectorType
 {
@@ -25,7 +30,7 @@ public:
 	virtual void Init() = 0;
 	virtual void Cleanup() = 0;
 	virtual void Update(float dt) = 0;
-	virtual void Draw(Graphics* pGraphics) = 0;
+	virtual void Draw(GLib::Graphics* pGraphics) = 0;
 	virtual void SetObject(void* pObject) = 0;
 	virtual bool IsResponsible(int type) = 0;
 	virtual bool IsInspecting(int id) = 0;

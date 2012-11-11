@@ -7,6 +7,8 @@
 #include "Util.h"
 #include "World.h"
 
+using namespace GLib;
+
 TerrainInspector::TerrainInspector(Gwen::Controls::Base* pParent, TerrainTool* pTool)
 	: BaseInspector(pParent)
 {
@@ -91,10 +93,10 @@ void TerrainInspector::Init()
 
 void TerrainInspector::Update(float dt)
 {
-	mTerrainTool->Update(dt);
+
 }
 
-void TerrainInspector::Draw(Graphics* pGraphics)
+void TerrainInspector::Draw(GLib::Graphics* pGraphics)
 {
 	mTerrainTool->Draw(pGraphics);
 }

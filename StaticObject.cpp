@@ -6,7 +6,7 @@
 #include "Graphics.h"
 #include "Effects.h"
 
-StaticObject::StaticObject(ModelImporter* importer, string filename)
+StaticObject::StaticObject(GLib::ModelImporter* importer, string filename)
 	: Object3D(STATIC_OBJECT)
 {
 	// Load the model.
@@ -31,13 +31,13 @@ void StaticObject::Update(float dt)
 }
 
 //! Draws the objects model.
-void StaticObject::Draw(Graphics* pGraphics)
+void StaticObject::Draw(GLib::Graphics* pGraphics)
 {
-	Effects::BasicFX->SetMaterial(GetMaterial());
+	GLib::Effects::BasicFX->SetMaterial(GetMaterial());
 	mModel->Draw(pGraphics, GetWorldMatrix());
 
 	if(IsBoundingBoxVisible())
-		pGraphics->DrawBoundingBox(&GetBoundingBox(), GetWorldMatrix(), Material(Colors::Blue));
+		pGraphics->DrawBoundingBox(&GetBoundingBox(), GetWorldMatrix(), GLib::Material(GLib::Colors::Blue));
 }
 
 //! Returns true if the ray hits the mesh, triangle level check.
@@ -52,7 +52,7 @@ bool StaticObject::RayIntersect(XMVECTOR origin, XMVECTOR direction, float& pDis
 //! Returns the bounding box in world space.
 AxisAlignedBox StaticObject::GetBoundingBox()
 {
-	MeshList* meshList = mModel->GetMeshList();
+	GLib::MeshList* meshList = mModel->GetMeshList();
 	AxisAlignedBox aabb = (*meshList)[0]->GetPrimitive()->GetBoundingBox();
 	XMFLOAT3 min = aabb.Center - aabb.Extents;
 	XMFLOAT3 max = aabb.Center + aabb.Extents;
@@ -74,13 +74,13 @@ AxisAlignedBox StaticObject::GetBoundingBox()
 	XMMatrixDecompose(&scale, &rotation, &translation, GetWorldMatrix());
 
 	// Transform the AABB with the components.
-	TransformAxisAlignedBoxCustom(&aabb, &aabb, scale, rotation, translation);
+	GLib::TransformAxisAlignedBoxCustom(&aabb, &aabb, scale, rotation, translation);
 
 	return aabb;
 }
 
 //! Returns the model.
-StaticModel* StaticObject::GetModel()
+GLib::StaticModel* StaticObject::GetModel()
 {
 	return mModel;
 }

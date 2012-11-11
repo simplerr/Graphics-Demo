@@ -10,6 +10,8 @@
 #include "LightObject.h"
 #include "World.h"
 
+using namespace GLib;
+
 LightInspector::LightInspector(Gwen::Controls::Base* pParent, ObjectTool* pTool)
 	: BaseInspector(pParent)
 {
@@ -19,7 +21,7 @@ LightInspector::LightInspector(Gwen::Controls::Base* pParent, ObjectTool* pTool)
 	mObjectTool = pTool;
 
 	Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
-	Effects::TerrainFX->Apply();
+	Effects::TerrainFX->Apply(GetD3DContext());
 }
 	
 LightInspector::~LightInspector()
@@ -57,10 +59,10 @@ void LightInspector::Cleanup()
 
 void LightInspector::Update(float dt)
 {
-	mObjectTool->Update(dt);
+
 }
 
-void LightInspector::Draw(Graphics* pGraphics)
+void LightInspector::Draw(GLib::Graphics* pGraphics)
 {
 	mObjectTool->Draw(pGraphics);
 }

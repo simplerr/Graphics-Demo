@@ -1,27 +1,34 @@
 #pragma once
 
 #include "Object3D.h"
-class SkinnedModel;
-class World;
 
-/**
-	Represents an animated object. 
-*/
+// Forward declarations.
+#pragma region Forward declarations.
+namespace GLib {
+	class SkinnedModel;
+}
+
+class World;
+#pragma endregion
+
+//!
+//	Represents an animated object. 
+//!
 class AnimatedObject : public Object3D
 {
 public:
-	AnimatedObject(ModelImporter* importer, string filename);
+	AnimatedObject(GLib::ModelImporter* importer, string filename);
 	virtual ~AnimatedObject();
 
 	virtual void Init();
 	virtual void Update(float dt);
-	virtual void Draw(Graphics* pGraphics);
+	virtual void Draw(GLib::Graphics* pGraphics);
 
 	void SetAnimation(int index);
 	AxisAlignedBox GetBoundingBox();
-	SkinnedModel* GetModel();
+	GLib::SkinnedModel* GetModel();
 private:
-	SkinnedModel* mSkinnedModel;
+	GLib::SkinnedModel* mSkinnedModel;
 	int		mCurrentAnimIndex;
 	float	mElapsedTime;
 };

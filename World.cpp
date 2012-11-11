@@ -13,25 +13,27 @@
 #include "BillboardManager.h"
 #include "Input.h"
 #include "Util.h"
+#include "Effects.h"
 #include <limits>
 
+//! Constructor.
 World::World()
 {
 	mNumVisibleObjects = 0;
 }
 
 //! Init.
-void World::Init()
+void World::Init(GLib::Graphics* pGraphics)
 {
 	// Add test billboards.
 	//mLightBillboard = GetGraphics()->AddBillboard(XMFLOAT3(0, 10, 0), XMFLOAT2(5, 5), "textures\\light_icon.png");
 
 	// Create the sky box.
-	mSkyBox = new Sky("textures/sky.dds", 5000.0f);
+	mSkyBox = new GLib::Sky(pGraphics, "textures/sky.dds", 5000.0f);
 
 	// Create the terrain.
-	mTerrain = new Terrain();
-	InitInfo initInfo;
+	mTerrain = new GLib::Terrain();
+	GLib::InitInfo initInfo;
 	initInfo.HeightMapFilename = "textures/heightmap17_257.raw";
 	initInfo.LayerMapFilename0 = "textures/grass.dds";
 	initInfo.LayerMapFilename1 = "textures/darkdirt.dds";
@@ -43,7 +45,7 @@ void World::Init()
 	initInfo.HeightmapWidth = 257;
 	initInfo.HeightmapHeight = 257;
 	initInfo.CellSpacing = 0.5f;
-	mTerrain->Init(gGame->GetGraphics()->GetDevice(), gGame->GetGraphics()->GetContext(), initInfo);
+	mTerrain->Init(pGraphics->GetDevice(), pGraphics->GetContext(), pGraphics->GetPrimitiveFactory(), initInfo);
 }
 
 //! Cleanup the object and light lists.
@@ -76,19 +78,19 @@ void World::Update(float dt)
 }
 	
 //! Draws all objects.
-void World::Draw(Graphics* pGraphics)
+void World::Draw(GLib::Graphics* pGraphics)
 {
 	// Draw all objects to the shadow map.
 	pGraphics->ActiveShadowMap();
-	//for(int i = 0; i < mObjectList.size(); i++)
-	//	mObjectList[i]->Draw(pGraphics);
+	for(int i = 0; i < mObjectList.size(); i++)
+		mObjectList[i]->Draw(pGraphics);
 	pGraphics->DeactiveShadowMap();
 
 	// Draw the terrain.
 	mTerrain->Draw(pGraphics);
 
 	// Draw the skybox.
-	mSkyBox->Draw();
+	mSkyBox->Draw(pGraphics);
 
 	mNumVisibleObjects = 0;
 	for(int i = 0; i < mObjectList.size(); i++)
@@ -106,7 +108,7 @@ void World::Draw(Graphics* pGraphics)
 }
 
 //! Returns the selected object, if any.
-Object3D* World::GetSelectedObject()
+Object3D* World::GetSelectedObject(GLib::Ray ray)
 {
 	// Loop through all objects.
 	float closestDist = numeric_limits<float>::infinity();
@@ -114,8 +116,8 @@ Object3D* World::GetSelectedObject()
 	for(int i = 0; i < mObjectList.size(); i++)
 	{
 		float dist;
-		XMFLOAT3 pos = gGame->GetGraphics()->GetCamera()->GetPosition();
-		XMFLOAT3 dir = gInput->GetWorldPickingRay().direction;
+		XMFLOAT3 pos = GLib::GetCamera()->GetPosition();
+		XMFLOAT3 dir = ray.direction;
 		if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &mObjectList[i]->GetBoundingBox(), &dist)) {
 			if(dist < closestDist) {
 				closestObject = mObjectList[i];
@@ -125,31 +127,6 @@ Object3D* World::GetSelectedObject()
 	}
 
 	return closestObject;
-}
-
-//! Returns the selected light, if any.
-Light* World::GetSelectedLight()
-{
-	// Loop through all lights.
-	Light* closestLight = nullptr;
-	float closestDist = numeric_limits<float>::infinity();
-	for(int i = 0; i < mLightList.size(); i++)
-	{
-		XMFLOAT3 pos = gGame->GetGraphics()->GetCamera()->GetPosition();
-		XMFLOAT3 dir = gInput->GetWorldPickingRay().direction;
-		float dist;
-		AxisAlignedBox box;
-		box.Center = mLightList[i]->GetPosition();
-		box.Extents = XMFLOAT3(3, 3, 3);
-		if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &box, &dist)) {
-			if(dist < closestDist) {
-				closestLight = mLightList[i];
-				closestDist = dist;
-			}
-		}
-	}
-	
-	return closestLight;
 }
 
 //! Adds an object to the object list.
@@ -164,7 +141,7 @@ void World::AddObject(Object3D* object)
 }
 
 //! Adds a light to the light list.
-void World::AddLight(Light* light)
+void World::AddLight(GLib::Light* light)
 {
 	static int id = 0;
 	light->SetId(id++);
@@ -194,7 +171,7 @@ void World::RemoveObject(Object3D* pObject)
 }
 
 //! Removes a light from the light list.
-void World::RemoveLight(Light* pLight)
+void World::RemoveLight(GLib::Light* pLight)
 {
 	// Loop through all objects and find out which one to delete.
 	int i = 0;
@@ -216,7 +193,7 @@ void World::RemoveLight(Light* pLight)
 }
 
 //! Returns the address to the light list.
-LightList* World::GetLights()
+GLib::LightList* World::GetLights()
 {
 	return &mLightList;
 }
@@ -228,7 +205,7 @@ ObjectList* World::GetObjects()
 }
 
 //! Returns a pointer to the terrain.
-Terrain* World::GetTerrain()
+GLib::Terrain* World::GetTerrain()
 {
 	return mTerrain;
 }
@@ -239,7 +216,7 @@ int World::GetVisibleObjects()
 	return mNumVisibleObjects;
 }
 
-XMFLOAT3 World::GetTerrainIntersectPoint( Ray ray )
+XMFLOAT3 World::GetTerrainIntersectPoint(GLib::Ray ray)
 {
 	return mTerrain->GetIntersectPoint(ray);
 }

@@ -26,17 +26,15 @@
 #include "Primitive.h"
 #include "Editor.h"
 #include "LightObject.h"
-#include "LightObject.h"
 
-// Set globals to nullptrs
-Runnable*			gGame				= nullptr;
-PrimitiveFactory*	gPrimitiveFactory	= nullptr;
-Input*				gInput				= nullptr;
-ModelImporter*		gModelImporter		= nullptr;
+using namespace GLib;
 
-BillboardVertex* billboard;
+// Set global to NULL.
+GLib::Runnable* GLib::GlobalApp = nullptr;
 
 Gwen::Renderer::DirectX11* pRenderer;
+
+LightObject* lightObject;
 
 //! The program starts here.
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
@@ -47,19 +45,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	#endif*/
 
 	Game game(hInstance, "Graphics Demo", 1200, 800);
-	gGame = &game;
-
-	// Create the primitive factory.
-	gPrimitiveFactory = new PrimitiveFactory();	
+	GLib::GlobalApp = &game;
 
 	// Init the app.
 	game.Init();
 	game.GwenInit();
 
-	// Create the input class.
-	gInput = new Input();
-
-	return gGame->Run();
+	return GLib::GlobalApp->Run();
 }
 
 Game::Game(HINSTANCE hInstance, string caption, int width, int height)
@@ -70,9 +62,6 @@ Game::Game(HINSTANCE hInstance, string caption, int width, int height)
 	
 Game::~Game()
 {
-	delete gPrimitiveFactory;	
-	delete gInput;
-	delete gModelImporter;
 	delete mWorld;
 	delete mEditor;
 }
@@ -86,19 +75,16 @@ void Game::Init()
 	
 	// Create the world.
 	mWorld = new World();
-	mWorld->Init();
+	mWorld->Init(GetGraphics());
 	mWorld->AddItemSelectedListender(&Editor::OnItemSelected, mEditor);
-
-	// Create the model importer.
-	gModelImporter = new ModelImporter(gPrimitiveFactory);
 
 	// Connect the graphics light list to the one in World.
 	GetGraphics()->SetLightList(mWorld->GetLights());
 
 	// Add some lights.
-	LightObject* lightObject = new LightObject();
+	lightObject = new LightObject();
 	lightObject->SetMaterials(Material(Colors::White, Colors::White, XMFLOAT4(229/255.0f, 106/255.0f, 5.0f/255.0f, 1.0f)));
-	lightObject->SetRotation(XMFLOAT3(0.0f, -1.0f, 0.0f));
+	lightObject->SetRotation(XMFLOAT3(0.3f, -1.0f, 0.0f));
 	lightObject->SetLightType(DIRECTIONAL_LIGHT);
 	lightObject->SetAtt(0, 0.1, 0);
 	lightObject->SetRange(2000.0f);
@@ -108,26 +94,17 @@ void Game::Init()
 	mWorld->AddObject(lightObject);
 
 	GetGraphics()->SetFogColor(XMFLOAT4(1.0f, 0.2f, 0.8, 1.0f));
-	
-	// Add test billboards.
-	//billboard = GetGraphics()->AddBillboard(XMFLOAT3(0, 10, 0), XMFLOAT2(5, 5), "textures\\crate.dds");
 
 	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 	GetGraphics()->GetContext()->OMSetBlendState(RenderStates::TransparentBS, blendFactor, 0xffffffff);
 
-	mAnimatedObject = new AnimatedObject(gModelImporter, "models/smith/smith.x");
+	mAnimatedObject = new AnimatedObject(GetGraphics()->GetModelImporter(), "models/smith/smith.x");
 	mAnimatedObject->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
 	mAnimatedObject->SetPosition(XMFLOAT3(0, 30, 0));
 	mAnimatedObject->SetRotation(XMFLOAT3(0.7, 0.6, 0.6));
 	mWorld->AddObject(mAnimatedObject);
 
-	/*mObject = new StaticObject(gModelImporter, "models/bandit_male/bandit_male.obj");
-	mObject->SetPosition(XMFLOAT3(0, 30, 0));
-	mObject->SetMaterial(Material(Colors::White));
-	mObject->SetScale(XMFLOAT3(10, 10, 10));
-	mWorld->AddObject(mObject);*/
-
-	mEditor->Init(gModelImporter, mWorld);
+	mEditor->Init(GetGraphics()->GetModelImporter(), mWorld);
 }
 	
 void Game::GwenInit()
@@ -135,49 +112,13 @@ void Game::GwenInit()
 	
 }
 
-void Game::Update(float dt)
+void Game::Update(GLib::Input* pInput, float dt)
 {
-	gInput->Update(dt);
-	GetGraphics()->Update(dt);
 	mWorld->Update(dt);
-	mEditor->Update(dt);
-
-	return;
-
-	static float speed = 0.05;
-	if(gInput->KeyDown('1'))
-		mAnimatedObject->SetPosition(mAnimatedObject->GetPosition() + XMFLOAT3(speed, 0, 0));
-	else if(gInput->KeyDown('2'))
-		mAnimatedObject->SetPosition(mAnimatedObject->GetPosition() + XMFLOAT3(-speed, 0, 0));
-	if(gInput->KeyDown('3'))
-		mAnimatedObject->SetPosition(mAnimatedObject->GetPosition() + XMFLOAT3(0, 0, speed));
-	else if(gInput->KeyDown('4'))
-		mAnimatedObject->SetPosition(mAnimatedObject->GetPosition() + XMFLOAT3(0, 0, -speed));
-	if(gInput->KeyDown('5'))
-		mAnimatedObject->SetPosition(mAnimatedObject->GetPosition() + XMFLOAT3(0, speed, 0));
-	else if(gInput->KeyDown('6'))
-		mAnimatedObject->SetPosition(mAnimatedObject->GetPosition() + XMFLOAT3(0, -speed, 0));
-
-	if(gInput->KeyDown('Z'))
-		mLight->SetDirection(mLight->GetDirection() + XMFLOAT3(0, 0.0000, 0.0005));
-	else if(gInput->KeyDown('X'))
-		mLight->SetDirection(mLight->GetDirection() + XMFLOAT3(0, -0.0000, -0.0005));
-
-	if(gInput->KeyDown(VK_LBUTTON)) {
-		mAnimatedObject->SetRotation(mAnimatedObject->GetRotation() + XMFLOAT3(0.003, 0.003, 0.003));
-	}
-	else if(gInput->KeyDown(VK_RBUTTON)) {
-		mAnimatedObject->SetRotation(mAnimatedObject->GetRotation() - XMFLOAT3(0.003, 0.003, 0.003));
-		mAnimatedObject->SetScale(mAnimatedObject->GetScale() + XMFLOAT3(0.003, 0.003, 0.003));
-	}
-
-	if(gInput->KeyDown('V'))
-		mAnimatedObject->SetAnimation(0);
-	if(gInput->KeyDown('B'))
-		mAnimatedObject->SetAnimation(1);
+	mEditor->Update(pInput, dt);
 }
 	
-void Game::Draw(Graphics* pGraphics)
+void Game::Draw(GLib::Graphics* pGraphics)
 {
 	// Clear the render target and depth/stencil.
 	pGraphics->ClearScene();
@@ -194,8 +135,8 @@ void Game::Draw(Graphics* pGraphics)
 	// Unbind the SRVs from the pipeline so they can be used as DSVs instead.
 	ID3D11ShaderResourceView *const nullSRV[4] = {NULL, NULL, NULL, NULL};
 	pGraphics->GetContext()->PSSetShaderResources(0, 4, nullSRV);
-	Effects::BasicFX->Apply();
-	Effects::BuildShadowMapFX->Apply();
+	Effects::BasicFX->Apply(GetD3DContext());
+	//Effects::BuildShadowMapFX->Apply(GetD3DContext());
 }
 
 //! Called when the window gets resized.
@@ -207,14 +148,13 @@ void Game::OnResize(int width, int height)
 LRESULT Game::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	// Toggle screen mode?
-	if(msg == WM_CHAR)
-	{
-		if(wParam == 'f')	// Toggle by pressing F.
+	if(msg == WM_CHAR) {
+		if(wParam == 'f')	
 			SwitchScreenMode();
 	}
 
-	gInput->MsgProc(msg, wParam, lParam);
 	if(mEditor != nullptr)
 		mEditor->MsgProc(hwnd, msg, wParam, lParam);
+
 	return Runnable::MsgProc(hwnd, msg, wParam, lParam);
 }

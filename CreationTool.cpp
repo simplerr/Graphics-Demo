@@ -12,10 +12,13 @@
 #include "RenderStates.h"
 #include "LightObject.h"
 
-CreationTool::CreationTool(Gwen::Controls::Base* pParent, World* pWorld)
+using namespace GLib;
+
+CreationTool::CreationTool(Gwen::Controls::Base* pParent, World* pWorld, GLib::ModelImporter* pModelImporter)
 	: Gwen::Controls::CollapsibleCategory(pParent)
 {
 	mWorld = pWorld;
+	mModelImporter = pModelImporter;
 	mModelSelected = false;
 	mEditor = nullptr;
 	mPreviewObject = nullptr;
@@ -36,20 +39,20 @@ CreationTool::~CreationTool()
 	delete mModelLoaderXML;
 }
 
-void CreationTool::Update(float dt)
+void CreationTool::Update(GLib::Input* pInput, float dt)
 {
 	if(mPreviewObject != nullptr) {
 		XMFLOAT3 offset = mPreviewObject->GetName() == "Light" ? XMFLOAT3(0, 20, 0) : XMFLOAT3(0, 0, 0);
-		XMFLOAT3 intersectPoint = mWorld->GetTerrainIntersectPoint(gInput->GetWorldPickingRay());
+		XMFLOAT3 intersectPoint = mWorld->GetTerrainIntersectPoint(pInput->GetWorldPickingRay());
 		mPreviewObject->SetPosition(intersectPoint + offset);
 	}
 
-	if(gInput->KeyPressed(VK_LBUTTON) && mModelSelected && IsIn3DScreen())
+	if(pInput->KeyPressed(VK_LBUTTON) && mModelSelected && IsIn3DScreen(pInput))
 	{
 		string name = ToString(this->GetSelected()->GetText());
 
 		ModelData data = mModelLoaderXML->GetData(name);
-		XMFLOAT3 intersectPoint = mWorld->GetTerrainIntersectPoint(gInput->GetWorldPickingRay());
+		XMFLOAT3 intersectPoint = mWorld->GetTerrainIntersectPoint(pInput->GetWorldPickingRay());
 		if(intersectPoint.x != numeric_limits<float>::infinity())
 		{
 			Object3D* object;
@@ -65,7 +68,7 @@ void CreationTool::Update(float dt)
 			mEditor->OnItemSelected(object, object->GetType());
 
 			// Deselect the button if SHIFT isn't held down.
-			if(!gInput->KeyDown(VK_SHIFT)) {
+			if(!pInput->KeyDown(VK_SHIFT)) {
 				this->GetSelected()->SetToggleState(false);
 				mModelSelected = false;
 				delete mPreviewObject;
@@ -75,7 +78,7 @@ void CreationTool::Update(float dt)
 		}
 	}
 
-	if(gInput->KeyReleased(VK_SHIFT) && mModelSelected) {
+	if(pInput->KeyReleased(VK_SHIFT) && mModelSelected) {
 		this->GetSelected()->SetToggleState(false);
 		mModelSelected = false;
 		delete mPreviewObject;
@@ -83,7 +86,7 @@ void CreationTool::Update(float dt)
 	}
 }
 
-void CreationTool::Draw(Graphics* pGraphics)
+void CreationTool::Draw(GLib::Graphics* pGraphics)
 {
 	pGraphics->GetContext()->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
 
@@ -106,7 +109,7 @@ void CreationTool::BuildSpawnList()
 
 StaticObject* CreationTool::CreateStaticModel(XMFLOAT3 position, ModelData data)
 {
-	StaticObject* object = new StaticObject(gModelImporter, data.filename);
+	StaticObject* object = new StaticObject(mModelImporter, data.filename);
 	object->SetPosition(position);
 	object->SetMaterials(Material(Colors::White));
 	object->SetName(data.name);
@@ -116,7 +119,7 @@ StaticObject* CreationTool::CreateStaticModel(XMFLOAT3 position, ModelData data)
 
 AnimatedObject* CreationTool::CreateAnimatedModel(XMFLOAT3 position, ModelData data)
 {
-	AnimatedObject* object = new AnimatedObject(gModelImporter, data.filename);
+	AnimatedObject* object = new AnimatedObject(mModelImporter, data.filename);
 	object->SetName(data.name);
 	object->SetPosition(position);
 	object->SetDefualtScale(data.defaultScale);
@@ -144,7 +147,7 @@ void CreationTool::OnSelectChange(Gwen::Controls::Base* pControl)
 
 	string name = ToString(((Gwen::Controls::Button*)pControl)->GetText());
 	ModelData data = mModelLoaderXML->GetData(name);
-	XMFLOAT3 intersectPoint = mWorld->GetTerrainIntersectPoint(gInput->GetWorldPickingRay());
+	XMFLOAT3 intersectPoint; //[NOTE][TODO]
 
 	// Delete the old preview object if it cant be used again.
 	if(mPreviewObject != nullptr && mPreviewObject->GetName() != data.name) {

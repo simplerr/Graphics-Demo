@@ -1,5 +1,4 @@
 #pragma once
-
 #include <Windows.h>
 #include <xnamath.h>
 #include "d3dx11Effect.h"
@@ -8,13 +7,19 @@
 
 using namespace XNA;
 
-class Graphics;
-class BasicEffect;
-class Primitive;
-class StaticModel;
-class ModelImporter;
+// Forward declarations.
+#pragma region Forward declarations.
+namespace GLib {
+	class Graphics;
+	class BasicEffect;
+	class Primitive;
+	class StaticModel;
+	class ModelImporter;
+	struct Texture2D;
+}
+
 class World;
-struct Texture2D;
+#pragma endregion
 
 enum ObjectType
 {
@@ -25,10 +30,10 @@ enum ObjectType
 	TERRAIN
 };
 
-/**
-	Abstract base class for all objects.
-	Has a position, rotation and scale.
-*/
+//!
+//	Abstract base class for all objects.
+//	Has a position, rotation and scale.
+//!
 class Object3D
 {
 public:
@@ -37,17 +42,17 @@ public:
 
 	virtual void Init() = 0;
 	virtual void Update(float dt) = 0;
-	virtual void Draw(Graphics* pGraphics) = 0;
+	virtual void Draw(GLib::Graphics* pGraphics) = 0;
 	virtual AxisAlignedBox GetBoundingBox() = 0;
 	void Kill();
 
 	// Setters.
-	virtual void SetMaterials(Material material);
+	virtual void SetMaterials(GLib::Material material);
 	virtual void SetPosition(XMFLOAT3 position);
 	virtual void SetRotation(XMFLOAT3 rotation);
 	void SetWorld(World* pWorld);
 	void SetNormalMap(string filename);
-	void SetNormalMap(Texture2D* normalMap);
+	void SetNormalMap(GLib::Texture2D* normalMap);
 	void SetScale(XMFLOAT3 scale);
 	void SetDefaultOrientation();
 	void SetType(ObjectType type);
@@ -62,7 +67,7 @@ public:
 	XMFLOAT3	GetPosition();
 	XMFLOAT3	GetRotation();
 	XMFLOAT3	GetScale();
-	Material	GetMaterial();
+	GLib::Material	GetMaterial();
 	ObjectType	GetType();
 	string		GetName();
 	bool		GetAlive();
@@ -75,7 +80,7 @@ private:
 	XMFLOAT3	mScale;
 	XMFLOAT3	mDefaultScale;
 	ObjectType	mType;
-	Material	mMaterial;
+	GLib::Material	mMaterial;
 	bool		mDrawBoundingBox;
 	bool		mAlive;
 	string		mName;

@@ -9,10 +9,10 @@ LightObject::LightObject()
 	: Object3D(LIGHT_OBJECT)
 {
 	// Add test billboards.
-	mBillboard = GetGraphics()->AddBillboard(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(5, 5), "textures\\light_icon.png"); //[NOTE] Ugly.
+	mBillboard = GLib::GetGraphics()->AddBillboard(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(5, 5), "textures\\light_icon.png"); //[NOTE] Ugly.
 
 	// Create the light.
-	mLight = new Light();
+	mLight = new GLib::Light();
 }
 
 LightObject::~LightObject()
@@ -36,7 +36,7 @@ void LightObject::Update(float dt)
 
 }
 
-void LightObject::Draw(Graphics* pGraphics)
+void LightObject::Draw(GLib::Graphics* pGraphics)
 {
 	
 }
@@ -49,7 +49,7 @@ XNA::AxisAlignedBox LightObject::GetBoundingBox()
 	return box;
 }
 
-void LightObject::SetMaterials(Material material)
+void LightObject::SetMaterials(GLib::Material material)
 {
 	Object3D::SetMaterials(material);
 	mLight->SetMaterials(material.ambient, material.diffuse, material.specular);
@@ -83,7 +83,7 @@ void LightObject::SetAtt(float a0, float a1, float a2)
 	mLight->SetAtt(a0, a1, a2);
 }
 
-void LightObject::SetLightType(LightType type)
+void LightObject::SetLightType(GLib::LightType type)
 {
 	mLight->SetType(type);
 }

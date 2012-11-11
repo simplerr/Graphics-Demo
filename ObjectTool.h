@@ -1,15 +1,21 @@
 #pragma once
-
 #include "d3dUtil.h"
 #include <boost\function.hpp>
 #include <boost\bind.hpp>
 
-class Graphics;
+// Forward declarations.
+#pragma region Forward declarations.
+namespace GLib {
+	class Graphics;
+	class Light;
+	class Input;
+	class ModelImporter;
+}
+
 class StaticObject;
 class Object3D;
-class ModelImporter;
-class Light;
 class BaseInspector;
+#pragma endregion
 
 enum MovingAxis
 {
@@ -23,11 +29,11 @@ enum MovingAxis
 class ObjectTool
 {
 public:
-	ObjectTool(ModelImporter* pImporter);
+	ObjectTool(GLib::ModelImporter* pImporter);
 	~ObjectTool();
 
-	void Update(float dt);
-	void Draw(Graphics* pGraphics);
+	void Update(GLib::Input* pInput, float dt);
+	void Draw(GLib::Graphics* pGraphics);
 	void SetObject(Object3D* pObject);
 	void SetInspector(BaseInspector* pInspector);
 

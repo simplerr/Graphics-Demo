@@ -17,7 +17,7 @@ Object3D::Object3D(ObjectType type, XMFLOAT3 position, XMFLOAT3 rotation, XMFLOA
 	SetBoundingBoxVisible(false);
 	SetName("Object");
 	SetDefualtScale(1.0f);
-	SetMaterials(Colors::White);
+	SetMaterials(GLib::Colors::White);
 	SetId(-1);
 	SetType(type);
 	SetWorld(nullptr);
@@ -98,7 +98,7 @@ XMFLOAT3 Object3D::GetScale()
 }
 
 //! Returns the material.
-Material Object3D::GetMaterial()
+GLib::Material Object3D::GetMaterial()
 {
 	return mMaterial;
 }
@@ -110,7 +110,7 @@ void Object3D::SetType(ObjectType type)
 }
 
 //! Sets the material.
-void Object3D::SetMaterials(Material material)
+void Object3D::SetMaterials(GLib::Material material)
 {
 	mMaterial = material;
 }

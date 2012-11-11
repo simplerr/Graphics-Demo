@@ -2,13 +2,19 @@
 
 #include "Object3D.h"
 
-class World;
-class BillboardVertex;
-class Light;
+// Forward declarations.
+#pragma region Forward declarations.
+namespace GLib {
+	class Light;
+	class BillboardVertex;
+}
 
-/*
-	Represents an object containing a light source.
-*/
+class World;
+#pragma endregion
+
+//!
+//	Represents an object containing a light source.
+//!
 class LightObject : public Object3D
 {
 public:
@@ -17,9 +23,9 @@ public:
 
 	virtual void Init();
 	virtual void Update(float dt);
-	virtual void Draw(Graphics* pGraphics);
+	virtual void Draw(GLib::Graphics* pGraphics);
 
-	void SetMaterials(Material material);
+	void SetMaterials(GLib::Material material);
 	void SetPosition(XMFLOAT3 position);
 	void SetRotation(XMFLOAT3 rotation);
 
@@ -27,7 +33,7 @@ public:
 	void SetRange(float range);
 	void SetSpot(float spot);
 	void SetAtt(float a0, float a1, float a2);
-	void SetLightType(LightType type);
+	void SetLightType(GLib::LightType type);
 	void SetIntensity(float ambient, float diffuse, float specular);
 
 	XMFLOAT3 GetAtt();
@@ -38,6 +44,6 @@ public:
 
 	AxisAlignedBox GetBoundingBox();
 private:
-	BillboardVertex* mBillboard;
-	Light* mLight;
+	GLib::BillboardVertex* mBillboard;
+	GLib::Light* mLight;
 };

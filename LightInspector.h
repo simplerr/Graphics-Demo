@@ -8,8 +8,11 @@
 #include "Light.h"
 #include <xnamath.h>
 
+// Forward declarations.
+#pragma region Forward declarations.
 class LightObject;
 class ObjectTool;
+#pragma endregion
 
 //! The inspector for Light objects.
 class LightInspector : public BaseInspector
@@ -21,7 +24,7 @@ public:
 	void Init();
 	void Cleanup();
 	void Update(float dt);
-	void Draw(Graphics* pGraphics);
+	void Draw(GLib::Graphics* pGraphics);
 	void SetObject(void* pObject);
 	void OnColorChange(Gwen::Controls::Base* pControl);
 	void OnOrientationChange(Gwen::Controls::Base* pControl);
@@ -46,7 +49,7 @@ private:
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:
 	LightObject* mLight;
-	Material mCurrentMaterial;
+	GLib::Material mCurrentMaterial;
 
 	Gwen::Controls::PropertyRow* mXProperty, *mYProperty, *mZProperty;
 	Gwen::Controls::HorizontalSlider* mAmbientIntensitySlider, *mDiffuseIntensitySlider, *mSpecularIntensitySlider;

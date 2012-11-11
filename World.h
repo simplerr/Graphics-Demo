@@ -1,19 +1,27 @@
 #pragma once
-
 #include <vector>
 #include <map>
 #include <boost\function.hpp>
 #include <boost\bind.hpp>
 #include "d3dUtil.h"
+
 using namespace std;
 
-class Graphics;
+// Forward declarations.
+#pragma region Forward declarations.
+namespace GLib {
+	class Graphics;
+	class Light;
+	class Sky;
+	class BillboardManager;
+	class Terrain;
+	struct BillboardVertex;
+}
+
 class Object3D;
-class Light;
-class Sky;
-class BillboardManager;
-class Terrain;
-struct BillboardVertex;
+#pragma endregion
+
+typedef std::vector<Object3D*> ObjectList;
 
 //! Contains all objects, lights and the terrain.
 class World
@@ -22,22 +30,21 @@ public:
 	World();
 	~World();
 
+	void Init(GLib::Graphics* pGraphics);
 	void Update(float dt);
-	void Draw(Graphics* pGraphics);
-	void Init();
+	void Draw(GLib::Graphics* pGraphics);
 	void AddObject(Object3D* object);
-	void AddLight(Light* pLight);
+	void AddLight(GLib::Light* pLight);
 	void RemoveObject(Object3D* pObject);
-	void RemoveLight(Light* pLight);
+	void RemoveLight(GLib::Light* pLight);
 	
 
-	LightList*	GetLights();
+	GLib::LightList*	GetLights();
 	ObjectList* GetObjects();
-	Terrain*	GetTerrain();
+	GLib::Terrain*	GetTerrain();
 	int			GetVisibleObjects();
-	XMFLOAT3	GetTerrainIntersectPoint(Ray ray);
-	Object3D*	GetSelectedObject();
-	Light*		GetSelectedLight();
+	XMFLOAT3	GetTerrainIntersectPoint(GLib::Ray ray);
+	Object3D*	GetSelectedObject(GLib::Ray ray);
 
 	// Callback hookup.
 	template <class T>
@@ -49,9 +56,9 @@ private:
 	boost::function<void(void*, int)>	OnItemSelected;
 private:
 	ObjectList	mObjectList;
-	LightList	mLightList;//LightList mLightList;	
-	Sky*		mSkyBox;
-	Terrain*	mTerrain;
+	GLib::LightList	mLightList;//LightList mLightList;	
+	GLib::Sky*		mSkyBox;
+	GLib::Terrain*	mTerrain;
 	int			mNumVisibleObjects;
-	BillboardVertex*	mLightBillboard;
+	GLib::BillboardVertex*	mLightBillboard;
 };

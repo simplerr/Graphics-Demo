@@ -1,6 +1,6 @@
 #pragma once
 
-/** GWEN **/
+/** GWEN INCLUDES **/
 #include <objbase.h>
 #include <GdiPlus.h>
 
@@ -13,19 +13,26 @@
 #include "Gwen/Controls/CollapsibleList.h"
 #include "DirectX11Renderer.h"
 
+// Forward declarations.
+#pragma region Forward declarations.
+namespace GLib {
+	class Graphics;
+	class Input;
+	class Terrain;
+	class Camera;
+	class ModelImporter;
+	class Light;
+}
+
 class Gwen::Renderer::DirectX11;
-class Graphics;
 class BaseInspector;
-class Light;
 class World;
 class WorldTree;
 class ObjectTool;
-class ModelImporter;
 class Object3D;
 class TerrainTool;
-class Terrain;
-class Camera;
 class CreationTool;
+#pragma endregion
 
 //! Contains the UI and the different tools.
 class Editor
@@ -34,12 +41,12 @@ public:
 	Editor(int width, int height);
 	~Editor();
 	
-	void Init(ModelImporter* pImporter, World* pWorld);
+	void Init(GLib::ModelImporter* pImporter, World* pWorld);
 	void GwenInit(int width, int height);
-	void Update(float dt);
+	void Update(GLib::Input* pInput, float dt);
 	void OnResize(int width, int height);
-	void UpdateCamera(Camera* pCamera);
-	void Draw(Graphics* pGraphics);
+	void UpdateCamera(GLib::Camera* pCamera);
+	void Draw(GLib::Graphics* pGraphics);
 	void MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	void OnItemSelected(void* pItem, int type);
 	void UpdateWorldTree();

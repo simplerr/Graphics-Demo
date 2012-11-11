@@ -5,8 +5,12 @@
 #include <string>
 
 using namespace std;
+
+// Forward declarations.
+#pragma region Forward declarations.
 class World;
 class Editor;
+#pragma endregion
 
 struct WorldTreeNode
 {

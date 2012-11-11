@@ -21,8 +21,8 @@ ObjectInspector::ObjectInspector(Gwen::Controls::Base* pParent, ObjectTool* pToo
 
 	mObjectTool = pTool;
 
-	Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
-	Effects::TerrainFX->Apply();
+	GLib::Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
+	GLib::Effects::TerrainFX->Apply(GLib::GetD3DContext());
 }
 	
 ObjectInspector::~ObjectInspector()
@@ -148,10 +148,10 @@ void ObjectInspector::Cleanup()
 
 void ObjectInspector::Update(float dt)
 {
-	mObjectTool->Update(dt);
+
 }
 
-void ObjectInspector::Draw(Graphics* pGraphics)
+void ObjectInspector::Draw(GLib::Graphics* pGraphics)
 {
 	mObjectTool->Draw(pGraphics);
 }

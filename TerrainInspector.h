@@ -7,9 +7,15 @@
 #include "d3dUtil.h"
 #include "Util.h"
 
-class Terrain;
+// Forward declarations.
+#pragma region Forward declarations.
+namespace GLib {
+	class Terrain;
+}
+
 class TerrainTool;
 class World;
+#pragma endregion
 
 //! The inspector for the terrain.
 class TerrainInspector : public BaseInspector
@@ -21,7 +27,7 @@ public:
 	void Init();
 	void Cleanup();
 	void Update(float dt);
-	void Draw(Graphics* pGraphics);
+	void Draw(GLib::Graphics* pGraphics);
 	void SetObject(void* pObject);
 	bool IsResponsible(int type);
 	bool IsInspecting(int id);

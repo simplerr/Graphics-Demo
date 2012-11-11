@@ -1,12 +1,17 @@
+#pragma once
 #include "BaseInspector.h"
 #include "Gwen/Controls/NumericUpDown.h"
 #include "Gwen/Controls/HorizontalSlider.h"
 #include "d3dUtil.h"
 #include <string>
+
 using namespace std;
 
+// Forward declarations.
+#pragma region Forward declarations.
 class StaticObject;
 class ObjectTool;
+#pragma endregion
 
 //! The inspector for Object3D objects.
 class ObjectInspector : public BaseInspector
@@ -18,7 +23,7 @@ public:
 	void Init();
 	void Cleanup();
 	void Update(float dt);
-	void Draw(Graphics* pGraphics);
+	void Draw(GLib::Graphics* pGraphics);
 	void SetObject(void* pObject);
 	void OnRotationSliderMoved(Base* pControl);
 	void OnRotationChange(Base* pControl);

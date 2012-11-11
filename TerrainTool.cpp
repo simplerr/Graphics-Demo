@@ -4,6 +4,8 @@
 #include "Effects.h"
 #include "Util.h"
 
+using namespace GLib;
+
 TerrainTool::TerrainTool() : mUpdateInterval(0.03f)
 {
 	SetTool(TOOL_HEIGHT);
@@ -12,7 +14,7 @@ TerrainTool::TerrainTool() : mUpdateInterval(0.03f)
 	SetSelectedLayer(4);
 
 	Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
-	Effects::TerrainFX->Apply();
+	Effects::TerrainFX->Apply(GetD3DContext());
 }
 
 //! Cleanup.
@@ -22,31 +24,31 @@ TerrainTool::~TerrainTool()
 }
 
 //! Poll for input and perform actions.
-void TerrainTool::Update(float dt)
+void TerrainTool::Update(GLib::Input* pInput, float dt)
 {
 	static float timer = 0;
 	timer += dt;
 
 	// Don't use the tools every frame.
-	XMFLOAT3 intersectPoint = GetIntersectPoint();
+	XMFLOAT3 intersectPoint = mTerrain->GetIntersectPoint(pInput->GetWorldPickingRay());
 	if(timer > mUpdateInterval)
 	{
 		// Which tool is selected and was any mouse button pressed?
 		if(mCurrentTool == TOOL_HEIGHT)
 		{
-			if(gInput->KeyDown(VK_LBUTTON) && IsIn3DScreen())
+			if(pInput->KeyDown(VK_LBUTTON) && IsIn3DScreen(pInput))
 				ChangeHeight(intersectPoint, true);
-			else if(gInput->KeyDown(VK_RBUTTON) && IsIn3DScreen())
+			else if(pInput->KeyDown(VK_RBUTTON) && IsIn3DScreen(pInput))
 				ChangeHeight(intersectPoint, false);
 		}
 		else if(mCurrentTool == TOOL_TEXTURE)
 		{
-			if(gInput->KeyDown(VK_LBUTTON) && IsIn3DScreen())
+			if(pInput->KeyDown(VK_LBUTTON) && IsIn3DScreen(pInput))
 				EditTextures(intersectPoint);
 		}
 		else if(mCurrentTool == TOOL_SMOTH)
 		{
-			if(gInput->KeyDown(VK_LBUTTON) && IsIn3DScreen())
+			if(pInput->KeyDown(VK_LBUTTON) && IsIn3DScreen(pInput))
 				SmothTerrain(intersectPoint);
 		}
 
@@ -55,18 +57,18 @@ void TerrainTool::Update(float dt)
 	}
 
 	// Smooth the terrain if any mouse button is released when TOOL_HEIGHT.
-	if(IsIn3DScreen() && mCurrentTool == TOOL_HEIGHT && (gInput->KeyReleased(VK_LBUTTON) || gInput->KeyReleased(VK_RBUTTON))) {
+	if(IsIn3DScreen(pInput) && mCurrentTool == TOOL_HEIGHT && (pInput->KeyReleased(VK_LBUTTON) || pInput->KeyReleased(VK_RBUTTON))) {
 		mTerrain->Smooth();
 		mTerrain->BuildHeightmapSRV(GetD3DDevice());
 	}
 
 	// Set the tool center position.
 	Effects::TerrainFX->SetToolCenter(XMFLOAT2(intersectPoint.x, intersectPoint.z));
-	Effects::TerrainFX->Apply();
+	Effects::TerrainFX->Apply(GetD3DContext());
 }
 	
 //! Draw the terrain tool. [NOTE] Unused.
-void TerrainTool::Draw(Graphics* pGraphics)
+void TerrainTool::Draw(GLib::Graphics* pGraphics)
 {
 
 }
@@ -126,18 +128,12 @@ void TerrainTool::EditTextures(XMFLOAT3 center)
 	}
 }
 
-//! Returns the intersect point between the mouse pointer and the terrain.
-XMFLOAT3 TerrainTool::GetIntersectPoint()
-{
-	return mTerrain->GetIntersectPoint(gInput->GetWorldPickingRay());
-}
-
 //! Sets the tool radius.
 void TerrainTool::SetRadius(float radius)
 {
 	mRadius = radius;
 	Effects::TerrainFX->SetToolRadius(radius);
-	Effects::TerrainFX->Apply();
+	Effects::TerrainFX->Apply(GetD3DContext());
 }
 
 //! Sets the tool strength.
@@ -147,7 +143,7 @@ void TerrainTool::SetStrength(float strength)
 }
 
 //! Sets the terrain.
-void TerrainTool::SetTerrain(Terrain* pTerrain)
+void TerrainTool::SetTerrain(GLib::Terrain* pTerrain)
 {
 	mTerrain = pTerrain;
 }

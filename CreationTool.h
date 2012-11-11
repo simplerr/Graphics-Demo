@@ -3,23 +3,31 @@
 #include "Gwen/Controls/CollapsibleCategory.h"
 #include "ModelLoaderXML.h"
 
-class Graphics;
+// Forward declarations.
+#pragma region Forward declarations.
+namespace GLib {
+	class Graphics;
+	class Input;
+	class ModelImporter;
+}
+
 class World;
 class Editor;
 class Object3D;
 class StaticObject;
 class AnimatedObject;
 class LightObject;
+#pragma endregion
 
 class CreationTool : public Gwen::Controls::CollapsibleCategory
 {
 public:
-	CreationTool(Gwen::Controls::Base* pParent, World* pWorld);
+	CreationTool(Gwen::Controls::Base* pParent, World* pWorld, GLib::ModelImporter* pModelImporter);
 	~CreationTool();
 
 	void BuildSpawnList();
-	void Update(float dt);
-	void Draw(Graphics* pGraphics);
+	void Update(GLib::Input* pInput, float dt);
+	void Draw(GLib::Graphics* pGraphics);
 	StaticObject*	CreateStaticModel(XMFLOAT3 position, ModelData data);
 	AnimatedObject* CreateAnimatedModel(XMFLOAT3 position, ModelData data);
 	LightObject*	CreateLightObject(XMFLOAT3 position);
@@ -32,5 +40,6 @@ private:
 	World*		mWorld;
 	Editor*		mEditor;
 	Object3D*	mPreviewObject;
+	GLib::ModelImporter* mModelImporter;
 	bool		mModelSelected;
 };

@@ -6,7 +6,9 @@
 #include "SkinnedMesh.h"
 #include "Effects.h"
 
-AnimatedObject::AnimatedObject(ModelImporter* importer, string filename)
+using namespace GLib;
+
+AnimatedObject::AnimatedObject(GLib::ModelImporter* importer, string filename)
 	: Object3D(ANIMATED_OBJECT)
 {
 	// Load the model.
@@ -35,7 +37,7 @@ void AnimatedObject::Update(float dt)
 }
 
 //! Draws the objects model.
-void AnimatedObject::Draw(Graphics* pGraphics)
+void AnimatedObject::Draw(GLib::Graphics* pGraphics)
 {
 	mSkinnedModel->SetAnimation(mCurrentAnimIndex);
 	mSkinnedModel->SetElapsedTime(mElapsedTime);
@@ -43,7 +45,7 @@ void AnimatedObject::Draw(Graphics* pGraphics)
 	mSkinnedModel->Draw(pGraphics, GetWorldMatrix());
 
 	Effects::BasicFX->SetUseAnimation(false);
-	Effects::BasicFX->Apply();
+	Effects::BasicFX->Apply(GetD3DContext());
 	if(IsBoundingBoxVisible())
 		pGraphics->DrawBoundingBox(&GetBoundingBox(), GetWorldMatrix(), Material(Colors::Blue));
 }
@@ -87,7 +89,7 @@ AxisAlignedBox AnimatedObject::GetBoundingBox()
 }
 
 //! Returns the model.
-SkinnedModel* AnimatedObject::GetModel()
+GLib::SkinnedModel* AnimatedObject::GetModel()
 {
 	return mSkinnedModel;
 }
