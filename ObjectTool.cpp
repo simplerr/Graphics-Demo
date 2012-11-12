@@ -105,6 +105,10 @@ void ObjectTool::Update(GLib::Input* pInput, float dt)
 			UpdatePosition(MoveAxisZ(pos, dir));
 	}
 
+	// Scaling with CTRL + mwheel.
+	if(pInput->KeyDown(VK_CONTROL)) 
+		mMovingObject->SetScale(mMovingObject->GetScale() + XMFLOAT3(pInput->MouseDz()/1300.0f, pInput->MouseDz()/1300.0f, pInput->MouseDz()/1300.0f));
+
 	// Move on terrain with RBUTTON.
 	if(pInput->KeyDown(VK_RBUTTON))
 	{

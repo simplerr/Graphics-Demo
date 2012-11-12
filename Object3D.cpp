@@ -45,6 +45,9 @@ void Object3D::SetRotation(XMFLOAT3 rotation)
 //! Sets the scale.
 void Object3D::SetScale(XMFLOAT3 scale)
 {
+	scale.x = max(0, scale.x);
+	scale.y = max(0, scale.y);
+	scale.z = max(0, scale.z);
 	mScale = scale;
 }
 
