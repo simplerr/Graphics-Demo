@@ -55,6 +55,7 @@ private:
 	XMFLOAT3 MoveAxisY(XMFLOAT3 pos, XMFLOAT3 dir);
 	XMFLOAT3 MoveAxisZ(XMFLOAT3 pos, XMFLOAT3 dir);
 	void UpdatePosition(XMFLOAT3 delta);
+	void InitStartingPosition(GLib::Input* pInput, XMFLOAT3& dir, XMFLOAT3& cameraPos, float& dist);
 
 	// Callbacks.
 	boost::function<void(XMFLOAT3)> onPositionChange;

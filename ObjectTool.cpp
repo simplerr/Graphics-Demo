@@ -13,6 +13,7 @@
 #include "Effects.h"
 #include "RenderStates.h"
 #include "Util.h"
+#include "World.h"
 
 using namespace GLib;
 
@@ -53,30 +54,38 @@ ObjectTool::~ObjectTool()
 	delete mAxisZ;
 }
 
+void ObjectTool::InitStartingPosition(GLib::Input* pInput, XMFLOAT3& dir, XMFLOAT3& cameraPos, float& dist)
+{
+	dist = numeric_limits<float>::infinity();
+	cameraPos = GetCamera()->GetPosition();
+	dir = pInput->GetWorldPickingRay().direction;
+
+	// Store as the last plane pos.
+	mLastPlanePos = cameraPos + dir * dist;
+	mLastPlanePos = XMFLOAT3(numeric_limits<float>::infinity(), numeric_limits<float>::infinity(), numeric_limits<float>::infinity());
+}
+
 //! Poll for input and perform actions.
 void ObjectTool::Update(GLib::Input* pInput, float dt)
 {
+	float dist;
+	XMFLOAT3 pos, dir;
+
 	// LBUTTON pressed and inside 3D screen.
-	if(pInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen(pInput)) {
-		float dist = numeric_limits<float>::infinity();
-		XMVECTOR pos  = XMLoadFloat3(&GetCamera()->GetPosition());
-		XMFLOAT3 d = pInput->GetWorldPickingRay().direction;
-		XMVECTOR dir = XMLoadFloat3(&d);
+	if(pInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen(pInput))
+	{
+		InitStartingPosition(pInput, dir, pos, dist);
 
 		// Find out which axis arrow was pressed.
-		if(mAxisX->RayIntersect(pos, dir, dist)) 
+		if(mAxisX->RayIntersect(XMLoadFloat3(&pos), XMLoadFloat3(&dir), dist)) 
 			mMovingAxis = X_AXIS;	
-		else if(mAxisY->RayIntersect(pos, dir, dist)) 
+		else if(mAxisY->RayIntersect(XMLoadFloat3(&pos), XMLoadFloat3(&dir), dist)) 
 			mMovingAxis = Y_AXIS;	
-		else if(mAxisZ->RayIntersect(pos, dir, dist)) 
+		else if(mAxisZ->RayIntersect(XMLoadFloat3(&pos), XMLoadFloat3(&dir), dist)) 
 			mMovingAxis = Z_AXIS;	
-
-		// Store as the last plane pos.
-		XMFLOAT3 p;
-		XMStoreFloat3(&p, pos);
-		mLastPlanePos = p + d * dist;
-		mLastPlanePos = XMFLOAT3(numeric_limits<float>::infinity(), numeric_limits<float>::infinity(), numeric_limits<float>::infinity());
 	}
+	else if(pInput->KeyPressed(VK_RBUTTON) && IsIn3DScreen(pInput))
+		InitStartingPosition(pInput, dir, pos, dist);
 
 	// Not moving any axis any more.
 	if(pInput->KeyReleased(VK_LBUTTON))
@@ -94,6 +103,16 @@ void ObjectTool::Update(GLib::Input* pInput, float dt)
 			UpdatePosition(MoveAxisY(pos, dir));
 		else if(mMovingAxis == Z_AXIS)
 			UpdatePosition(MoveAxisZ(pos, dir));
+	}
+
+	// Move on terrain with RBUTTON.
+	if(pInput->KeyDown(VK_RBUTTON))
+	{
+		XMFLOAT3 pos  = GetCamera()->GetPosition();
+		XMFLOAT3 dir = pInput->GetWorldPickingRay().direction;
+
+		UpdatePosition(MoveAxisZ(pos, dir));
+		UpdatePosition(MoveAxisX(pos, dir));
 	}
 }
 
@@ -156,7 +175,7 @@ XMFLOAT3 ObjectTool::MoveAxisX(XMFLOAT3 pos, XMFLOAT3 dir)
 	if(mLastPlanePos.x != numeric_limits<float>::infinity()) {
 		XMFLOAT3 planePos = pos + dir * dist;
 		dx = planePos.x - mLastPlanePos.x;
-		mLastPlanePos = planePos;
+		mLastPlanePos.x = planePos.x;
 	}
 	else {
 		mLastPlanePos = pos + dir * dist;
@@ -226,7 +245,7 @@ XMFLOAT3 ObjectTool::MoveAxisZ(XMFLOAT3 pos, XMFLOAT3 dir)
 	if(mLastPlanePos.z != numeric_limits<float>::infinity()) {
 		XMFLOAT3 planePos = pos + dir * dist;
 		dz = planePos.z - mLastPlanePos.z;
-		mLastPlanePos = planePos;
+		mLastPlanePos.z = planePos.z;
 	}
 	else {
 		mLastPlanePos = pos + dir * dist;

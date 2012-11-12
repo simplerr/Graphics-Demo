@@ -11,6 +11,7 @@
 #include "Graphics.h"
 #include "RenderStates.h"
 #include "LightObject.h"
+#include "Effects.h"
 
 using namespace GLib;
 
@@ -141,12 +142,15 @@ LightObject* CreationTool::CreateLightObject(XMFLOAT3 position)
 	lightObject->SetRange(2000.0f);
 	lightObject->SetSpot(16.0f);
 	lightObject->SetPosition(position);
-	lightObject->SetIntensity(1.0f, 1.0f, 0.2f);
+	lightObject->SetIntensity(0.2f, 1.0f, 0.2f);
 	return lightObject;
 }
 
 void CreationTool::OnSelectChange(Gwen::Controls::Base* pControl)
 {
+	GLib::Effects::TerrainFX->SetToolCenter(XMFLOAT2(-999999, -999999));
+	GLib::Effects::TerrainFX->Apply(GetD3DContext());
+
 	mModelSelected = true;
 
 	string name = ToString(((Gwen::Controls::Button*)pControl)->GetText());

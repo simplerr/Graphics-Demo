@@ -71,7 +71,7 @@ void Editor::GwenInit(int width, int height)
 	// Create a GWEN skin.
 	mGwenSkin = new Gwen::Skin::TexturedBase();
 	mGwenSkin->SetRender(mGwenRenderer);
-	mGwenSkin->Init("DefaultSkin.png");
+	mGwenSkin->Init("textures/GwenSkin.png");
 
 	// Create a Canvas (it's root, on which all other GWEN panels are created).
 	mGwenCanvas = new Gwen::Controls::Canvas(mGwenSkin);
@@ -89,7 +89,7 @@ void Editor::Update(GLib::Input* pInput, float dt)
 	mCreationTool->Update(pInput, dt);
 
 	// Was an object or light selected? [NOTE] Objects have priority.
-	if(pInput->KeyPressed(VK_LBUTTON) && !pInput->KeyDown(VK_CONTROL) && IsIn3DScreen(pInput))	// [NOTE] Only true if CTRL is not held down.
+	if((pInput->KeyPressed(VK_LBUTTON) || pInput->KeyPressed(VK_RBUTTON)) && !pInput->KeyDown(VK_CONTROL) && IsIn3DScreen(pInput))	// [NOTE] Only true if CTRL is not held down.
 	{
 		Object3D* selectedObject = mWorld->GetSelectedObject(pInput->GetWorldPickingRay());
 		if(selectedObject != nullptr)
@@ -122,7 +122,7 @@ void Editor::Update(GLib::Input* pInput, float dt)
 		mActiveInspector->Update(dt);
 
 	// [NOTE][HACK]
-	if(mActiveInspector != nullptr && mActiveInspector->GetInspectorType() == TERRAIN_INSPECTOR)
+	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel() && mActiveInspector->GetInspectorType() == TERRAIN_INSPECTOR)
 		mTerrainTool->Update(pInput, dt);
 	else if(mActiveInspector != nullptr && (mActiveInspector->GetInspectorType() == LIGHT_INSPECTOR 
 		|| mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR))
