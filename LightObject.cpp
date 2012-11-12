@@ -62,6 +62,7 @@ void LightObject::SetPosition(XMFLOAT3 position)
 	mBillboard->SetPos(position);
 }
 
+// [NOTE] For some reason the rotation cant be (0, -1, 0) for the shadow mapping to work!
 void LightObject::SetRotation(XMFLOAT3 rotation)
 {
 	Object3D::SetRotation(rotation);

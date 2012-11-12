@@ -29,7 +29,7 @@ void World::Init(GLib::Graphics* pGraphics)
 	//mLightBillboard = GetGraphics()->AddBillboard(XMFLOAT3(0, 10, 0), XMFLOAT2(5, 5), "textures\\light_icon.png");
 
 	// Create the sky box.
-	mSkyBox = new GLib::Sky(pGraphics, "textures/sky.dds", 5000.0f);
+	mSkyBox = new GLib::Sky(pGraphics, "textures/sunsetcube1024.dds", 1000.0f);
 
 	// Create the terrain.
 	mTerrain = new GLib::Terrain();

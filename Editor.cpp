@@ -45,7 +45,7 @@ void Editor::Init(GLib::ModelImporter* pImporter, World* pWorld)
 
 	// Create the right list.
 	mRightList = new Gwen::Controls::CollapsibleList(mGwenCanvas);
-	mRightList->SetBounds(1000, 0, 200, 800);
+	mRightList->SetBounds(1000, 0, 200, 600);
 	mRightList->SetShouldDrawBackground(false);
 
 	// Create the world tree.

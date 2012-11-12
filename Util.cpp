@@ -10,8 +10,13 @@ string ToString(wstring str)
 bool IsIn3DScreen(GLib::Input* pInput)
 {
 	XMFLOAT3 pos = pInput->MousePosition();
-	if(pos. x > 220 && pos.x < 1000)
-		return true;
+
+	if(pos.x < 220 && pos.y > 800)
+		return true;	// Left side.
+	else if(pos.x > GLib::GetClientWidth() - 200 && pos.y > 500)	// [NOTE][HACK] 500
+		return true;	// Right side.
+	else if(pos.x > 220 && pos.x < GLib::GetClientWidth() - 200)
+		return true;	// Middle.
 	else
 		return false;
 }

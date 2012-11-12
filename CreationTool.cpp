@@ -131,7 +131,7 @@ LightObject* CreationTool::CreateLightObject(XMFLOAT3 position)
 	LightObject* lightObject = new LightObject();
 	lightObject->SetName("Light");
 	lightObject->SetMaterials(Material(Colors::White, Colors::White, XMFLOAT4(229/255.0f, 106/255.0f, 5.0f/255.0f, 1.0f)));
-	lightObject->SetRotation(XMFLOAT3(0.0f, -1.0f, 0.0f));
+	lightObject->SetRotation(XMFLOAT3(0.3f, -1.0f, 0.0f));
 	lightObject->SetLightType(SPOT_LIGHT);
 	lightObject->SetAtt(0, 0.1, 0);
 	lightObject->SetRange(2000.0f);
