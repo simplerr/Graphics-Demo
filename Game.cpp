@@ -58,6 +58,7 @@ Game::Game(HINSTANCE hInstance, string caption, int width, int height)
 	: Runnable(hInstance, caption, width, height)
 {
 	mEditor = nullptr;
+	mEditorVisible = true;
 }
 	
 Game::~Game()
@@ -114,6 +115,10 @@ void Game::GwenInit()
 
 void Game::Update(GLib::Input* pInput, float dt)
 {
+	// Toggle editors visibility?
+	if(pInput->KeyPressed(VK_SPACE))
+		mEditorVisible = !mEditorVisible;
+
 	mWorld->Update(dt);
 	mEditor->Update(pInput, dt);
 }
@@ -127,7 +132,8 @@ void Game::Draw(GLib::Graphics* pGraphics)
 	mWorld->Draw(pGraphics);	
 	pGraphics->DrawBillboards();
 
-	mEditor->Draw(pGraphics);
+	if(mEditorVisible)
+		mEditor->Draw(pGraphics);
 
 	// Present the backbuffer.
 	pGraphics->Present();

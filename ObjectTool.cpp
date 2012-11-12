@@ -119,17 +119,18 @@ void ObjectTool::Update(GLib::Input* pInput, float dt)
 	// Move on terrain with RBUTTON.
 	if(pInput->KeyDown(VK_RBUTTON) && mMovingAxis == XZ_AXIS)
 	{
-		XMFLOAT3 pos  = GetCamera()->GetPosition();
+		XMFLOAT3 pos = GetCamera()->GetPosition();
 		XMFLOAT3 dir = pInput->GetWorldPickingRay().direction;
 
 		UpdatePosition(MoveAxisZ(pos, dir));
-		UpdatePosition(MoveAxisX(pos, dir));
+		UpdatePosition(MoveAxisX(pos, dir)); 
+	}
 
-		// Stick to the terain?
-		if(pInput->KeyDown(VK_CONTROL)) {
-			float height = mMovingObject->GetWorld()->GetTerrain()->GetHeight(mMovingObject->GetPosition().x, mMovingObject->GetPosition().z);
+	// Stick to the terain?
+	if(pInput->KeyDown('C')) {
+		float height = mMovingObject->GetWorld()->GetTerrain()->GetHeight(mMovingObject->GetPosition().x, mMovingObject->GetPosition().z);
+		if(height != -numeric_limits<float>::infinity())
 			UpdatePosition(XMFLOAT3(mMovingObject->GetPosition().x, height, mMovingObject->GetPosition().z) - mMovingObject->GetPosition());
-		}
 	}
 }
 

@@ -43,4 +43,5 @@ private:
 	StaticObject*	mTerrain;
 	AnimatedObject* mAnimatedObject;
 	Editor*			mEditor;
+	bool			mEditorVisible;
 };
