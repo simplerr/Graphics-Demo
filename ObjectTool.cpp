@@ -125,10 +125,11 @@ void ObjectTool::Update(GLib::Input* pInput, float dt)
 		UpdatePosition(MoveAxisZ(pos, dir));
 		UpdatePosition(MoveAxisX(pos, dir));
 
-		// Under the terrain?
-		/*float height = mMovingObject->GetWorld()->GetTerrain()->GetHeight(mMovingObject->GetPosition().x, mMovingObject->GetPosition().z);
-		if(height > mMovingObject->GetPosition().y)
-		mMovingObject->SetPosition(XMFLOAT3(mMovingObject->GetPosition().x, height, mMovingObject->GetPosition().z));*/
+		// Stick to the terain?
+		if(pInput->KeyDown(VK_CONTROL)) {
+			float height = mMovingObject->GetWorld()->GetTerrain()->GetHeight(mMovingObject->GetPosition().x, mMovingObject->GetPosition().z);
+			UpdatePosition(XMFLOAT3(mMovingObject->GetPosition().x, height, mMovingObject->GetPosition().z) - mMovingObject->GetPosition());
+		}
 	}
 }
 
