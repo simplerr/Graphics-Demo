@@ -358,7 +358,15 @@ void ObjectInspector::OnPositionChangeEvent(XMFLOAT3 position)
 
 void ObjectInspector::OnScaleChangeEvent(XMFLOAT3 scale)
 {
+	char buffer[246];
+	sprintf(buffer, "%.3f", scale.x);
+	mXScaleProperty->GetProperty()->SetPropertyValue(buffer);
 
+	sprintf(buffer, "%.3f", scale.y);
+	mYScaleProperty->GetProperty()->SetPropertyValue(buffer);
+
+	sprintf(buffer, "%.3f", scale.z);
+	mZScaleProperty->GetProperty()->SetPropertyValue(buffer);
 }
 
 StaticObject* ObjectInspector::GetSelectedObject()

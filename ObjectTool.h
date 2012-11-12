@@ -22,6 +22,7 @@ enum MovingAxis
 	X_AXIS,
 	Y_AXIS, 
 	Z_AXIS,
+	XZ_AXIS,
 	NONE
 };
 

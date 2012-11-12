@@ -14,6 +14,7 @@
 #include "RenderStates.h"
 #include "Util.h"
 #include "World.h"
+#include "Terrain.h"
 
 using namespace GLib;
 
@@ -84,11 +85,15 @@ void ObjectTool::Update(GLib::Input* pInput, float dt)
 		else if(mAxisZ->RayIntersect(XMLoadFloat3(&pos), XMLoadFloat3(&dir), dist)) 
 			mMovingAxis = Z_AXIS;	
 	}
-	else if(pInput->KeyPressed(VK_RBUTTON) && IsIn3DScreen(pInput))
+	else if(pInput->KeyPressed(VK_RBUTTON) && IsIn3DScreen(pInput)) {
 		InitStartingPosition(pInput, dir, pos, dist);
 
+		if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &mMovingObject->GetBoundingBox(), &dist)) 
+			mMovingAxis = XZ_AXIS;
+	}
+
 	// Not moving any axis any more.
-	if(pInput->KeyReleased(VK_LBUTTON))
+	if(pInput->KeyReleased(VK_LBUTTON) || pInput->KeyReleased(VK_RBUTTON))
 		mMovingAxis = NONE;
 
 	// Update the position.
@@ -106,17 +111,24 @@ void ObjectTool::Update(GLib::Input* pInput, float dt)
 	}
 
 	// Scaling with CTRL + mwheel.
-	if(pInput->KeyDown(VK_CONTROL)) 
+	if(pInput->KeyDown(VK_CONTROL)) {
 		mMovingObject->SetScale(mMovingObject->GetScale() + XMFLOAT3(pInput->MouseDz()/1300.0f, pInput->MouseDz()/1300.0f, pInput->MouseDz()/1300.0f));
+		onScaleChange(mMovingObject->GetScale());
+	}
 
 	// Move on terrain with RBUTTON.
-	if(pInput->KeyDown(VK_RBUTTON))
+	if(pInput->KeyDown(VK_RBUTTON) && mMovingAxis == XZ_AXIS)
 	{
 		XMFLOAT3 pos  = GetCamera()->GetPosition();
 		XMFLOAT3 dir = pInput->GetWorldPickingRay().direction;
 
 		UpdatePosition(MoveAxisZ(pos, dir));
 		UpdatePosition(MoveAxisX(pos, dir));
+
+		// Under the terrain?
+		/*float height = mMovingObject->GetWorld()->GetTerrain()->GetHeight(mMovingObject->GetPosition().x, mMovingObject->GetPosition().z);
+		if(height > mMovingObject->GetPosition().y)
+		mMovingObject->SetPosition(XMFLOAT3(mMovingObject->GetPosition().x, height, mMovingObject->GetPosition().z));*/
 	}
 }
 
