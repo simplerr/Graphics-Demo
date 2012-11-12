@@ -44,7 +44,7 @@ void WorldTree::CreateTree()
 	Gwen::Controls::TreeNode* objects = mTreeControl->AddNode("Objects");
 	Gwen::Controls::TreeNode* staticObjects = objects->AddNode("Static");
 	Gwen::Controls::TreeNode* animatedObjects = objects->AddNode("Animated");
-	Gwen::Controls::TreeNode* lights = mTreeControl->AddNode("Lights");
+	Gwen::Controls::TreeNode* lights = mTreeControl->AddNode("Lights (max 10)");
 
 	// Add the terrain node.
 	Gwen::Controls::TreeNode* terrain = mTreeControl->AddNode("Terrain");

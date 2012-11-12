@@ -21,6 +21,7 @@ Object3D::Object3D(ObjectType type, XMFLOAT3 position, XMFLOAT3 rotation, XMFLOA
 	SetId(-1);
 	SetType(type);
 	SetWorld(nullptr);
+	mAlive = true;
 }
 
 //! Cleanup.

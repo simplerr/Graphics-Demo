@@ -40,9 +40,10 @@ public:
 	
 
 	GLib::LightList*	GetLights();
-	ObjectList* GetObjects();
-	GLib::Terrain*	GetTerrain();
+	ObjectList*			GetObjects();
+	GLib::Terrain*		GetTerrain();
 	int			GetVisibleObjects();
+	int			GetNumLights();
 	XMFLOAT3	GetTerrainIntersectPoint(GLib::Ray ray);
 	Object3D*	GetSelectedObject(GLib::Ray ray);
 

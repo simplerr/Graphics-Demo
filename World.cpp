@@ -90,7 +90,7 @@ void World::Draw(GLib::Graphics* pGraphics)
 	mTerrain->Draw(pGraphics);
 
 	// Draw the skybox.
-	mSkyBox->Draw(pGraphics);
+	//mSkyBox->Draw(pGraphics);
 
 	mNumVisibleObjects = 0;
 	for(int i = 0; i < mObjectList.size(); i++)
@@ -214,6 +214,11 @@ GLib::Terrain* World::GetTerrain()
 int World::GetVisibleObjects()
 {
 	return mNumVisibleObjects;
+}
+
+int World::GetNumLights()
+{
+	return mLightList.size();
 }
 
 XMFLOAT3 World::GetTerrainIntersectPoint(GLib::Ray ray)

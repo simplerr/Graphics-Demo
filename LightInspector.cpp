@@ -106,6 +106,7 @@ void LightInspector::SetObject(void* pObject)
 	//
 	// Set the color selectors.
 	//
+	// CRASHAR HÄR!!!
 	mLight->SetMaterials(Material(oldMat.ambient, oldMat.diffuse, oldMat.specular));
 	Material material = mLight->GetMaterial();
 	int r, g, b;

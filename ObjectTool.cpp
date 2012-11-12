@@ -22,25 +22,25 @@ ObjectTool::ObjectTool(GLib::ModelImporter* pImporter)
 	mMovingObject = nullptr;
 
 	// Create the X axis.
-	mAxisX = new StaticObject(pImporter, "models/arrow/arrow.obj");
+	mAxisX = new StaticObject(pImporter, "models/arrow.obj");
 	mAxisX->SetPosition(XMFLOAT3(0, 30, 30));
 	mAxisX->SetMaterials(Material(Colors::Green));
 	mAxisX->SetRotation(XMFLOAT3(3.14f/2.0f, 3.14f/2.0f, 0));
-	mAxisX->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+	mAxisX->SetScale(XMFLOAT3(1.50f, 1.50f, 1.50f));
 
 	// Create the Y axis.
-	mAxisY = new StaticObject(pImporter, "models/arrow/arrow.obj");
+	mAxisY = new StaticObject(pImporter, "models/arrow.obj");
 	mAxisY->SetPosition(XMFLOAT3(0, 30, 30));
 	mAxisY->SetMaterials(Material(Colors::Red));
 	mAxisY->SetRotation(XMFLOAT3(0, 1, 0));
-	mAxisY->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+	mAxisY->SetScale(XMFLOAT3(1.50f, 1.50f, 1.50f));
 
 	// Create the Z axis.
-	mAxisZ = new StaticObject(pImporter, "models/arrow/arrow.obj");
+	mAxisZ = new StaticObject(pImporter, "models/arrow.obj");
 	mAxisZ->SetPosition(XMFLOAT3(0, 30, 30));
 	mAxisZ->SetMaterials(Material(Colors::Blue));
 	mAxisZ->SetRotation(XMFLOAT3(0, 3.14f/2.0f, 3.14f/2.0f));
-	mAxisZ->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+	mAxisZ->SetScale(XMFLOAT3(1.50f, 1.50f, 1.50f));
 
 	mMovingAxis = NONE;
 }
@@ -248,7 +248,7 @@ void ObjectTool::SetObject(Object3D* pObject)
 //! Sets the axis positions.
 void ObjectTool::SetPosition(XMFLOAT3 position)
 {
-	mAxisX->SetPosition(position + XMFLOAT3(mAxisX->GetBoundingBox().Extents.x*0.6, 0, 0));
-	mAxisY->SetPosition(position + XMFLOAT3(0, mAxisY->GetBoundingBox().Extents.y*0.6, 0));
-	mAxisZ->SetPosition(position + XMFLOAT3(0, 0, mAxisZ->GetBoundingBox().Extents.z*0.6));
+	mAxisX->SetPosition(position + XMFLOAT3(mAxisX->GetBoundingBox().Extents.x*0.81, 0, 0));
+	mAxisY->SetPosition(position + XMFLOAT3(0, mAxisY->GetBoundingBox().Extents.y*0.81, 0));
+	mAxisZ->SetPosition(position + XMFLOAT3(0, 0, mAxisZ->GetBoundingBox().Extents.z*0.81));
 }

@@ -64,8 +64,13 @@ void CreationTool::Update(GLib::Input* pInput, float dt)
 				object = CreateLightObject(intersectPoint + XMFLOAT3(0, 20, 0));
 
 			// Add the created object to the world and make it the selected one.
-			mWorld->AddObject(object);
-			mEditor->OnItemSelected(object, object->GetType());
+			if(data.type != 2 || (data.type == 2 && mWorld->GetNumLights() < 10)) {
+				mWorld->AddObject(object);
+				mEditor->OnItemSelected(object, object->GetType());
+				mEditor->UpdateWorldTree();
+			}
+			else
+				delete object;
 
 			// Deselect the button if SHIFT isn't held down.
 			if(!pInput->KeyDown(VK_SHIFT)) {
@@ -74,7 +79,6 @@ void CreationTool::Update(GLib::Input* pInput, float dt)
 				delete mPreviewObject;
 				mPreviewObject = nullptr;
 			}
-			mEditor->UpdateWorldTree();
 		}
 	}
 

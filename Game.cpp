@@ -93,7 +93,7 @@ void Game::Init()
 	lightObject->SetIntensity(0.2f, 1.0f, 0.2f);
 	mWorld->AddObject(lightObject);
 
-	GetGraphics()->SetFogColor(XMFLOAT4(1.0f, 0.2f, 0.8, 1.0f));
+	GetGraphics()->SetFogColor(XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f));
 
 	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
 	GetGraphics()->GetContext()->OMSetBlendState(RenderStates::TransparentBS, blendFactor, 0xffffffff);
@@ -102,7 +102,7 @@ void Game::Init()
 	mAnimatedObject->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
 	mAnimatedObject->SetPosition(XMFLOAT3(0, 30, 0));
 	mAnimatedObject->SetRotation(XMFLOAT3(0.7, 0.6, 0.6));
-	mWorld->AddObject(mAnimatedObject);
+	//mWorld->AddObject(mAnimatedObject);
 
 	mEditor->Init(GetGraphics()->GetModelImporter(), mWorld);
 }
