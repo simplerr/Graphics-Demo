@@ -26,7 +26,9 @@ void WorldLoader::LoadWorld(World* pWorld, GLib::Terrain* pTerrain, string filen
 {
 	ifstream fin(filename);
 
+	//
 	// Load the terrain init data.
+	//
 	GLib::InitInfo data;
 	string ignore;
 	fin >> ignore;	// -TERRAIN_DATA-
@@ -43,11 +45,13 @@ void WorldLoader::LoadWorld(World* pWorld, GLib::Terrain* pTerrain, string filen
 	fin >> ignore >> data.CellSpacing;
 	pTerrain->Init(GLib::GetD3DDevice(), GLib::GetD3DContext(), GLib::GetGraphics()->GetPrimitiveFactory(), data);
 
+	//
 	// Load all objects.
+	//
 	int objects, type;
 	string name;
 	XMFLOAT3 pos, rot, sca;
-	fin >> ignore >> objects;
+	fin >> ignore >> ignore >> objects;
 	for(int i = 0; i < objects; i++)
 	{
 		Object3D* object = nullptr;
@@ -103,6 +107,12 @@ void WorldLoader::LoadWorld(World* pWorld, GLib::Terrain* pTerrain, string filen
 		pWorld->AddObject(object);
 	}
 
+	//
+	// Load the height and blend maps.
+	//
+	pTerrain->LoadHeightmap(fin);
+	pTerrain->LoadBlendMap(fin);
+
 	fin.close();
 }
 
@@ -112,7 +122,7 @@ void WorldLoader::SaveWorld(World* pWorld, GLib::Terrain* pTerrain, string filen
 
 	// Save the terrain data.
 	GLib::InitInfo data = pTerrain->GetInfo();
-	fout << "-TERRAIN_DATA-" << endl;
+	fout << "----------------------------TERRAIN_DATA----------------------------" << endl;
 	fout << "HeightMap " << data.HeightMap << endl;
 	fout << "BlendMap " << data.BlendMap << endl;
 	fout << "LayerMap0 " << data.LayerMap0 << endl;
@@ -126,7 +136,8 @@ void WorldLoader::SaveWorld(World* pWorld, GLib::Terrain* pTerrain, string filen
 	fout << "CellSpacing " << data.CellSpacing << endl;
 
 	ObjectList* objects = pWorld->GetObjects();
-	fout << "\nObjects " << objects->size() << endl;
+	fout << "\n----------------------------OBJECTS----------------------------" << endl;
+	fout << "Objects " << objects->size() << endl;
 	for(int i = 0; i < objects->size(); i++)
 	{
 		Object3D* object = objects->operator[](i);
@@ -160,6 +171,9 @@ void WorldLoader::SaveWorld(World* pWorld, GLib::Terrain* pTerrain, string filen
 
 		fout << endl;
 	}
+
+	pTerrain->SaveHeightMap(fout);
+	pTerrain->SaveBlendMap(fout);
 
 	fout.close();
 }

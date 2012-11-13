@@ -36,13 +36,13 @@ void World::Init(GLib::Graphics* pGraphics)
 	mTerrain = new GLib::Terrain();
 
 	mWorldLoader = new WorldLoader();
-	mWorldLoader->LoadWorld(this, mTerrain, "world.txt");
+	mWorldLoader->LoadWorld(this, mTerrain, "world.wmap");
 }
 
 //! Cleanup the object and light lists.
 World::~World()
 {
-	mWorldLoader->SaveWorld(this, mTerrain, "world.txt");
+	mWorldLoader->SaveWorld(this, mTerrain, "world.wmap");
 
 	delete mWorldLoader;
 	delete mSkyBox;
