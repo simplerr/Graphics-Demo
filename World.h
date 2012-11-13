@@ -37,7 +37,6 @@ public:
 	void AddLight(GLib::Light* pLight);
 	void RemoveObject(Object3D* pObject);
 	void RemoveLight(GLib::Light* pLight);
-	
 
 	GLib::LightList*	GetLights();
 	ObjectList*			GetObjects();

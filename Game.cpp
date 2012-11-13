@@ -119,6 +119,16 @@ void Game::Update(GLib::Input* pInput, float dt)
 	if(pInput->KeyPressed(VK_SPACE))
 		mEditorVisible = !mEditorVisible;
 
+	// Change the camera movement speed.
+	if(pInput->KeyPressed('1'))
+		GLib::GetCamera()->SetMoveSpeed(0.02f*10);
+	else if(pInput->KeyPressed('2'))
+		GLib::GetCamera()->SetMoveSpeed(0.04f*10);
+	else if(pInput->KeyPressed('3'))
+		GLib::GetCamera()->SetMoveSpeed(0.06f*10);
+	else if(pInput->KeyPressed('4'))
+		GLib::GetCamera()->SetMoveSpeed(0.08f*10);
+
 	mWorld->Update(dt);
 	mEditor->Update(pInput, dt);
 }
