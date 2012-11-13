@@ -19,6 +19,7 @@ namespace GLib {
 }
 
 class Object3D;
+class WorldLoader;
 #pragma endregion
 
 typedef std::vector<Object3D*> ObjectList;
@@ -59,6 +60,7 @@ private:
 	GLib::LightList	mLightList;//LightList mLightList;	
 	GLib::Sky*		mSkyBox;
 	GLib::Terrain*	mTerrain;
-	int			mNumVisibleObjects;
+	WorldLoader*	mWorldLoader;
+	int				mNumVisibleObjects;
 	GLib::BillboardVertex*	mLightBillboard;
 };

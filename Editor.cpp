@@ -92,10 +92,8 @@ void Editor::Update(GLib::Input* pInput, float dt)
 	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel())
 		mActiveInspector->Update(dt);
 
-	// [NOTE][HACK]
-	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel() && mActiveInspector->GetInspectorType() == TERRAIN_INSPECTOR)
-		mTerrainTool->Update(pInput, dt);
-	else if(mActiveInspector != nullptr && (mActiveInspector->GetInspectorType() == LIGHT_INSPECTOR 
+	// [NOTE] This gets called below, but it has to be above the mObjectTool->IsMovingObject() so an object dont gets selected when it shouldn't.
+	if(mActiveInspector != nullptr && (mActiveInspector->GetInspectorType() == LIGHT_INSPECTOR 
 		|| mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR))
 		mObjectTool->Update(pInput, dt);
 
@@ -120,6 +118,13 @@ void Editor::Update(GLib::Input* pInput, float dt)
 			mWorldTree->CreateTree();
 		}
 	}
+
+	// [NOTE][HACK]
+	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel() && mActiveInspector->GetInspectorType() == TERRAIN_INSPECTOR)
+		mTerrainTool->Update(pInput, dt);
+	else if(mActiveInspector != nullptr && (mActiveInspector->GetInspectorType() == LIGHT_INSPECTOR 
+		|| mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR))
+		mObjectTool->Update(pInput, dt);
 
 	// DELETE pressed and an object selected?
 	if(pInput->KeyPressed(VK_DELETE) && mActiveInspector != nullptr && mActiveInspector->GetInspectorType() != TERRAIN_INSPECTOR) {

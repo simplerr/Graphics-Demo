@@ -32,7 +32,16 @@ ModelLoaderXML::~ModelLoaderXML()
 
 ModelData ModelLoaderXML::GetData(string name)
 {
-	return mDataMap[name];
+	if(mDataMap.find(name) != mDataMap.end())
+		return mDataMap[name];
+	else {
+		ModelData data;
+		data.name = "invalid_model";
+		data.defaultScale = 1.0f;
+		data.filename = "invalid_model";
+		data.type = 0;
+		return data;
+	}
 }
 
 vector<string> ModelLoaderXML::GetModelNames()

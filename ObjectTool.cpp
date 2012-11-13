@@ -88,7 +88,7 @@ void ObjectTool::Update(GLib::Input* pInput, float dt)
 	else if(pInput->KeyPressed(VK_RBUTTON) && IsIn3DScreen(pInput)) {
 		InitStartingPosition(pInput, dir, pos, dist);
 
-		if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &mMovingObject->GetBoundingBox(), &dist)) 
+		if(mMovingObject->RayIntersect(XMLoadFloat3(&pos), XMLoadFloat3(&dir), dist))
 			mMovingAxis = XZ_AXIS;
 	}
 

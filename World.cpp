@@ -14,6 +14,7 @@
 #include "Input.h"
 #include "Util.h"
 #include "Effects.h"
+#include "WorldLoader.h"
 #include <limits>
 
 //! Constructor.
@@ -33,24 +34,17 @@ void World::Init(GLib::Graphics* pGraphics)
 
 	// Create the terrain.
 	mTerrain = new GLib::Terrain();
-	GLib::InitInfo initInfo;
-	initInfo.HeightMapFilename = "textures/heightmap17_257.raw";
-	initInfo.LayerMapFilename0 = "textures/grass.dds";
-	initInfo.LayerMapFilename1 = "textures/darkdirt.dds";
-	initInfo.LayerMapFilename2 = "textures/stone.dds";
-	initInfo.LayerMapFilename3 = "textures/lightdirt.dds";
-	initInfo.LayerMapFilename4 = "textures/snow.dds";
-	initInfo.BlendMapFilename = "textures/blend.raw";
-	initInfo.HeightScale = 15.0f;
-	initInfo.HeightmapWidth = 257;
-	initInfo.HeightmapHeight = 257;
-	initInfo.CellSpacing = 0.5f;
-	mTerrain->Init(pGraphics->GetDevice(), pGraphics->GetContext(), pGraphics->GetPrimitiveFactory(), initInfo);
+
+	mWorldLoader = new WorldLoader();
+	mWorldLoader->LoadWorld(this, mTerrain, "world.txt");
 }
 
 //! Cleanup the object and light lists.
 World::~World()
 {
+	mWorldLoader->SaveWorld(this, mTerrain, "world.txt");
+
+	delete mWorldLoader;
 	delete mSkyBox;
 	delete mTerrain;
 
