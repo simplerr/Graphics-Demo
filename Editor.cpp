@@ -88,8 +88,19 @@ void Editor::Update(GLib::Input* pInput, float dt)
 {
 	mCreationTool->Update(pInput, dt);
 
+	// Update the active inspector.
+	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel())
+		mActiveInspector->Update(dt);
+
+	// [NOTE][HACK]
+	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel() && mActiveInspector->GetInspectorType() == TERRAIN_INSPECTOR)
+		mTerrainTool->Update(pInput, dt);
+	else if(mActiveInspector != nullptr && (mActiveInspector->GetInspectorType() == LIGHT_INSPECTOR 
+		|| mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR))
+		mObjectTool->Update(pInput, dt);
+
 	// Was an object or light selected? [NOTE] Objects have priority.
-	if((pInput->KeyPressed(VK_LBUTTON) || pInput->KeyPressed(VK_RBUTTON)) && !pInput->KeyDown(VK_CONTROL) && IsIn3DScreen(pInput))	// [NOTE] Only true if CTRL is not held down.
+	if(!mObjectTool->IsMovingObject() && (pInput->KeyPressed(VK_LBUTTON) || pInput->KeyPressed(VK_RBUTTON)) && !pInput->KeyDown(VK_CONTROL) && IsIn3DScreen(pInput))	// [NOTE] Only true if CTRL is not held down.
 	{
 		Object3D* selectedObject = mWorld->GetSelectedObject(pInput->GetWorldPickingRay());
 		if(selectedObject != nullptr)
@@ -116,18 +127,6 @@ void Editor::Update(GLib::Input* pInput, float dt)
 		mWorldTree->CreateTree();
 		RemoveInspector();
 	}
-
-	// Update the active inspector.
-	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel())
-		mActiveInspector->Update(dt);
-
-	// [NOTE][HACK]
-	if(mActiveInspector != nullptr && !mCreationTool->IsCreatingModel() && mActiveInspector->GetInspectorType() == TERRAIN_INSPECTOR)
-		mTerrainTool->Update(pInput, dt);
-	else if(mActiveInspector != nullptr && (mActiveInspector->GetInspectorType() == LIGHT_INSPECTOR 
-		|| mActiveInspector->GetInspectorType() == OBJECT_INSPECTOR))
-		mObjectTool->Update(pInput, dt);
-
 }
 	
 //! Draws all elements in the editor.

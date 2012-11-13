@@ -37,6 +37,7 @@ public:
 	void Draw(GLib::Graphics* pGraphics);
 	void SetObject(Object3D* pObject);
 	void SetInspector(BaseInspector* pInspector);
+	bool IsMovingObject();
 
 	// These are only supposed to be called by an BaseInspector type.
 	void SetPosition(XMFLOAT3 position);

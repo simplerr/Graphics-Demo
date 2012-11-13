@@ -289,3 +289,8 @@ void ObjectTool::SetPosition(XMFLOAT3 position)
 	mAxisY->SetPosition(position + XMFLOAT3(0, mAxisY->GetBoundingBox().Extents.y*0.81, 0));
 	mAxisZ->SetPosition(position + XMFLOAT3(0, 0, mAxisZ->GetBoundingBox().Extents.z*0.81));
 }
+
+bool ObjectTool::IsMovingObject()
+{
+	return mMovingAxis == NONE ? false : true;
+}
