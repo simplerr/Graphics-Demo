@@ -23,7 +23,8 @@ public:
 	virtual void Init();
 	virtual void Update(float dt);
 	virtual void Draw(GLib::Graphics* pGraphics);
-
+	
+	bool RayIntersect(XMVECTOR origin, XMVECTOR direction, float& pDist);
 	void SetAnimation(int index);
 	AxisAlignedBox GetBoundingBox();
 	GLib::SkinnedModel* GetModel();

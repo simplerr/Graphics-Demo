@@ -44,6 +44,7 @@ public:
 	virtual void Update(float dt) = 0;
 	virtual void Draw(GLib::Graphics* pGraphics) = 0;
 	virtual AxisAlignedBox GetBoundingBox() = 0;
+	virtual bool RayIntersect(XMVECTOR origin, XMVECTOR direction, float& pDist) = 0;
 	void Kill();
 
 	// Setters.

@@ -41,6 +41,14 @@ void LightObject::Draw(GLib::Graphics* pGraphics)
 	
 }
 
+bool LightObject::RayIntersect(XMVECTOR origin, XMVECTOR direction, float& pDist)
+{
+	if(XNA::IntersectRayAxisAlignedBox(origin, direction, &GetBoundingBox(), &pDist))
+		return true;
+	else
+		return false;
+}
+
 XNA::AxisAlignedBox LightObject::GetBoundingBox()
 {
 	AxisAlignedBox box;

@@ -118,10 +118,14 @@ Object3D* World::GetSelectedObject(GLib::Ray ray)
 		float dist;
 		XMFLOAT3 pos = GLib::GetCamera()->GetPosition();
 		XMFLOAT3 dir = ray.direction;
-		if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &mObjectList[i]->GetBoundingBox(), &dist)) {
-			if(dist < closestDist) {
-				closestObject = mObjectList[i];
-				closestDist = dist;
+		if(XNA::IntersectRayAxisAlignedBox(XMLoadFloat3(&pos), XMLoadFloat3(&dir), &mObjectList[i]->GetBoundingBox(), &dist)) 
+		{
+			if(mObjectList[i]->RayIntersect(XMLoadFloat3(&pos), XMLoadFloat3(&dir), dist))
+			{
+				if(dist < closestDist) {
+					closestObject = mObjectList[i];
+					closestDist = dist;
+				}
 			}
 		}
 	}

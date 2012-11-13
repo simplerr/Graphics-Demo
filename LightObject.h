@@ -42,6 +42,7 @@ public:
 	float	 GetSpot();
 	int GetLightType();
 
+	bool RayIntersect(XMVECTOR origin, XMVECTOR direction, float& pDist);
 	AxisAlignedBox GetBoundingBox();
 private:
 	GLib::BillboardVertex* mBillboard;

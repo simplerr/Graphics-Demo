@@ -56,6 +56,14 @@ void AnimatedObject::SetAnimation(int index)
 	mCurrentAnimIndex = index;
 }
 
+bool AnimatedObject::RayIntersect(XMVECTOR origin, XMVECTOR direction, float& pDist)
+{
+	if(XNA::IntersectRayAxisAlignedBox(origin, direction, &GetBoundingBox(), &pDist))
+		return true;
+	else
+		return false;
+}
+
 //! Returns the bounding box in world space. [NOTE] Does not work [TODO].
 AxisAlignedBox AnimatedObject::GetBoundingBox()
 {
