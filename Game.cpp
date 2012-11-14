@@ -59,6 +59,7 @@ Game::Game(HINSTANCE hInstance, string caption, int width, int height)
 {
 	mEditor = nullptr;
 	mEditorVisible = true;
+	SetFpsCap(100.0f);
 }
 	
 Game::~Game()
@@ -121,13 +122,13 @@ void Game::Update(GLib::Input* pInput, float dt)
 
 	// Change the camera movement speed.
 	if(pInput->KeyPressed('1'))
-		GLib::GetCamera()->SetMoveSpeed(0.02f*10);
+		GLib::GetCamera()->SetMoveSpeed(0.1f);
 	else if(pInput->KeyPressed('2'))
-		GLib::GetCamera()->SetMoveSpeed(0.04f*10);
+		GLib::GetCamera()->SetMoveSpeed(0.6);
 	else if(pInput->KeyPressed('3'))
-		GLib::GetCamera()->SetMoveSpeed(0.06f*10);
+		GLib::GetCamera()->SetMoveSpeed(1.6f);
 	else if(pInput->KeyPressed('4'))
-		GLib::GetCamera()->SetMoveSpeed(0.08f*10);
+		GLib::GetCamera()->SetMoveSpeed(2.0f);
 
 	mWorld->Update(dt);
 	mEditor->Update(pInput, dt);

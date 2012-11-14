@@ -72,6 +72,9 @@ void ObjectTool::Update(GLib::Input* pInput, float dt)
 	float dist;
 	XMFLOAT3 pos, dir;
 
+	// Scale the axis arrows.
+	ScaleAxisArrows();
+
 	// LBUTTON pressed and inside 3D screen.
 	if(pInput->KeyPressed(VK_LBUTTON) && IsIn3DScreen(pInput))
 	{
@@ -127,7 +130,7 @@ void ObjectTool::Update(GLib::Input* pInput, float dt)
 	}
 
 	// Stick to the terain?
-	if(pInput->KeyDown('C')) {
+	if(pInput->KeyPressed('C')) {
 		float height = mMovingObject->GetWorld()->GetTerrain()->GetHeight(mMovingObject->GetPosition().x, mMovingObject->GetPosition().z);
 		if(height != -numeric_limits<float>::infinity())
 			UpdatePosition(XMFLOAT3(mMovingObject->GetPosition().x, height, mMovingObject->GetPosition().z) - mMovingObject->GetPosition());
@@ -271,6 +274,18 @@ XMFLOAT3 ObjectTool::MoveAxisZ(XMFLOAT3 pos, XMFLOAT3 dir)
 	}
 
 	return XMFLOAT3(0, 0, dz);
+}
+
+//! Scales the axis arrows so they allways have the same size on the screen.
+void ObjectTool::ScaleAxisArrows()
+{
+	XMFLOAT3 diff = GLib::GetCamera()->GetPosition() - mMovingObject->GetPosition();
+	float dist = sqrt(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+	float scale = dist / 60.0f;
+	mAxisX->SetScale(XMFLOAT3(scale, scale, scale));
+	mAxisY->SetScale(XMFLOAT3(scale, scale, scale));
+	mAxisZ->SetScale(XMFLOAT3(scale, scale, scale));
+	SetPosition(mMovingObject->GetPosition());
 }
 
 //! Set the moving object.
