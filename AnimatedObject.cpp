@@ -15,6 +15,7 @@ AnimatedObject::AnimatedObject(GLib::ModelImporter* importer, string filename)
 	mSkinnedModel = importer->LoadSkinnedModel(filename);
 	mElapsedTime = 0.0f;
 	mCurrentAnimIndex = 0;
+	SetAnimation(1);
 }
 
 //! Cleanup.
@@ -67,8 +68,9 @@ bool AnimatedObject::RayIntersect(XMVECTOR origin, XMVECTOR direction, float& pD
 //! Returns the bounding box in world space. [NOTE] Does not work [TODO].
 AxisAlignedBox AnimatedObject::GetBoundingBox()
 {
+	//AxisAlignedBox aabb = mSkinnedModel->GetBoundingBox();	// [WIP] The precalculated AABB for the model.
 	SkinnedMeshList* meshList = mSkinnedModel->GetMeshList();
-	AxisAlignedBox aabb = (*meshList)[0]->GetPrimitive()->GetBoundingBox();
+	XNA::AxisAlignedBox aabb = meshList->operator[](0)->GetPrimitive()->GetBoundingBox();
 	XMFLOAT3 min = aabb.Center - aabb.Extents;
 	XMFLOAT3 max = aabb.Center + aabb.Extents;
 	for(int i = 1; i < meshList->size(); i++)

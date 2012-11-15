@@ -114,7 +114,7 @@ void ObjectTool::Update(GLib::Input* pInput, float dt)
 	}
 
 	// Scaling with CTRL + mwheel.
-	if(pInput->KeyDown(VK_CONTROL)) {
+	if(pInput->KeyDown(VK_CONTROL) && mMovingObject->GetType() != LIGHT_OBJECT) {
 		mMovingObject->SetScale(mMovingObject->GetScale() + XMFLOAT3(pInput->MouseDz()/1300.0f, pInput->MouseDz()/1300.0f, pInput->MouseDz()/1300.0f));
 		onScaleChange(mMovingObject->GetScale());
 	}

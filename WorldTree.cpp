@@ -41,16 +41,16 @@ void WorldTree::CreateTree()
 	mTreeControl->SetBounds(0, 20, 200, 380);
 	mTreeControl->onSelect.Add(this, &WorldTree::OnSelectChange);
 
-	Gwen::Controls::TreeNode* objects = mTreeControl->AddNode("Objects");
-	Gwen::Controls::TreeNode* staticObjects = objects->AddNode("Static");
-	Gwen::Controls::TreeNode* animatedObjects = objects->AddNode("Animated");
-	Gwen::Controls::TreeNode* lights = mTreeControl->AddNode("Lights (max 10)");
-
 	// Add the terrain node.
 	Gwen::Controls::TreeNode* terrain = mTreeControl->AddNode("Terrain");
 	terrain->onSelect.Add(this, &WorldTree::OnSelectChange);
 	mNodeMap["Terrain"].pData = mWorld->GetTerrain();
 	mNodeMap["Terrain"].type = TERRAIN;
+
+	Gwen::Controls::TreeNode* objects = mTreeControl->AddNode("Objects");
+	Gwen::Controls::TreeNode* staticObjects = objects->AddNode("Static");
+	Gwen::Controls::TreeNode* animatedObjects = objects->AddNode("Animated");
+	Gwen::Controls::TreeNode* lights = mTreeControl->AddNode("Lights (max 10)");
 
 	// Add all static objects.
 	ObjectList* objectList = mWorld->GetObjects();

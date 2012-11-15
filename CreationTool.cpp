@@ -175,7 +175,7 @@ void CreationTool::OnSelectChange(Gwen::Controls::Base* pControl)
 	}
 
 	// Orange with transparency.
-	mPreviewObject->SetMaterials(Material(XMFLOAT4(1.0f, 127.0f/255.0f, 38/255.0f, 0.06f) * 6));
+	mPreviewObject->SetMaterials(Material(XMFLOAT4(1.0f, 127.0f/255.0f, 38/255.0f, 0.12f) * 4));
 }
 
 void CreationTool::SetEditor(Editor* pEditor)

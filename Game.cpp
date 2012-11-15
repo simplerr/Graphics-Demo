@@ -59,6 +59,8 @@ Game::Game(HINSTANCE hInstance, string caption, int width, int height)
 {
 	mEditor = nullptr;
 	mEditorVisible = true;
+	mDrawHelp = false;
+	mElapsedTime = 0.0f;
 	SetFpsCap(100.0f);
 }
 	
@@ -73,40 +75,32 @@ void Game::Init()
 	// Important to run Systems Init() function.
 	Runnable::Init();
 
-	mEditor = new Editor(GetClientWidth(), GetClientHeight());
-	
 	// Create the world.
 	mWorld = new World();
+
+	// Create and init the editor.
+	mEditor = new Editor(GetClientWidth(), GetClientHeight());
+	mEditor->Init(GetGraphics()->GetModelImporter(), mWorld);
+
+	// Go fullscreen.
+	//SwitchScreenMode();
+
+	// Render the loading assets backround.
+	mLoadingAssetsBkgd = GetGraphics()->LoadTexture("textures/black.png");
+	mHelpScreen = GetGraphics()->LoadTexture("textures/help_screen.png");
+	mPressH = GetGraphics()->LoadTexture("textures/press_h.png");
+	RenderLoadingScreen(GetGraphics());
+
+	// Init the world.
 	mWorld->Init(GetGraphics());
 	mWorld->AddItemSelectedListender(&Editor::OnItemSelected, mEditor);
+	mEditor->UpdateWorldTree();
 
 	// Connect the graphics light list to the one in World.
 	GetGraphics()->SetLightList(mWorld->GetLights());
 
-	// Add some lights.
-	/*lightObject = new LightObject();
-	lightObject->SetMaterials(Material(Colors::White, Colors::White, XMFLOAT4(229/255.0f, 106/255.0f, 5.0f/255.0f, 1.0f)));
-	lightObject->SetRotation(XMFLOAT3(0.3f, -1.0f, 0.0f));
-	lightObject->SetLightType(DIRECTIONAL_LIGHT);
-	lightObject->SetAtt(0, 0.1, 0);
-	lightObject->SetRange(2000.0f);
-	lightObject->SetSpot(16.0f);
-	lightObject->SetPosition(XMFLOAT3(0, 50, 0));
-	lightObject->SetIntensity(0.2f, 1.0f, 0.2f);
-	mWorld->AddObject(lightObject);*/
-
+	// Set the fog color.
 	GetGraphics()->SetFogColor(XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f));
-
-	float blendFactor[] = {0.0f, 0.0f, 0.0f, 0.0f};
-	GetGraphics()->GetContext()->OMSetBlendState(RenderStates::TransparentBS, blendFactor, 0xffffffff);
-
-	mAnimatedObject = new AnimatedObject(GetGraphics()->GetModelImporter(), "models/smith/smith.x");
-	mAnimatedObject->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
-	mAnimatedObject->SetPosition(XMFLOAT3(0, 30, 0));
-	mAnimatedObject->SetRotation(XMFLOAT3(0.7, 0.6, 0.6));
-	//mWorld->AddObject(mAnimatedObject);
-
-	mEditor->Init(GetGraphics()->GetModelImporter(), mWorld);
 }
 	
 void Game::GwenInit()
@@ -116,9 +110,17 @@ void Game::GwenInit()
 
 void Game::Update(GLib::Input* pInput, float dt)
 {
+	mElapsedTime += dt;
+
 	// Toggle editors visibility?
 	if(pInput->KeyPressed(VK_SPACE))
 		mEditorVisible = !mEditorVisible;
+
+	// Display the help screen?
+	if(pInput->KeyPressed('H')) {
+		mElapsedTime = 9999;	// > 6
+		mDrawHelp = !mDrawHelp;
+	}
 
 	// Change the camera movement speed.
 	if(pInput->KeyPressed('1'))
@@ -132,6 +134,10 @@ void Game::Update(GLib::Input* pInput, float dt)
 
 	mWorld->Update(dt);
 	mEditor->Update(pInput, dt);
+
+	// Close the program.
+	if(pInput->KeyPressed(VK_ESCAPE)) 
+		PostQuitMessage(0);
 }
 	
 void Game::Draw(GLib::Graphics* pGraphics)
@@ -145,6 +151,12 @@ void Game::Draw(GLib::Graphics* pGraphics)
 
 	if(mEditorVisible)
 		mEditor->Draw(pGraphics);
+
+	if(mElapsedTime < 6.0f)
+		pGraphics->DrawScreenQuad(mPressH, 600, 100, 164, 24);
+
+	if(mDrawHelp)
+		pGraphics->DrawScreenQuad(mHelpScreen, 600, 400, 681, 622);
 
 	// Present the backbuffer.
 	pGraphics->Present();
@@ -174,4 +186,11 @@ LRESULT Game::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		mEditor->MsgProc(hwnd, msg, wParam, lParam);
 
 	return Runnable::MsgProc(hwnd, msg, wParam, lParam);
+}
+
+void Game::RenderLoadingScreen(GLib::Graphics* pGraphics)
+{
+	pGraphics->ClearScene();
+	pGraphics->DrawScreenQuad(mLoadingAssetsBkgd, 600, 400, 1200, 800);
+	pGraphics->Present();
 }

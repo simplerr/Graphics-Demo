@@ -30,6 +30,7 @@ public:
 	void Update(GLib::Input* pInput, float dt);
 	void Draw(GLib::Graphics* pGraphics);
 	void OnResize(int width, int height);
+	void RenderLoadingScreen(GLib::Graphics* pGraphics);
 
 	LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -44,4 +45,9 @@ private:
 	AnimatedObject* mAnimatedObject;
 	Editor*			mEditor;
 	bool			mEditorVisible;
+	GLib::Texture2D* mLoadingAssetsBkgd;
+	GLib::Texture2D* mHelpScreen;
+	GLib::Texture2D* mPressH;
+	float			 mElapsedTime;
+	bool			 mDrawHelp;
 };
