@@ -34,8 +34,6 @@ GLib::Runnable* GLib::GlobalApp = nullptr;
 
 Gwen::Renderer::DirectX11* pRenderer;
 
-LightObject* lightObject;
-
 //! The program starts here.
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
 {
@@ -76,14 +74,14 @@ void Game::Init()
 	Runnable::Init();
 
 	// Create the world.
-	mWorld = new World();
+	mWorld = new GLib::World();
 
 	// Create and init the editor.
 	mEditor = new Editor(GetClientWidth(), GetClientHeight());
 	mEditor->Init(GetGraphics()->GetModelImporter(), mWorld);
 
 	// Go fullscreen.
-	//SwitchScreenMode();
+	SwitchScreenMode();
 
 	// Render the loading assets backround.
 	mLoadingAssetsBkgd = GetGraphics()->LoadTexture("textures/black.png");
@@ -156,7 +154,7 @@ void Game::Draw(GLib::Graphics* pGraphics)
 		pGraphics->DrawScreenQuad(mPressH, 600, 100, 164, 24);
 
 	if(mDrawHelp)
-		pGraphics->DrawScreenQuad(mHelpScreen, 600, 400, 681, 622);
+		pGraphics->DrawScreenQuad(mHelpScreen, 600, 400, 735, 735);
 
 	// Present the backbuffer.
 	pGraphics->Present();

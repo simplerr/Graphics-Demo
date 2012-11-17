@@ -45,7 +45,7 @@ void WorldTree::CreateTree()
 	Gwen::Controls::TreeNode* terrain = mTreeControl->AddNode("Terrain");
 	terrain->onSelect.Add(this, &WorldTree::OnSelectChange);
 	mNodeMap["Terrain"].pData = mWorld->GetTerrain();
-	mNodeMap["Terrain"].type = TERRAIN;
+	mNodeMap["Terrain"].type = GLib::TERRAIN;
 
 	Gwen::Controls::TreeNode* objects = mTreeControl->AddNode("Objects");
 	Gwen::Controls::TreeNode* staticObjects = objects->AddNode("Static");
@@ -53,11 +53,11 @@ void WorldTree::CreateTree()
 	Gwen::Controls::TreeNode* lights = mTreeControl->AddNode("Lights (max 10)");
 
 	// Add all static objects.
-	ObjectList* objectList = mWorld->GetObjects();
+	GLib::ObjectList* objectList = mWorld->GetObjects();
 	map<string, int> counter;
 	for(int i = 0; i < objectList->size(); i++)
 	{
-		Object3D* object = objectList->operator[](i);
+		GLib::Object3D* object = objectList->operator[](i);
 		WorldTreeNode node;
 		node.pData = object;
 		node.type = object->GetType();
@@ -70,15 +70,15 @@ void WorldTree::CreateTree()
 		else
 			counter[name] = 1;
 
-		if(node.type == STATIC_OBJECT) {
+		if(node.type == GLib::STATIC_OBJECT) {
 			sprintf(buffer, "%s %i", name.c_str(), counter[name]);
 			staticObjects->AddNode(buffer)->onSelect.Add(this, &WorldTree::OnSelectChange);
 		}
-		else if(node.type == ANIMATED_OBJECT) {
+		else if(node.type == GLib::ANIMATED_OBJECT) {
 			sprintf(buffer, "%s %i", name.c_str(), counter[name]);
 			animatedObjects->AddNode(buffer)->onSelect.Add(this, &WorldTree::OnSelectChange);
 		}
-		else if(node.type == LIGHT_OBJECT) {
+		else if(node.type == GLib::LIGHT_OBJECT) {
 			sprintf(buffer,  "Light %i", i+1);
 			lights->AddNode(buffer)->onSelect.Add(this, &WorldTree::OnSelectChange);
 		}
@@ -95,7 +95,7 @@ void WorldTree::SetEditor(Editor* pEditor)
 	mEditor = pEditor;
 }
 
-void WorldTree::SetWorld(World* pWorld)
+void WorldTree::SetWorld(GLib::World* pWorld)
 {
 	mWorld = pWorld;
 }

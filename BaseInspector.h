@@ -6,11 +6,11 @@
 #pragma region Forward declarations.
 namespace GLib {
 	class Graphics;
+	class Object3D;
 }
 
 class ObjectTool;
 class Editor;
-class Object3D;
 #pragma endregion
 
 enum InspectorType
@@ -34,7 +34,7 @@ public:
 	virtual void SetObject(void* pObject) = 0;
 	virtual bool IsResponsible(int type) = 0;
 	virtual bool IsInspecting(int id) = 0;
-	virtual Object3D* GetInspectedObject() = 0;
+	virtual GLib::Object3D* GetInspectedObject() = 0;
 
 	void	SetInspectorType(InspectorType type) { mInspectorType = type; }
 	void	SetEditor(Editor* pEditor)	{ mEditor = pEditor; }

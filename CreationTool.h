@@ -9,37 +9,37 @@ namespace GLib {
 	class Graphics;
 	class Input;
 	class ModelImporter;
+	class Object3D;
+	class World;
+	class StaticObject;
+	class AnimatedObject;
+	class LightObject;
 }
 
-class World;
 class Editor;
-class Object3D;
-class StaticObject;
-class AnimatedObject;
-class LightObject;
 #pragma endregion
 
 class CreationTool : public Gwen::Controls::CollapsibleCategory
 {
 public:
-	CreationTool(Gwen::Controls::Base* pParent, World* pWorld, GLib::ModelImporter* pModelImporter);
+	CreationTool(Gwen::Controls::Base* pParent, GLib::World* pWorld, GLib::ModelImporter* pModelImporter);
 	~CreationTool();
 
 	void BuildSpawnList();
 	void Update(GLib::Input* pInput, float dt);
 	void Draw(GLib::Graphics* pGraphics);
-	StaticObject*	CreateStaticModel(XMFLOAT3 position, ModelData data);
-	AnimatedObject* CreateAnimatedModel(XMFLOAT3 position, ModelData data);
-	LightObject*	CreateLightObject(XMFLOAT3 position);
+	GLib::StaticObject*		CreateStaticModel(XMFLOAT3 position, ModelData data);
+	GLib::AnimatedObject*	CreateAnimatedModel(XMFLOAT3 position, ModelData data);
+	GLib::LightObject*		CreateLightObject(XMFLOAT3 position);
 	void OnSelectChange(Gwen::Controls::Base* pControl);
 
 	void SetEditor(Editor* pEditor);
 	bool IsCreatingModel();
 private:
-	ModelLoaderXML* mModelLoaderXML;
-	World*		mWorld;
-	Editor*		mEditor;
-	Object3D*	mPreviewObject;
-	GLib::ModelImporter* mModelImporter;
-	bool		mModelSelected;
+	ModelLoaderXML*		mModelLoaderXML;
+	GLib::World*		mWorld;
+	GLib::Object3D*		mPreviewObject;
+	GLib::ModelImporter*mModelImporter;
+	Editor*				mEditor;
+	bool				mModelSelected;
 };

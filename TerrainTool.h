@@ -6,9 +6,9 @@
 #pragma region Forward declarations.
 namespace GLib {
 	class Terrain;
+	class World;
 }
 
-class World;
 #pragma endregion
 
 //! Can change the height and texture of the terrain.

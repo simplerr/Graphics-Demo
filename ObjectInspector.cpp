@@ -280,11 +280,11 @@ void ObjectInspector::OnScaleChange(Base* pControl)
 void ObjectInspector::SetObject(void* pObject)
 {
 	// Send to the object tool.
-	mObjectTool->SetObject((Object3D*)pObject);
+	mObjectTool->SetObject((GLib::Object3D*)pObject);
 	mObjectTool->AddOnPositionChange(&ObjectInspector::OnPositionChangeEvent, this);
 	mObjectTool->AddOnScaleChange(&ObjectInspector::OnScaleChangeEvent, this);
 
-	mObject = (StaticObject*)pObject;
+	mObject = (GLib::StaticObject*)pObject;
 
 	// Set the position properties.
 	XMFLOAT3 position = mObject->GetPosition();
@@ -337,7 +337,7 @@ void ObjectInspector::InitSlider(Gwen::Controls::HorizontalSlider* slider, strin
 
 bool ObjectInspector::IsResponsible(int type)
 {
-	if(type == STATIC_OBJECT || type == ANIMATED_OBJECT)
+	if(type == GLib::STATIC_OBJECT || type == GLib::ANIMATED_OBJECT)
 		return true;
 	else 
 		return false;
@@ -369,7 +369,7 @@ void ObjectInspector::OnScaleChangeEvent(XMFLOAT3 scale)
 	mZScaleProperty->GetProperty()->SetPropertyValue(buffer);
 }
 
-StaticObject* ObjectInspector::GetSelectedObject()
+GLib::StaticObject* ObjectInspector::GetSelectedObject()
 {
 	return mObject;
 }
@@ -382,7 +382,7 @@ bool ObjectInspector::IsInspecting(int id)
 		return false;
 }
 
-Object3D* ObjectInspector::GetInspectedObject()
+GLib::Object3D* ObjectInspector::GetInspectedObject()
 {
 	return mObject;
 }

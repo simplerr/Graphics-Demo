@@ -10,7 +10,10 @@
 
 // Forward declarations.
 #pragma region Forward declarations.
-class LightObject;
+namespace GLib {
+	class LightObject;
+	Object3D;
+}
 class ObjectTool;
 #pragma endregion
 
@@ -38,7 +41,7 @@ public:
 	void SetLightMaterial();
 	bool IsResponsible(int type);
 	bool IsInspecting(int id);
-	Object3D* GetInspectedObject();
+	GLib::Object3D* GetInspectedObject();
 
 	// Callback.
 	void OnPositionChangeEvent(XMFLOAT3 position);
@@ -48,7 +51,7 @@ private:
 	void CreateDataProperties(Gwen::Controls::Base* pParent);
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:
-	LightObject* mLight;
+	GLib::LightObject* mLight;
 	GLib::Material mCurrentMaterial;
 
 	Gwen::Controls::PropertyRow* mXProperty, *mYProperty, *mZProperty;

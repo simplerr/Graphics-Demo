@@ -12,12 +12,12 @@ namespace GLib {
 	class ModelImporter;
 	class Model;
 	class SkinnedModel;
+	class World;
+	class StaticObject;
+	class AnimatedObject;
 }
 
 class Editor;
-class World;
-class StaticObject;
-class AnimatedObject;
 #pragma endregion
 
 class Game : public GLib::Runnable
@@ -36,13 +36,13 @@ public:
 
 	void GwenInit();
 private:
-	World*			mWorld;
+	GLib::World*	mWorld;
 	GLib::Light*	mLight;
 	GLib::Light*	mLight2;
-	StaticObject*	mObject;
-	StaticObject*	mObject2;
-	StaticObject*	mTerrain;
-	AnimatedObject* mAnimatedObject;
+	GLib::StaticObject*	mObject;
+	GLib::StaticObject*	mObject2;
+	GLib::StaticObject*	mTerrain;
+	GLib::AnimatedObject* mAnimatedObject;
 	Editor*			mEditor;
 	bool			mEditorVisible;
 	GLib::Texture2D* mLoadingAssetsBkgd;

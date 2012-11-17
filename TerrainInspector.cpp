@@ -217,7 +217,7 @@ bool TerrainInspector::IsInspecting(int id)
 	return false;
 }
 
-Object3D* TerrainInspector::GetInspectedObject()
+GLib::Object3D* TerrainInspector::GetInspectedObject()
 {
 	return nullptr;
 }

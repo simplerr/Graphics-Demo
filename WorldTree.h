@@ -8,7 +8,9 @@ using namespace std;
 
 // Forward declarations.
 #pragma region Forward declarations.
-class World;
+namespace GLib {
+	class World;
+}
 class Editor;
 #pragma endregion
 
@@ -28,11 +30,11 @@ public:
 	void CreateTree();
 	void OnSelectChange(Gwen::Controls::Base* pControl);
 	void SetEditor(Editor* pEditor);
-	void SetWorld(World* pWorld);
+	void SetWorld(GLib::World* pWorld);
 private:
 	map<string, WorldTreeNode> mNodeMap;
 	Gwen::Controls::TreeControl* mTreeControl;
 	Gwen::Controls::CollapsibleCategory* mCategory;
 	Editor* mEditor;
-	World* mWorld;
+	GLib::World* mWorld;
 };

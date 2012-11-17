@@ -9,7 +9,9 @@ using namespace std;
 
 // Forward declarations.
 #pragma region Forward declarations.
-class StaticObject;
+namespace GLib {
+	class StaticObject;
+}
 class ObjectTool;
 #pragma endregion
 
@@ -33,18 +35,18 @@ public:
 	void OnAABBCheckBoxChange(Base* pControl);
 	bool IsResponsible(int type);
 	bool IsInspecting(int id);
-	Object3D* GetInspectedObject();
+	GLib::Object3D* GetInspectedObject();
 
 	// Callback.
 	void OnPositionChangeEvent(XMFLOAT3 position);
 	void OnScaleChangeEvent(XMFLOAT3 scale);
 
 	void SetObjectMover(ObjectTool* pObjectMover);
-	StaticObject* GetSelectedObject();
+	GLib::StaticObject* GetSelectedObject();
 private:
 	void InitSlider(Gwen::Controls::HorizontalSlider* slider, string name, int y, float value, float start, float end, bool clamp = true);
 private:
-	StaticObject* mObject;
+	GLib::StaticObject* mObject;
 	Gwen::Controls::PropertyRow* mXProperty, *mYProperty, *mZProperty;
 	Gwen::Controls::PropertyRow* mXRotationProperty, *mYRotationProperty, *mZRotationProperty;
 	Gwen::Controls::PropertyRow* mXScaleProperty, *mYScaleProperty, *mZScaleProperty;

@@ -10,10 +10,10 @@ namespace GLib {
 	class Light;
 	class Input;
 	class ModelImporter;
+	class StaticObject;
+	class Object3D;
 }
 
-class StaticObject;
-class Object3D;
 class BaseInspector;
 #pragma endregion
 
@@ -35,7 +35,7 @@ public:
 
 	void Update(GLib::Input* pInput, float dt);
 	void Draw(GLib::Graphics* pGraphics);
-	void SetObject(Object3D* pObject);
+	void SetObject(GLib::Object3D* pObject);
 	void SetInspector(BaseInspector* pInspector);
 	bool IsMovingObject();
 
@@ -64,10 +64,10 @@ private:
 	boost::function<void(XMFLOAT3)> onPositionChange;
 	boost::function<void(XMFLOAT3)> onScaleChange;
 private:
-	StaticObject* mAxisX;
-	StaticObject* mAxisY;
-	StaticObject* mAxisZ;
-	Object3D*	  mMovingObject;
+	GLib::StaticObject* mAxisX;
+	GLib::StaticObject* mAxisY;
+	GLib::StaticObject* mAxisZ;
+	GLib::Object3D*		mMovingObject;
 	MovingAxis	  mMovingAxis;
 	XMFLOAT3	  mLastPlanePos;
 	BaseInspector*mInspector;

@@ -15,7 +15,7 @@
 
 using namespace GLib;
 
-CreationTool::CreationTool(Gwen::Controls::Base* pParent, World* pWorld, GLib::ModelImporter* pModelImporter)
+CreationTool::CreationTool(Gwen::Controls::Base* pParent, GLib::World* pWorld, GLib::ModelImporter* pModelImporter)
 	: Gwen::Controls::CollapsibleCategory(pParent)
 {
 	mWorld = pWorld;
@@ -56,7 +56,7 @@ void CreationTool::Update(GLib::Input* pInput, float dt)
 		XMFLOAT3 intersectPoint = mWorld->GetTerrainIntersectPoint(pInput->GetWorldPickingRay());
 		if(intersectPoint.x != numeric_limits<float>::infinity())
 		{
-			Object3D* object;
+			GLib::Object3D* object;
 			if(data.type == 0)		// Static object.
 				object = CreateStaticModel(intersectPoint, data);
 			else if(data.type == 1) // Animated object.

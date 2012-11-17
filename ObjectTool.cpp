@@ -289,7 +289,7 @@ void ObjectTool::ScaleAxisArrows()
 }
 
 //! Set the moving object.
-void ObjectTool::SetObject(Object3D* pObject)
+void ObjectTool::SetObject(GLib::Object3D* pObject)
 {
 	mMovingObject = pObject;
 	mAxisX->SetPosition(pObject->GetPosition());

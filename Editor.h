@@ -22,14 +22,14 @@ namespace GLib {
 	class Camera;
 	class ModelImporter;
 	class Light;
+	class World;
+	class Object3D;
 }
 
 class Gwen::Renderer::DirectX11;
 class BaseInspector;
-class World;
 class WorldTree;
 class ObjectTool;
-class Object3D;
 class TerrainTool;
 class CreationTool;
 #pragma endregion
@@ -41,7 +41,7 @@ public:
 	Editor(int width, int height);
 	~Editor();
 	
-	void Init(GLib::ModelImporter* pImporter, World* pWorld);
+	void Init(GLib::ModelImporter* pImporter, GLib::World* pWorld);
 	void GwenInit(int width, int height);
 	void Update(GLib::Input* pInput, float dt);
 	void OnResize(int width, int height);
@@ -62,5 +62,5 @@ private:
 	TerrainTool*				mTerrainTool;
 	ObjectTool*					mObjectTool;
 	CreationTool*			    mCreationTool;
-	World*						mWorld;
+	GLib::World*				mWorld;
 };

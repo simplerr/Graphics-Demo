@@ -501,7 +501,7 @@ bool LightInspector::IsInspecting(int id)
 		return false;
 }
 
-Object3D* LightInspector::GetInspectedObject()
+GLib::Object3D* LightInspector::GetInspectedObject()
 {
 	return mLight;
 }

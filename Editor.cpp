@@ -39,7 +39,7 @@ Editor::~Editor()
 }
 
 //! Initializes everything.
-void Editor::Init(GLib::ModelImporter* pImporter, World* pWorld)
+void Editor::Init(GLib::ModelImporter* pImporter, GLib::World* pWorld)
 {
 	mWorld = pWorld;
 
@@ -100,14 +100,14 @@ void Editor::Update(GLib::Input* pInput, float dt)
 	// Was an object or light selected? [NOTE] Objects have priority.
 	if(!mObjectTool->IsMovingObject() && (pInput->KeyPressed(VK_LBUTTON) || pInput->KeyPressed(VK_RBUTTON)) && !pInput->KeyDown(VK_CONTROL) && IsIn3DScreen(pInput))	// [NOTE] Only true if CTRL is not held down.
 	{
-		Object3D* selectedObject = mWorld->GetSelectedObject(pInput->GetWorldPickingRay());
+		GLib::Object3D* selectedObject = mWorld->GetSelectedObject(pInput->GetWorldPickingRay());
 		if(selectedObject != nullptr)
 			OnItemSelected(selectedObject, selectedObject->GetType());
 	}
 	// Remove any object that was pressed with CTRL.
 	else if(pInput->KeyPressed(VK_LBUTTON) && pInput->KeyDown(VK_CONTROL))
 	{
-		Object3D* object = mWorld->GetSelectedObject(pInput->GetWorldPickingRay());
+		GLib::Object3D* object = mWorld->GetSelectedObject(pInput->GetWorldPickingRay());
 		if(object != nullptr)
 		{
 			// Is the object thats getting deleted being inspected?
@@ -161,11 +161,11 @@ void Editor::OnItemSelected(void* pItem, int type)
 
 	// The active inspector haven't been created.
 	if(mActiveInspector == nullptr) {
-		if(type == STATIC_OBJECT || type == ANIMATED_OBJECT) 
+		if(type == GLib::STATIC_OBJECT || type == GLib::ANIMATED_OBJECT) 
 			mActiveInspector = new ObjectInspector(mGwenCanvas, mObjectTool);
-		else if(type == LIGHT_OBJECT) 
+		else if(type == GLib::LIGHT_OBJECT) 
 			mActiveInspector = new LightInspector(mGwenCanvas, mObjectTool);
-		else if(type == TERRAIN) {
+		else if(type == GLib::TERRAIN) {
 			mActiveInspector = new TerrainInspector(mGwenCanvas, mTerrainTool);
 		}
 		mActiveInspector->Init();
